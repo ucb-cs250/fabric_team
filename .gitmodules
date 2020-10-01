@@ -1,0 +1,15 @@
+[submodule "mac_team"]
+	path = mac_team
+	url = git@github.com:ucb-cs250/mac_team.git
+[submodule "interconnect_team"]
+	path = interconnect_team
+	url = git@github.com:ucb-cs250/interconnect_team.git
+[submodule "config_team"]
+	path = config_team
+	url = git@github.com:ucb-cs250/config_team.git
+[submodule "clb_team"]
+	path = clb_team
+	url = git@github.com:ucb-cs250/clb_team.git
+[submodule "sram_team"]
+	path = sram_team
+	url = git@github.com:ucb-cs250/sram_team.git
