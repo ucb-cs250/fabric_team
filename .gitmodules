@@ -13,3 +13,6 @@
 [submodule "sram_team"]
 	path = sram_team
 	url = git@github.com:ucb-cs250/sram_team.git
+[submodule "tools/yosys"]
+	path = tools/yosys
+	url = git@github.com:ucb-cs250/yosys
