@@ -16,3 +16,6 @@
 [submodule "tools/yosys"]
 	path = tools/yosys
 	url = git@github.com:ucb-cs250/yosys
+[submodule "tools/nextpnr"]
+	path = tools/nextpnr
+	url = git@github.com:ucb-cs250/nextpnr
