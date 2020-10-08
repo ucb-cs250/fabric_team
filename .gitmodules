@@ -1,9 +1,6 @@
 [submodule "mac_team"]
 	path = mac_team
 	url = git@github.com:ucb-cs250/mac_team.git
-[submodule "interconnect_team"]
-	path = interconnect_team
-	url = git@github.com:ucb-cs250/interconnect_team.git
 [submodule "config_team"]
 	path = config_team
 	url = git@github.com:ucb-cs250/config_team.git
@@ -16,3 +13,9 @@
 [submodule "tools/yosys"]
 	path = tools/yosys
 	url = git@github.com:ucb-cs250/yosys
+[submodule "ix_nate"]
+	path = ix_nate
+	url = git@github.com:ucb-cs250/ix_nate
+[submodule "ix_yukio"]
+	path = ix_yukio
+	url = git@github.com:ucb-cs250/ix_yukio
