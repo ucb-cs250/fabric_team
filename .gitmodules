@@ -19,3 +19,6 @@
 [submodule "ix_yukio"]
 	path = ix_yukio
 	url = git@github.com:ucb-cs250/ix_yukio
+[submodule "tools/nextpnr"]
+	path = tools/nextpnr
+	url = git@github.com:ucb-cs250/nextpnr
