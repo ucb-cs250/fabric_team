@@ -9,5 +9,8 @@
   * `cen` - configuration enable
   * `VPWR` - global power net (for manual layouts)
   * `VGND` - global ground net (for manual layouts)
+* Use named port connections only when instantiating submodules:
+  ```
+  sub_module_name instance_name(.sub_port(local_wire), .other_port(other_wire));
 
 # Fabric team
