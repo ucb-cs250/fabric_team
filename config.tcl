@@ -12,18 +12,23 @@ set src_root $design_root/250
 set fabric_src $src_root/src
 
 set mac_top mac_cluster
-set mac_run cluster_700_650
+set mac_run {cluster_750_750_0.3}
 set mac_src $src_root/mac_team/src
-set mac_design_root $design_root/mac_hardened_absolute
+set mac_design_root $design_root/250_mac
 set mac_lef $mac_design_root/runs/$mac_run/results/magic/$mac_top.lef
 set mac_gds $mac_design_root/runs/$mac_run/results/magic/$mac_top.gds
+puts "MACRO PATH $mac_lef"
+puts "MACRO PATH $mac_gds"
 set ::env(MAC_TOP) $mac_top
 
+# Verilog files for top level RTL connections. Do not include black boxes!
 set ::env(VERILOG_FILES) [concat \
-    [glob $fabric_src/*.v] \
-    [glob $mac_src/*.v]]
+    [glob $fabric_src/*.v]]
+
+# Include black boxes!
 set ::env(VERILOG_FILES_BLACKBOX) [concat \
     [glob $mac_src/*.v]]
+
 set ::env(SYNTH_READ_BLACKBOX_LIB) 1
 
 set ::env(EXTRA_LEFS) [list $mac_lef]
@@ -54,3 +59,8 @@ set ::env(GLB_RT_ADJUSTMENT) 0
 
 # # threads for supporting tools
 set ::env(ROUTING_CORES) 4
+
+# TODO(aryap): Enable this once the format is clear
+# set ::env(FP_PIN_ORDER_CFG) $fabric_src/pin_order.cfg
+
+set ::env(PDN_CFG) $fabric_src/pdn.tcl
