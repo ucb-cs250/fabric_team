@@ -85,7 +85,7 @@ module fpga
 	 
 	 // slicel specifics (we have 2 slicel so far)
 	 input cen_1,
-	 input cen_2
+	 input cen_2,
 	 input reg_ce_1,
 	 input reg_ce_2,
 	 input clk,    // for output registers
