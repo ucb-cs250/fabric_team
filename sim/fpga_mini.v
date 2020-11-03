@@ -282,13 +282,13 @@ module fpga
       );
    
 	
-   // clb
-	// this slicel has 32-bit input from latches and 2 8bits output (8bits for out, and 8 bits for sync_out). The two 8bits are concatenated
-	// to one 16bit signal that is called clb_xx_output and is propagated to the CB
-	slicel #(S_XX_BASE=4, CFG_SIZE=2**S_XX_BASE+1, NUM_LUTS = 4, MUX_LVLS = $clog2(NUM_LUTS)) clb_11 (
+  // clb
+  // this slicel has 32-bit input from latches and 2 8bits output (8bits for out, and 8 bits for sync_out). The two 8bits are concatenated
+  // to one 16bit signal that is called clb_xx_output and is propagated to the CB
+  slicel #(.S_XX_BASE(4), .CFG_SIZE(2**4+1), .NUM_LUTS(4), .MUX_LVLS($clog2(NUM_LUTS))) clb_11 (
     // INPUT from latches
-	 .luts_in(clb_11_input),
-	 // for f7, f8 mux 
+    .luts_in(clb_11_input),
+    // for f7, f8 mux 
     .higher_order_addr(higher_order_addr_1),
     // CONFIG
     .luts_config_in(luts_config_in_1),
@@ -299,18 +299,18 @@ module fpga
     .clk(clk),
     .reg_ce(reg_ce_1),
     .cen(cen_1),
-	 // Cin and Cout
+    // Cin and Cout
     .Ci(clb_11_cin),
     .Co(clb_11_cout),
-	 // OUTPUT, divided into two segments, each 8bits wide
+    // OUTPUT, divided into two segments, each 8bits wide
     .out(clb_11_output[(CLBOUT/2-1):0]),
     .sync_out(clb_11_output[(CLBOUT-1):(CLBOUT/2)])
-	);
+  );
 	
-	slicel #(S_XX_BASE=4, CFG_SIZE=2**S_XX_BASE+1, NUM_LUTS = 4, MUX_LVLS = $clog2(NUM_LUTS)) clb_12 (
+  slicel #(.S_XX_BASE(4), .CFG_SIZE(2**4+1), .NUM_LUTS(4), .MUX_LVLS($clog2(NUM_LUTS))) clb_12 (
     // INPUT from latches
-	 .luts_in(clb_12_input),
-	 // for f7, f8 mux 
+    .luts_in(clb_12_input),
+    // for f7, f8 mux 
     .higher_order_addr(higher_order_addr_2),
     // CONFIG
     .luts_config_in(luts_config_in_2),
@@ -321,16 +321,15 @@ module fpga
     .clk(clk),
     .reg_ce(reg_ce_2),
     .cen(cen_2),
-	 // Cin and Cout
+    // Cin and Cout
     .Ci(clb_12_cin),
     .Co(clb_12_cout),
-	 // OUTPUT, divided into two segments, each 8bits wide
+    // OUTPUT, divided into two segments, each 8bits wide
     .out(clb_12_output[(CLBOUT/2-1):0]),
     .sync_out(clb_12_output[(CLBOUT-1):(CLBOUT/2)])
-	);	
+  );	
 		
 		
-	
    // clb io
    generate
       if(CLBIOTYPE == 0) begin : clb_io_type0
