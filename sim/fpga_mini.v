@@ -82,7 +82,7 @@ module fpga
     input [WG-1:0]     vertical_global_0,
     input [WG-1:0]     vertical_global_1,
     input [WG-1:0]     vertical_global_2,
-	 
+ 
 	 // slicel specifics (we have 2 slicel so far)
 	 input cen_1,
 	 input cen_2,

@@ -1,3 +1,5 @@
+# NOTE(aryap): This doesn't work. Use config.tcl-driven macro placement.
+
 package require openlane
 set script_dir [file dirname [file normalize [info script]]]
 set design_name fpga_250
