@@ -15,10 +15,10 @@ module clb_with_config_tb();
 
   localparam S_XX_BASE = 4;
   localparam NUM_LUTS  = 4;
-  localparam LUT_CFG_SIZE  = 2*(2**S_XX_BASE) + 1;
-  localparam MUX_LVLS  = $clog2(NUM_LUTS);
+  localparam LUT_CFG_SIZE = 2*(2**S_XX_BASE) + 1;
+  localparam MUX_LVLS = $clog2(NUM_LUTS);
 
-  reg [2*S_XX_BASE*NUM_LUTS-1:0] luts_in;
+  wire [2*S_XX_BASE*NUM_LUTS-1:0] luts_in;
   reg [MUX_LVLS-1:0] higher_order_addr;
 
   reg reg_ce;
@@ -30,6 +30,7 @@ module clb_with_config_tb();
   wire [LUT_CFG_SIZE*NUM_LUTS-1:0] luts_config_in;
   wire [MUX_LVLS-1:0] inter_lut_mux_config;
   wire config_use_cc;
+  wire [2*NUM_LUTS-1:0] regs_config_in;
 
   slicel #(
     .S_XX_BASE(S_XX_BASE),
@@ -49,6 +50,7 @@ module clb_with_config_tb();
     .luts_config_in(luts_config_in),
     .inter_lut_mux_config(inter_lut_mux_config),
     .config_use_cc(config_use_cc),
+    .regs_config_in(regs_config_in),
     .cclk(cclk),
     .cen(cen)
   );
@@ -83,6 +85,7 @@ module clb_with_config_tb();
   assign luts_config_in       = comb_config[COMB_N-1:MUX_LVLS+1];
   assign inter_lut_mux_config = comb_config[MUX_LVLS:1];
   assign config_use_cc        = comb_config[0];
+  assign regs_config_in       = mem_config;
 
   wire [3:0] A = 4'b1001;
   wire [3:0] B = 4'b1101;
@@ -108,7 +111,7 @@ module clb_with_config_tb();
   wire [MUX_LVLS-1:0] INTERLUT_MUX_CFG = {MUX_LVLS{1'b0}};
   wire USE_CC_CFG = 1'b1;
 
-  wire [2*NUM_LUTS-1:0] REGS_CFG = {2*NUM_LUTS{1'b0}};
+  wire [2*NUM_LUTS-1:0] REGS_CFG = {1'b0, A[3], 1'b0, A[2], 1'b0, A[1], 1'b0, A[0]};
 
   // make sure the order of config bits here matches what is defined in the CLB logic
   // From MSB to LSB: { {SOFTMUX_S44_I_CFG, LUT0_S44_I_CFG, LUT1_S44_I_CFG} x NUM_LUTS, INTERLUT_MUX_CFG, USE_CC_CFG }
@@ -126,7 +129,14 @@ module clb_with_config_tb();
 
   integer i;
 
+  wire [2*S_XX_BASE-1:0] s44_0_input = {1'b0, 1'b0, B[0], sync_out[0], 1'b0, 1'b0, B[0], sync_out[0]};
+  wire [2*S_XX_BASE-1:0] s44_1_input = {1'b0, 1'b0, B[1], sync_out[2], 1'b0, 1'b0, B[1], sync_out[2]};
+  wire [2*S_XX_BASE-1:0] s44_2_input = {1'b0, 1'b0, B[2], sync_out[4], 1'b0, 1'b0, B[2], sync_out[4]};
+  wire [2*S_XX_BASE-1:0] s44_3_input = {1'b0, 1'b0, B[3], sync_out[6], 1'b0, 1'b0, B[3], sync_out[6]};
+
+  assign luts_in = {s44_3_input, s44_2_input, s44_1_input, s44_0_input};
   wire [NUM_LUTS-1+1:0] clb_sum_output = {Co, out[6], out[4], out[2], out[0]};
+  wire [NUM_LUTS-1+1:0] clb_sum_reg_output = {Co, sync_out[6], sync_out[4], sync_out[2], sync_out[0]};
 
   initial begin
     #0;
@@ -138,11 +148,6 @@ module clb_with_config_tb();
     shift_in_soft = 0;
     rst = 1'b1;
     shift_enable = 0;
-
-    luts_in = {{1'b0, 1'b0, B[3], A[3], 1'b0, 1'b0, B[3], A[3]},
-               {1'b0, 1'b0, B[2], A[2], 1'b0, 1'b0, B[2], A[2]},
-               {1'b0, 1'b0, B[1], A[1], 1'b0, 1'b0, B[1], A[1]},
-               {1'b0, 1'b0, B[0], A[0], 1'b0, 1'b0, B[0], A[0]}};
 
     higher_order_addr = 0;
     reg_ce = 0;
@@ -164,6 +169,11 @@ module clb_with_config_tb();
     @(negedge cclk);
     set_hard = 1'b0;
     cen = 1'b0;
+    reg_ce = 1'b0;
+
+    repeat (100) @(posedge clk); // fabric clock
+
+    @(negedge clk);
 
     // LUT1_S44_0 --> out[0]
     // LUT0_S44_0 --> out[1]
@@ -173,15 +183,54 @@ module clb_with_config_tb();
     // LUT0_S44_2 --> out[5]
     // LUT1_S44_3 --> out[6]
     // LUT0_S44_3 --> out[7]
-    $display("CLB Comb. output %b", out);
-    $display("CLB carry out %b", Co);
-    $display("CLB Sync. output %b", sync_out);
+    $display("[%t] CLB Comb. output %b", $time, out);
+    $display("[%t] CLB carry out %b", $time, Co);
+    $display("[%t] CLB Sync. output %b", $time, sync_out);
+    $display("[%t] Test Output %b", $time, X);
 
-    $display("Test Output %b", X);
+    // First test, we expect the CLB output (from the carry chain) matches
+    // the test sum value X
+    // We also expect the registers to remain unchanged (since 'reg_ce' is not asserted)
     if (clb_sum_output == X)
-      $display("PASSED!");
+      $display("[Test CLB SUM] PASSED!");
     else
-      $display("FAILED! %b vs. %b", clb_sum_output, X);
+      $display("[Test CLB SUM] FAILED! %b vs. %b", clb_sum_output, X);
+
+    if (clb_sum_reg_output == X)
+      $display("[Test CLB REG] FAILED!");
+    else
+      $display("[Test CLB REG] PASSED!");
+
+    reg_ce = 1'b1;
+
+    @(negedge clk);
+
+    // Second test, now that 'reg_ce' is high, we expect the registers now store
+    // the result of the sum (X)
+    $display("[%t] CLB Sync. output %b", $time, sync_out);
+    if (clb_sum_reg_output == X)
+      $display("[Test CLB REG] PASSED!");
+    else
+      $display("[Test CLB REG] FAILED! %b vs. %b", clb_sum_reg_output, X);
+
+    @(negedge clk);
+    // Third test, if 'reg_ce' continues to be asserted, the registers will accumulate
+    // the sum output with B
+    $display("[%t] CLB Sync. output %b", $time, sync_out);
+    if (clb_sum_reg_output == X[3:0] + B)
+      $display("[Test CLB REG] PASSED!");
+    else
+      $display("[Test CLB REG] FAILED! %b vs. %b", clb_sum_reg_output, X[3:0] + B);
+
+    reg_ce = 1'b0;
+    @(negedge clk);
+
+    // Fourth test, 'reg_ce' is deasserted, the registers should remain unchanged
+    $display("[%t] CLB Sync. output %b", $time, sync_out);
+    if (clb_sum_reg_output == X[3:0] + B)
+      $display("[Test CLB REG] PASSED!");
+    else
+      $display("[Test CLB REG] FAILED! %b vs. %b", clb_sum_reg_output, X[3:0] + B);
 
     #100;
     $finish;
