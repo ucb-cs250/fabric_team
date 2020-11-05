@@ -187,20 +187,20 @@ module fpga_clb_tiles #(
           .CLBOD(CLBOD),
           .CLBX(CLBX)
         ) CB0 (
-					.single0(CB0_single0[index]),
-					.single1(CB0_single1[index]),
-					.double0(CB0_double0[index]),
-					.double1(CB0_double1[index]),
-					.global(CB0_global[index]),
-					.clb0_output(CB0_clb0_output[index]),
-					.clb1_output(CB0_clb1_output[index]),
-					.clb0_cout(CB0_clb0_cout[index]),
-					.clb1_cout(CB0_clb1_cout[index]),
-					.clb0_input(CB0_clb0_input[index]),
-					.clb1_input(CB0_clb1_input[index]),
-					.clb0_cin(CB0_clb0_cin[index]),
-					.clb1_cin(CB0_clb1_cin[index]),
-					.c(CB0_config[index])
+          .single0(CB0_single0[index]),
+          .single1(CB0_single1[index]),
+          .double0(CB0_double0[index]),
+          .double1(CB0_double1[index]),
+          .global(CB0_global[index]),
+          .clb0_output(CB0_clb0_output[index]),
+          .clb1_output(CB0_clb1_output[index]),
+          .clb0_cout(CB0_clb0_cout[index]),
+          .clb1_cout(CB0_clb1_cout[index]),
+          .clb0_input(CB0_clb0_input[index]),
+          .clb1_input(CB0_clb1_input[index]),
+          .clb0_cin(CB0_clb0_cin[index]),
+          .clb1_cin(CB0_clb1_cin[index]),
+          .c(CB0_config[index])
         );
 
        connection_block #(
@@ -217,20 +217,20 @@ module fpga_clb_tiles #(
           .CLBOD(CLBOD),
           .CLBX(CLBX)
         ) CB1 (
-					.single0(CB1_single0[index]),
-					.single1(CB1_single1[index]),
-					.double0(CB1_double0[index]),
-					.double1(CB1_double1[index]),
-					.global(CB1_global[index]),
-					.clb0_output(CB1_clb0_output[index]),
-					.clb1_output(CB1_clb1_output[index]),
-					.clb0_cout(CB1_clb0_cout[index]),
-					.clb1_cout(CB1_clb1_cout[index]),
-					.clb0_input(CB1_clb0_input[index]),
-					.clb1_input(CB1_clb1_input[index]),
-					.clb0_cin(CB1_clb0_cin[index]),
-					.clb1_cin(CB1_clb1_cin[index]),
-					.c(CB1_config[index])
+          .single0(CB1_single0[index]),
+          .single1(CB1_single1[index]),
+          .double0(CB1_double0[index]),
+          .double1(CB1_double1[index]),
+          .global(CB1_global[index]),
+          .clb0_output(CB1_clb0_output[index]),
+          .clb1_output(CB1_clb1_output[index]),
+          .clb0_cout(CB1_clb0_cout[index]),
+          .clb1_cout(CB1_clb1_cout[index]),
+          .clb0_input(CB1_clb0_input[index]),
+          .clb1_input(CB1_clb1_input[index]),
+          .clb0_cin(CB1_clb0_cin[index]),
+          .clb1_cin(CB1_clb1_cin[index]),
+          .c(CB1_config[index])
         );
 
         config_tile #(
@@ -298,7 +298,7 @@ module fpga_clb_tiles #(
         end
         else begin
           // The intermediate rows get the config bits from the row below
-          assign CFG_shift_in_hard[index] = CFG_shift_in_hard[index_s];
+          assign CFG_shift_in_hard[index] = CFG_shift_out[index_s];
         end
 
         // CLB_outputs --> CBs
@@ -328,11 +328,11 @@ module fpga_clb_tiles #(
           if (has_e == 1 && has_s == 1) begin
             assign CLB_inputs[index][k] = (CB0_clb0_input[index][k] !== 1'bz)   ? CB0_clb0_input[index][k]   :
                                           (CB1_clb0_input[index][k] !== 1'bz)   ? CB1_clb0_input[index][k]   :
-                                          (CB0_clb1_input[index_e][k] !== 1'bz) ? CB1_clb1_input[index_e][k] : CB1_clb1_input[index_s][k];
+                                          (CB0_clb1_input[index_e][k] !== 1'bz) ? CB0_clb1_input[index_e][k] : CB1_clb1_input[index_s][k];
          end
          else if (has_e == 1) begin
             assign CLB_inputs[index][k] = (CB0_clb0_input[index][k] !== 1'bz) ? CB0_clb0_input[index][k] :
-                                          (CB1_clb0_input[index][k] !== 1'bz) ? CB1_clb0_input[index][k] : CB1_clb1_input[index_e][k];
+                                          (CB1_clb0_input[index][k] !== 1'bz) ? CB1_clb0_input[index][k] : CB0_clb1_input[index_e][k];
          end
          else if (has_s == 1) begin
             assign CLB_inputs[index][k] = (CB0_clb0_input[index][k] !== 1'bz) ? CB0_clb0_input[index][k] :
