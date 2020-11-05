@@ -5,7 +5,7 @@ module clb_with_config_tb();
   reg clk, cclk, rst;
 
   localparam FABRIC_CLOCK_PERIOD = 10; // 100 MHz
-  localparam CONFIG_CLOCK_PERIOD = 50; // 10 MHz
+  localparam CONFIG_CLOCK_PERIOD = 50; // 20 MHz
 
   initial clk = 0;
   always #(FABRIC_CLOCK_PERIOD/2) clk = ~clk;
@@ -84,29 +84,33 @@ module clb_with_config_tb();
   assign inter_lut_mux_config = comb_config[MUX_LVLS:1];
   assign config_use_cc        = comb_config[0];
 
-  wire [2**S_XX_BASE-1:0] LUT0_S44_0_CFG     = 16'h8888; // and-4 -- this should come from YoSys + ABC
-  wire [2**S_XX_BASE-1:0] LUT1_S44_0_CFG     = 16'h0;
+  wire [3:0] A = 4'b1001;
+  wire [3:0] B = 4'b1101;
+  wire [4:0] X = A + B;
+
+  wire [2**S_XX_BASE-1:0] LUT0_S44_0_CFG     = 16'h8888; // AND {1'bx, 1'bx, B[0], A[0]}
+  wire [2**S_XX_BASE-1:0] LUT1_S44_0_CFG     = 16'h6666; // XOR {1'bx, 1'bx, B[0], A[0]}
   wire                    SOFTMUX_S44_0_CFG  = 1'b1; // 1: pass CLB input to LUT1
                                                      // 0: pass LUT0's output to LUT1
 
-  wire [2**S_XX_BASE-1:0] LUT0_S44_1_CFG     = 16'h0;
-  wire [2**S_XX_BASE-1:0] LUT1_S44_1_CFG     = 16'h0;
+  wire [2**S_XX_BASE-1:0] LUT0_S44_1_CFG     = 16'h8888; // AND {1'bx, 1'bx, B[1], A[1]}
+  wire [2**S_XX_BASE-1:0] LUT1_S44_1_CFG     = 16'h6666; // XOR {1'bx, 1'bx, B[1], A[1]}
   wire                    SOFTMUX_S44_1_CFG  = 1'b1;
 
-  wire [2**S_XX_BASE-1:0] LUT0_S44_2_CFG     = 16'h0;
-  wire [2**S_XX_BASE-1:0] LUT1_S44_2_CFG     = 16'h0;
+  wire [2**S_XX_BASE-1:0] LUT0_S44_2_CFG     = 16'h8888; // AND {1'bx, 1'bx, B[2], A[2]}
+  wire [2**S_XX_BASE-1:0] LUT1_S44_2_CFG     = 16'h6666; // XOR {1'bx, 1'bx, B[2], A[2]}
   wire                    SOFTMUX_S44_2_CFG  = 1'b1;
 
-  wire [2**S_XX_BASE-1:0] LUT0_S44_3_CFG     = 16'h0;
-  wire [2**S_XX_BASE-1:0] LUT1_S44_3_CFG     = 16'h0;
+  wire [2**S_XX_BASE-1:0] LUT0_S44_3_CFG     = 16'h8888; // AND {1'bx, 1'bx, B[3], A[3]}
+  wire [2**S_XX_BASE-1:0] LUT1_S44_3_CFG     = 16'h6666; // XOR {1'bx, 1'bx, B[3], A[3]}
   wire                    SOFTMUX_S44_3_CFG  = 1'b1;
 
   wire [MUX_LVLS-1:0] INTERLUT_MUX_CFG = {MUX_LVLS{1'b0}};
-  wire USE_CC_CFG = 1'b0;
+  wire USE_CC_CFG = 1'b1;
 
   wire [2*NUM_LUTS-1:0] REGS_CFG = {2*NUM_LUTS{1'b0}};
 
-  // make sure the order of config bits here match what is defined in the CLB logic
+  // make sure the order of config bits here matches what is defined in the CLB logic
   // From MSB to LSB: { {SOFTMUX_S44_I_CFG, LUT0_S44_I_CFG, LUT1_S44_I_CFG} x NUM_LUTS, INTERLUT_MUX_CFG, USE_CC_CFG }
   wire [COMB_N-1:0] comb_cfg_bits = {SOFTMUX_S44_3_CFG, LUT0_S44_3_CFG, LUT1_S44_3_CFG,
                                      SOFTMUX_S44_2_CFG, LUT0_S44_2_CFG, LUT1_S44_2_CFG,
@@ -120,13 +124,9 @@ module clb_with_config_tb();
   // Don't use soft chain for now
   wire [COMB_N+MEM_N+2-1:0] cfg_bits = {mem_cfg_bits, comb_cfg_bits, 2'b00};
 
-  wire A0 = 1;
-  wire A1 = 1;
-  wire A2 = 1;
-  wire A3 = 1;
-  wire X = (A0 & A1 & A2 & A3);
-
   integer i;
+
+  wire [NUM_LUTS-1+1:0] clb_sum_output = {Co, out[6], out[4], out[2], out[0]};
 
   initial begin
     #0;
@@ -139,7 +139,11 @@ module clb_with_config_tb();
     rst = 1'b1;
     shift_enable = 0;
 
-    luts_in = {8'b0, 8'b0, 8'b0, {A0, A1, A2, A3, 4'b0}};
+    luts_in = {{1'b0, 1'b0, B[3], A[3], 1'b0, 1'b0, B[3], A[3]},
+               {1'b0, 1'b0, B[2], A[2], 1'b0, 1'b0, B[2], A[2]},
+               {1'b0, 1'b0, B[1], A[1], 1'b0, 1'b0, B[1], A[1]},
+               {1'b0, 1'b0, B[0], A[0], 1'b0, 1'b0, B[0], A[0]}};
+
     higher_order_addr = 0;
     reg_ce = 0;
     Ci     = 0;
@@ -169,10 +173,15 @@ module clb_with_config_tb();
     // LUT0_S44_2 --> out[5]
     // LUT1_S44_3 --> out[6]
     // LUT0_S44_3 --> out[7]
-    if (out[1] == X)
-      $display("PASSED! The LUT output matches the result of AND-4: %d vs. %d", out[1], X);
+    $display("CLB Comb. output %b", out);
+    $display("CLB carry out %b", Co);
+    $display("CLB Sync. output %b", sync_out);
+
+    $display("Test Output %b", X);
+    if (clb_sum_output == X)
+      $display("PASSED!");
     else
-      $display("FAILED! The LUT output is different from the result of AND-4: %d vs. %d", out[1], X);
+      $display("FAILED! %b vs. %b", clb_sum_output, X);
 
     #100;
     $finish;
