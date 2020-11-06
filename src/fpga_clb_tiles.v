@@ -17,43 +17,43 @@ module fpga_clb_tiles #(
 ) (
 
   input clk,  // fabric clock
-
+  input rst, // fabric reset
   input cclk, // config clock
- 
+
   // Config bits are shifted column-by-column
-  input  shift_enable  [NUM_COLS-1:0], // config enable
-  input  set_soft      [NUM_COLS-1:0],
-  input  set_hard      [NUM_COLS-1:0],
-  input  shift_in_hard [NUM_COLS-1:0],
-  input  shift_in_soft [NUM_COLS-1:0]
+  input [NUM_COLS-1:0] shift_enable, // config enable
+  input [NUM_COLS-1:0] set_hard,
+  input [NUM_COLS-1:0] shift_in_hard
 );
   // ______________  ______________
-  // | CB1  -- SW |  | CB1  -- SW |
+  // | CB1 -- SW  |  | CB1 -- SW  |
   // | CLB -- CB0 |  | CLB -- CB0 |
   // |    CFG     |  |    CFG     |
   // |____________|  |____________|
   // ______________  ______________
-  // | CB1  -- SW |  | CB1  -- SW |
+  // | CB1 --  SW |  | CB1 --  SW |
   // | CLB -- CB0 |  | CLB -- CB0 |
   // |    CFG     |  |    CFG     |
   // |____________|  |____________|
 
   localparam NUM_CLB_TILES = NUM_ROWS * NUM_COLS;
 
-  localparam LUT_CFG_SIZE      = 2 * (2 ** S_XX_BASE) + 1;
-  localparam MUX_LVLS          = $clog2(NUM_LUTS);
+  localparam LUT_CFG_SIZE           = 2 * (2 ** S_XX_BASE) + 1;
+  localparam MUX_LVLS               = $clog2(NUM_LUTS);
   // S44 LUT inputs, Inter-LUT MUX inputs, reg_ce
-  localparam NUM_CLB_INS       = NUM_LUTS * 2 * S_XX_BASE + MUX_LVLS + 1;
+  localparam NUM_CLB_INS            = NUM_LUTS * 2 * S_XX_BASE + MUX_LVLS + 1;
   // Comb. outputs, Sync. outputs
-  localparam NUM_CLB_OUTS      = NUM_LUTS * 2 * 2;
-  localparam SWITCH_PER_IN     = WS + WD + WG + CLBX * NUM_CLB_OUTS;
-  localparam SWITCH_PER_OUT    = CLBOS + CLBOD;
+  localparam NUM_CLB_OUTS           = NUM_LUTS * 2 * 2;
+  localparam SWITCH_PER_IN          = WS + WD + WG + CLBX * NUM_CLB_OUTS;
+  localparam SWITCH_PER_OUT         = CLBOS + CLBOD;
 
-  localparam CLB_COMB_CFG_SIZE = LUT_CFG_SIZE * NUM_LUTS + MUX_LVLS + 1;
-  localparam CLB_MEM_CFG_SIZE  = 2 * NUM_LUTS;
-  localparam CB_CFG_SIZE       = 2 * (NUM_CLB_INS * SWITCH_PER_IN + NUM_CLB_OUTS * SWITCH_PER_OUT);
-  localparam SB_CFG_SIZE       = (WS + WD / 2) * 6;
-  localparam CLB_TILE_COMB_CFG_SIZE = CLB_COMB_CFG_SIZE + SB_CFG_SIZE + CB_CFG_SIZE * 2;
+  localparam CLB_COMB_CFG_SIZE      = LUT_CFG_SIZE * NUM_LUTS + MUX_LVLS + 1;
+  localparam CLB_MEM_CFG_SIZE       = 2 * NUM_LUTS;
+  localparam CB_CFG_SIZE            = 2 * (NUM_CLB_INS * SWITCH_PER_IN +
+                                           NUM_CLB_OUTS * SWITCH_PER_OUT);
+  localparam SB_CFG_SIZE            = (WS + WD / 2) * 6;
+  localparam CLB_TILE_COMB_CFG_SIZE = CLB_COMB_CFG_SIZE +
+                                      SB_CFG_SIZE + CB_CFG_SIZE * 2;
   localparam CLB_TILE_MEM_CFG_SIZE  = CLB_MEM_CFG_SIZE;
 
   wire CLB_Ci [NUM_CLB_TILES-1:0];
@@ -74,6 +74,7 @@ module fpga_clb_tiles #(
   wire [MUX_LVLS-1:0]              CLB_inter_lut_mux_config [NUM_CLB_TILES-1:0];
   wire                             CLB_config_use_cc        [NUM_CLB_TILES-1:0];
   wire [2*NUM_LUTS-1:0]            CLB_regs_config_in       [NUM_CLB_TILES-1:0];
+  wire CLB_cen [NUM_CLB_TILES-1:0];
 
   wire [WS-1:0] SB_north_single [NUM_CLB_TILES-1:0];
   wire [WS-1:0] SB_east_single  [NUM_CLB_TILES-1:0];
@@ -125,7 +126,6 @@ module fpga_clb_tiles #(
   wire CFG_shift_in_soft [NUM_CLB_TILES-1:0];
   wire CFG_shift_out     [NUM_CLB_TILES-1:0];
 
-
   // Tile generator {CLB, CB, CB, SB, CFG}
   genvar i, j, k;
   generate
@@ -153,6 +153,7 @@ module fpga_clb_tiles #(
           .inter_lut_mux_config(CLB_inter_lut_mux_config[index]),
           .config_use_cc(CLB_config_use_cc[index]),
           .regs_config_in(CLB_regs_config_in[index]),
+          .cen(CLB_cen[index]),
           .cclk(cclk)
         );
 
@@ -289,9 +290,11 @@ module fpga_clb_tiles #(
         assign CB1_config[index]               = CFG_comb_config[index][CFG_CB1_END_BIT:CFG_CB1_START_BIT];
         assign SB_config[index]                = CFG_comb_config[index][CFG_SB_END_BIT:CFG_SB_START_BIT];
 
+        assign CLB_cen[index] = CFG_set_hard[index];
         // Shift chain --> CFG (config tile)
         assign CFG_shift_enable[index] = shift_enable[j];
-        assign CFG_set_hard[index] = shift_enable[j];
+        assign CFG_set_hard[index] = set_hard[j];
+
         if (i == 0) begin
           // Last row gets the config bits from IO directly
           assign CFG_shift_in_hard[index] = shift_in_hard[index];
