@@ -1,4 +1,4 @@
-`timescale 1ns/1ns
+`timescale 1ns/1ps
 
 module clb_with_config_tb();
 
@@ -61,6 +61,7 @@ module clb_with_config_tb();
   reg shift_enable;
   wire [COMB_N-1:0] comb_config;
   wire [MEM_N-1:0] mem_config;
+  wire comb_set, mem_set;
   reg set_soft;
   reg set_hard;
   reg shift_in_hard, shift_in_soft;
@@ -75,6 +76,8 @@ module clb_with_config_tb();
     .shift_enable(shift_enable),
     .comb_config(comb_config),
     .mem_config(mem_config),
+    .comb_set(comb_set),
+    .mem_set(mem_set),
     .set_soft(set_soft),
     .set_hard(set_hard),
     .shift_in_hard(shift_in_hard),
@@ -139,7 +142,6 @@ module clb_with_config_tb();
   wire [NUM_LUTS-1+1:0] clb_sum_reg_output = {Co, sync_out[6], sync_out[4], sync_out[2], sync_out[0]};
 
   initial begin
-    #0;
     $dumpfile("clb_config_test.vcd");
     $dumpvars;
     set_soft = 1'b0;
