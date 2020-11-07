@@ -5,12 +5,12 @@ module fpga_clb_tiles #(
 
   // LUT params
   parameter S_XX_BASE = 4,
-  parameter NUM_LUTS = 4,
+  parameter NUM_LUTS  = 4,
 
   // Interconnect params
   parameter WS = 4,
-  parameter WD = 4,
-  parameter WG = 3,
+  parameter WD = 8,
+  parameter WG = 0,
   parameter CLBOS = 2,
   parameter CLBOD = 2,
   parameter CLBX  = 1
