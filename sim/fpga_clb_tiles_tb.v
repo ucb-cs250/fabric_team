@@ -84,7 +84,6 @@ module fpga_clb_tiles_tb();
   );
 
   initial begin
-    #0;
     $dumpfile("fpga_clb_tiles_test.vcd");
     $dumpvars;
 
