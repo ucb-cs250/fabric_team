@@ -1,0 +1,12 @@
+# We use a dotted qualification scheme to configure subblocks. The root block
+# can be named (e.g. 'mac_tile.') or blank (e.g. '.'). Any keys given without
+# values are assumed to be 1.
+
+.macaroni.mode=QUAD
+.macaroni.initial0=0
+.macaroni.initial1=0
+.macaroni.initial2=0
+.macaroni.initial3=0
+.dataroni.=
+.djaroni.=
+.configuroni.=
