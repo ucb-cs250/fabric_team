@@ -580,14 +580,17 @@ module fpga_clb_tiles_tb();
     // X2 = CLB(0, 0) SYNC_OUT[6]
     // X3 = CLB(0, 0) SYNC_OUT[7]
 
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 0 + 12 + 2] = 1'b1;  // clb0_output[2] -> clb1_input[0]  -- lut1_s44_0_in0
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 1 + 12 + 5] = 1'b1;  // clb0_output[5] -> clb1_input[1]  -- lut1_s44_0_in1
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 2 + 12 + 6] = 1'b1;  // clb0_output[6] -> clb1_input[2]  -- lut1_s44_0_in2
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 3 + 12 + 7] = 1'b1;  // clb0_output[7] -> clb1_input[3]  -- lut1_s44_0_in3
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 4 + 12 + 2] = 1'b1;  // clb0_output[2] -> clb1_input[4]  -- lut0_s44_0_in0
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 5 + 12 + 5] = 1'b1;  // clb0_output[5] -> clb1_input[5]  -- lut0_s44_0_in1
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 6 + 12 + 6] = 1'b1;  // clb0_output[6] -> clb1_input[6]  -- lut0_s44_0_in2
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 7 + 12 + 7] = 1'b1;  // clb0_output[7] -> clb1_input[7]  -- lut0_s44_0_in3
+    // TEST1: CLB(0, 0) --> CB0(0, 0) --> CLB(0, 1)
+    // Utilize the direct connection wires in the Connection Block to connect
+    // adjacent CLBs
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 0 + 12 + 2] = 1'b1;  // clb0_output[2] -> clb1_input[0]  -- lut1_s44_0_in0
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 1 + 12 + 5] = 1'b1;  // clb0_output[5] -> clb1_input[1]  -- lut1_s44_0_in1
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 2 + 12 + 6] = 1'b1;  // clb0_output[6] -> clb1_input[2]  -- lut1_s44_0_in2
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 3 + 12 + 7] = 1'b1;  // clb0_output[7] -> clb1_input[3]  -- lut1_s44_0_in3
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 4 + 12 + 2] = 1'b1;  // clb0_output[2] -> clb1_input[4]  -- lut0_s44_0_in0
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 5 + 12 + 5] = 1'b1;  // clb0_output[5] -> clb1_input[5]  -- lut0_s44_0_in1
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 6 + 12 + 6] = 1'b1;  // clb0_output[6] -> clb1_input[6]  -- lut0_s44_0_in2
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 7 + 12 + 7] = 1'b1;  // clb0_output[7] -> clb1_input[7]  -- lut0_s44_0_in3
 //    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 8 + 12 + 2] = 1'b1;  // clb0_output[2] -> clb1_input[8]  -- lut1_s44_1_in0
 //    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 9 + 12 + 5] = 1'b1;  // clb0_output[5] -> clb1_input[9]  -- lut1_s44_1_in1
 //    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 10 + 12 + 6] = 1'b1; // clb0_output[6] -> clb1_input[10] -- lut1_s44_1_in2
@@ -596,27 +599,74 @@ module fpga_clb_tiles_tb();
 //    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 13 + 12 + 5] = 1'b1; // clb0_output[5] -> clb1_input[13] -- lut0_s44_1_in1
 //    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 14 + 12 + 6] = 1'b1; // clb0_output[6] -> clb1_input[14] -- lut0_s44_1_in2
 //    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 15 + 12 + 7] = 1'b1; // clb0_output[7] -> clb1_input[15] -- lut0_s44_1_in3
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 16 + 12 + 2] = 1'b1; // clb0_output[2] -> clb1_input[16] -- lut1_s44_2_in0
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 17 + 12 + 5] = 1'b1; // clb0_output[5] -> clb1_input[17] -- lut1_s44_2_in1
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 18 + 12 + 6] = 1'b1; // clb0_output[6] -> clb1_input[18] -- lut1_s44_2_in2
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 19 + 12 + 7] = 1'b1; // clb0_output[7] -> clb1_input[19] -- lut1_s44_2_in3
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 20 + 12 + 2] = 1'b1; // clb0_output[2] -> clb1_input[20] -- lut0_s44_2_in0
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 21 + 12 + 5] = 1'b1; // clb0_output[5] -> clb1_input[21] -- lut0_s44_2_in1
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 22 + 12 + 6] = 1'b1; // clb0_output[6] -> clb1_input[22] -- lut0_s44_2_in2
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 23 + 12 + 7] = 1'b1; // clb0_output[7] -> clb1_input[23] -- lut0_s44_2_in3
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 24 + 12 + 2] = 1'b1; // clb0_output[2] -> clb1_input[24] -- lut1_s44_3_in0
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 25 + 12 + 5] = 1'b1; // clb0_output[5] -> clb1_input[25] -- lut1_s44_3_in1
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 26 + 12 + 6] = 1'b1; // clb0_output[6] -> clb1_input[26] -- lut1_s44_3_in2
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 27 + 12 + 7] = 1'b1; // clb0_output[7] -> clb1_input[27] -- lut1_s44_3_in3
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 28 + 12 + 2] = 1'b1; // clb0_output[2] -> clb1_input[28] -- lut0_s44_3_in0
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 29 + 12 + 5] = 1'b1; // clb0_output[5] -> clb1_input[29] -- lut0_s44_3_in1
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 30 + 12 + 6] = 1'b1; // clb0_output[6] -> clb1_input[30] -- lut0_s44_3_in2
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 31 + 12 + 7] = 1'b1; // clb0_output[7] -> clb1_input[31] -- lut0_s44_3_in3
-
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 32 + 12 + 0] = 1'b0; // clb0_output[0] -> clb1_input[32] -- higher_order_addr[0]
-    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 33 + 12 + 0] = 1'b0; // clb0_output[0] -> clb1_input[32] -- higher_order_addr[1]
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 16 + 12 + 2] = 1'b1; // clb0_output[2] -> clb1_input[16] -- lut1_s44_2_in0
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 17 + 12 + 5] = 1'b1; // clb0_output[5] -> clb1_input[17] -- lut1_s44_2_in1
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 18 + 12 + 6] = 1'b1; // clb0_output[6] -> clb1_input[18] -- lut1_s44_2_in2
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 19 + 12 + 7] = 1'b1; // clb0_output[7] -> clb1_input[19] -- lut1_s44_2_in3
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 20 + 12 + 2] = 1'b1; // clb0_output[2] -> clb1_input[20] -- lut0_s44_2_in0
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 21 + 12 + 5] = 1'b1; // clb0_output[5] -> clb1_input[21] -- lut0_s44_2_in1
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 22 + 12 + 6] = 1'b1; // clb0_output[6] -> clb1_input[22] -- lut0_s44_2_in2
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 23 + 12 + 7] = 1'b1; // clb0_output[7] -> clb1_input[23] -- lut0_s44_2_in3
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 24 + 12 + 2] = 1'b1; // clb0_output[2] -> clb1_input[24] -- lut1_s44_3_in0
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 25 + 12 + 5] = 1'b1; // clb0_output[5] -> clb1_input[25] -- lut1_s44_3_in1
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 26 + 12 + 6] = 1'b1; // clb0_output[6] -> clb1_input[26] -- lut1_s44_3_in2
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 27 + 12 + 7] = 1'b1; // clb0_output[7] -> clb1_input[27] -- lut1_s44_3_in3
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 28 + 12 + 2] = 1'b1; // clb0_output[2] -> clb1_input[28] -- lut0_s44_3_in0
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 29 + 12 + 5] = 1'b1; // clb0_output[5] -> clb1_input[29] -- lut0_s44_3_in1
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 30 + 12 + 6] = 1'b1; // clb0_output[6] -> clb1_input[30] -- lut0_s44_3_in2
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 31 + 12 + 7] = 1'b1; // clb0_output[7] -> clb1_input[31] -- lut0_s44_3_in3
+//
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 32 + 12 + 0] = 1'b0; // clb0_output[0] -> clb1_input[32] -- higher_order_addr[0]
+//    CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 33 + 12 + 0] = 1'b0; // clb0_output[0] -> clb1_input[32] -- higher_order_addr[1]
 
     CB0_CFG_BITS[0 * NUM_COLS + 0][1044 + 28 * 34 + 12 + 0] = 1'b1; // clb0_output[0] -> clb1_input[32] -- reg_ce
+
+    // TEST2: CLB(0, 0) --> CB0(0, 0) --> SB(0, 0) --> CB1(0, 1) --> CLB(0, 1)
+    // Go up from CLB(0, 0) to SB(0, 0)
+    CB0_CFG_BITS[0 * NUM_COLS + 0][980 + 2*4 + 0] = 1'b1; // single0[(2%2)*2+0] <- clb0_output[2]
+    CB0_CFG_BITS[0 * NUM_COLS + 0][980 + 5*4 + 0] = 1'b1; // single0[(5%2)*2+0] <- clb0_output[5]
+    CB0_CFG_BITS[0 * NUM_COLS + 0][980 + 6*4 + 1] = 1'b1; // single0[(6%2)*2+1] <- clb0_output[6]
+    CB0_CFG_BITS[0 * NUM_COLS + 0][980 + 7*4 + 1] = 1'b1; // single0[(7%2)*2+1] <- clb0_output[7]
+
+    // Turn right from SB(0, 0) to CB1(0, 1)
+    SB_CFG_BITS[0 * NUM_COLS + 0][1]  = 1'b1; // single_south[0] <-> single_east [1]
+    SB_CFG_BITS[0 * NUM_COLS + 0][9]  = 1'b1; // single_south[1] <-> single_east [0]
+    SB_CFG_BITS[0 * NUM_COLS + 0][13] = 1'b1; // single_south[2] <-> single_east [3]
+    SB_CFG_BITS[0 * NUM_COLS + 0][21] = 1'b1; // single_south[3] <-> single_east [2]
+
+    // Go down from CB1(0, 1) to CLB(0, 1)
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 0 + 1]  = 1'b1; // single0[1] -> clb0_input[0]  -- lut1_s44_0_in0
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 1 + 3]  = 1'b1; // single0[3] -> clb0_input[1]  -- lut1_s44_0_in1
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 2 + 0]  = 1'b1; // single0[0] -> clb0_input[2]  -- lut1_s44_0_in2
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 3 + 2]  = 1'b1; // single0[2] -> clb0_input[3]  -- lut1_s44_0_in3
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 4 + 1]  = 1'b1; // single0[1] -> clb0_input[4]  -- lut0_s44_0_in0
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 5 + 3]  = 1'b1; // single0[3] -> clb0_input[5]  -- lut0_s44_0_in1
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 6 + 0]  = 1'b1; // single0[0] -> clb0_input[6]  -- lut0_s44_0_in2
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 7 + 2]  = 1'b1; // single0[2] -> clb0_input[7]  -- lut0_s44_0_in3
+//    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 8 + 1]  = 1'b1; // single0[1] -> clb0_input[8]  -- lut1_s44_1_in0
+//    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 9 + 3]  = 1'b1; // single0[3] -> clb0_input[9]  -- lut1_s44_1_in1
+//    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 10 + 0] = 1'b1; // single0[0] -> clb0_input[10] -- lut1_s44_1_in2
+//    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 11 + 2] = 1'b1; // single0[2] -> clb0_input[11] -- lut1_s44_1_in3
+//    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 12 + 1] = 1'b1; // single0[1] -> clb0_input[12] -- lut0_s44_1_in0
+//    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 13 + 3] = 1'b1; // single0[3] -> clb0_input[13] -- lut0_s44_1_in1
+//    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 14 + 0] = 1'b1; // single0[0] -> clb0_input[14] -- lut0_s44_1_in2
+//    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 15 + 2] = 1'b1; // single0[2] -> clb0_input[15] -- lut0_s44_1_in3
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 16 + 1] = 1'b1; // single0[1] -> clb0_input[16] -- lut1_s44_2_in0
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 17 + 3] = 1'b1; // single0[3] -> clb0_input[17] -- lut1_s44_2_in1
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 18 + 0] = 1'b1; // single0[0] -> clb0_input[18] -- lut1_s44_2_in2
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 19 + 2] = 1'b1; // single0[2] -> clb0_input[19] -- lut1_s44_2_in3
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 20 + 1] = 1'b1; // single0[1] -> clb0_input[20] -- lut0_s44_2_in0
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 21 + 3] = 1'b1; // single0[3] -> clb0_input[21] -- lut0_s44_2_in1
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 22 + 0] = 1'b1; // single0[0] -> clb0_input[22] -- lut0_s44_2_in2
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 23 + 2] = 1'b1; // single0[2] -> clb0_input[23] -- lut0_s44_2_in3
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 24 + 1] = 1'b1; // single0[1] -> clb0_input[24] -- lut1_s44_3_in0
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 25 + 3] = 1'b1; // single0[3] -> clb0_input[25] -- lut1_s44_3_in1
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 26 + 0] = 1'b1; // single0[0] -> clb0_input[26] -- lut1_s44_3_in2
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 27 + 2] = 1'b1; // single0[2] -> clb0_input[27] -- lut1_s44_3_in3
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 28 + 1] = 1'b1; // single0[1] -> clb0_input[28] -- lut0_s44_3_in0
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 29 + 3] = 1'b1; // single0[3] -> clb0_input[29] -- lut0_s44_3_in1
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 30 + 0] = 1'b1; // single0[0] -> clb0_input[30] -- lut0_s44_3_in2
+    CB1_CFG_BITS[0 * NUM_COLS + 1][28 * 31 + 2] = 1'b1; // single0[2] -> clb0_input[31] -- lut0_s44_3_in3
 
   end
 
@@ -732,12 +782,14 @@ module fpga_clb_tiles_tb();
     $display("CB0_clb0_output = %b, CB0_clb1_input = %b",
       FPGA.CB0_clb0_output[0 * NUM_COLS + 0], FPGA.CB0_clb1_input[0 * NUM_COLS + 0]);
 
+    $display("CB1_clb0_output = %b, CB1_clb1_input = %b",
+      FPGA.CB0_clb0_output[0 * NUM_COLS + 1], FPGA.CB0_clb1_input[0 * NUM_COLS + 1]);
+
     $display("CLB00_input = %b",
       FPGA.CLB_inputs[0 * NUM_COLS + 0]);
 
     $display("CLB01_input = %b",
       FPGA.CLB_inputs[0 * NUM_COLS + 1]);
-
 
     $display("CLB00_reg_ce =%b, CLB00_higher_order_addr = %b, CLB00_luts_in = %b",
       FPGA.CLB_reg_ce[0* NUM_COLS + 0],
