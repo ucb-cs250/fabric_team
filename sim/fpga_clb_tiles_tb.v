@@ -547,8 +547,8 @@ module fpga_clb_tiles_tb();
     //   if (CE) begin
     //     output[0] <= X3 & X2 & X1 & X0;
     //     output[1] <= X3 & X2 & X1 & X0;
-    //     output[4] <= X3 & X2 & X1 & X0;
-    //     output[5] <= X3 | X2 | X1 | X0;
+    //     output[5] <= X3 & X2 & X1 & X0;
+    //     output[4] <= X3 | X2 | X1 | X0;
     //     output[6] <= X3 | X2 | X1 | X0;
     //     output[7] <= X3 | X2 | X1 | X0;
     //   end
@@ -558,22 +558,22 @@ module fpga_clb_tiles_tb();
     EXPECTED_OUTPUT = 8'b1101xx00;
 
     // clbX_output[7:0]  -- CLB_sync_out[7:0]
-    // clbX_output[15:8] -- CLB_out[15:8]
+    // clbX_output[15:8] -- CLB_out[7:0]
     MEM_CFG_BITS[0 * NUM_COLS + 0] = 8'b01100101;
     MEM_CFG_BITS[0 * NUM_COLS + 1] = 8'b00000000;
 
-    LUT0_S44_0_CFG   [0 * NUM_COLS + 1] = 16'h8000; // X3 & X2 & X1 & X0
-    LUT1_S44_0_CFG   [0 * NUM_COLS + 1] = 16'h8000; // X3 & X2 & X1 & X0
-    SOFTMUX_S44_0_CFG[0 * NUM_COLS + 1] = 1'b1;     // CLB_input[3]  --> LUT1_S44_0 in[3]
+    LUT0_S44_0_CFG   [0 * NUM_COLS + 1] = 16'h8000; // X3 & X2 & X1 & X0 --> luts_out[1]
+    LUT1_S44_0_CFG   [0 * NUM_COLS + 1] = 16'h8000; // X3 & X2 & X1 & X0 --> luts_out[0]
+    SOFTMUX_S44_0_CFG[0 * NUM_COLS + 1] = 1'b1;     // CLB_input[3]      --> luts_in[3] (LUT1_S44_0 in3)
     LUT0_S44_1_CFG   [0 * NUM_COLS + 1] = 16'h0;    //
     LUT1_S44_1_CFG   [0 * NUM_COLS + 1] = 16'h0;    //
-    SOFTMUX_S44_1_CFG[0 * NUM_COLS + 1] = 1'b1;     // CLB_input[11] --> LUT1_S44_1 in[3]
-    LUT0_S44_2_CFG   [0 * NUM_COLS + 1] = 16'h8000; // X3 & X2 & X1 & X0
-    LUT1_S44_2_CFG   [0 * NUM_COLS + 1] = 16'hFFFE; // X3 | X2 | X1 | X0
-    SOFTMUX_S44_2_CFG[0 * NUM_COLS + 1] = 1'b1;     // CLB_input[19] --> LUT1_S44_2 in[3]
-    LUT0_S44_3_CFG   [0 * NUM_COLS + 1] = 16'hFFFE; // X3 | X2 | X1 | X0
-    LUT1_S44_3_CFG   [0 * NUM_COLS + 1] = 16'hFFFE; // X3 | X2 | X1 | X0
-    SOFTMUX_S44_3_CFG[0 * NUM_COLS + 1] = 1'b1;     // CLB_input[27] --> LUT1_S44_3 in[3]
+    SOFTMUX_S44_1_CFG[0 * NUM_COLS + 1] = 1'b1;     // CLB_input[11]     --> luts_in[11] (LUT1_S44_1 in3)
+    LUT0_S44_2_CFG   [0 * NUM_COLS + 1] = 16'h8000; // X3 & X2 & X1 & X0 --> luts_out[5]
+    LUT1_S44_2_CFG   [0 * NUM_COLS + 1] = 16'hFFFE; // X3 | X2 | X1 | X0 --> luts_out[4]
+    SOFTMUX_S44_2_CFG[0 * NUM_COLS + 1] = 1'b1;     // CLB_input[19]     --> luts_in[19] (LUT1_S44_2 in3)
+    LUT0_S44_3_CFG   [0 * NUM_COLS + 1] = 16'hFFFE; // X3 | X2 | X1 | X0 --> luts_out[7]
+    LUT1_S44_3_CFG   [0 * NUM_COLS + 1] = 16'hFFFE; // X3 | X2 | X1 | X0 --> luts_out[6]
+    SOFTMUX_S44_3_CFG[0 * NUM_COLS + 1] = 1'b1;     // CLB_input[27]     --> luts_in[27] (LUT1_S44_3 in3)
 
     // X0 = CLB(0, 0) SYNC_OUT[2]
     // X1 = CLB(0, 0) SYNC_OUT[5]
