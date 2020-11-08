@@ -300,7 +300,7 @@ module fpga_clb_tiles #(
 
         if (i == 0) begin
           // Last row gets the config bits from IO directly
-          assign CFG_shift_in_hard[index] = shift_in_hard[index];
+          assign CFG_shift_in_hard[index] = shift_in_hard[j];
         end
         else begin
           // The intermediate rows get the config bits from the row below
@@ -331,14 +331,14 @@ module fpga_clb_tiles #(
         // The assumption is that a single CLB input pin should not be driven by any two CB pins simultaneously
         // The tool (FPGA place & route & bitstream generation) should ensure that situation never happens
         for (k = 0; k < NUM_CLB_INS; k = k + 1) begin
-          if (has_e == 1 && has_s == 1) begin
+          if (has_w == 1 && has_s == 1) begin
             assign CLB_inputs[index][k] = (CB0_clb0_input[index][k] !== 1'bz)   ? CB0_clb0_input[index][k]   :
                                           (CB1_clb0_input[index][k] !== 1'bz)   ? CB1_clb0_input[index][k]   :
-                                          (CB0_clb1_input[index_e][k] !== 1'bz) ? CB0_clb1_input[index_e][k] : CB1_clb1_input[index_s][k];
+                                          (CB0_clb1_input[index_w][k] !== 1'bz) ? CB0_clb1_input[index_w][k] : CB1_clb1_input[index_s][k];
          end
-         else if (has_e == 1) begin
+         else if (has_w == 1) begin
             assign CLB_inputs[index][k] = (CB0_clb0_input[index][k] !== 1'bz) ? CB0_clb0_input[index][k] :
-                                          (CB1_clb0_input[index][k] !== 1'bz) ? CB1_clb0_input[index][k] : CB0_clb1_input[index_e][k];
+                                          (CB1_clb0_input[index][k] !== 1'bz) ? CB1_clb0_input[index][k] : CB0_clb1_input[index_w][k];
          end
          else if (has_s == 1) begin
             assign CLB_inputs[index][k] = (CB0_clb0_input[index][k] !== 1'bz) ? CB0_clb0_input[index][k] :
