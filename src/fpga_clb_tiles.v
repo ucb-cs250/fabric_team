@@ -11,8 +11,8 @@ module fpga_clb_tiles #(
   parameter WS = 4,
   parameter WD = 8,
   parameter WG = 0,
-  parameter CLBOS = 2,
-  parameter CLBOD = 2,
+  parameter CLBOS = 4,
+  parameter CLBOD = 4,
   parameter CLBX  = 1
 ) (
 
@@ -35,15 +35,36 @@ module fpga_clb_tiles #(
   // | CLB -- CB0 |  | CLB -- CB0 |
   // |    CFG     |  |    CFG     |
   // |____________|  |____________|
+  //
+  //
+  //
+  // The CLB input and outputs pins of are distributed equally in all four
+  // sides as follows
+  //
+  //                                     {I: lut6, lut7; O: sync_out6, sync_out7, out6, out7}
+  //                                                              N
+  //                                                              ^
+  //                                                              |
+  //                                                              v
+  // {I: lut4, lut5; O: sync_out4, sync_out5, out4, out5} W <--> CLB <--> E {I: lut0, lut1, O: sync_out0, sync_out1, out0, out1}
+  //                                                              ^
+  //                                                              |
+  //                                                              v
+  //                                                              S
+  //                                     {I: lut2, lut3; O: sync_out2, sync_out3, out2, out3}
+  //
+  // The clock enable (reg_ce) pin is accessible from all four sides, thus
+  // provides more flexibility. The higher-order address pins are also similar
+
 
   localparam NUM_CLB_TILES = NUM_ROWS * NUM_COLS;
 
   localparam LUT_CFG_SIZE           = 2 * (2 ** S_XX_BASE) + 1;
   localparam MUX_LVLS               = $clog2(NUM_LUTS);
-  // S44 LUT inputs, Inter-LUT MUX inputs, reg_ce
-  localparam NUM_CLB_INS            = NUM_LUTS * 2 * S_XX_BASE + MUX_LVLS + 1;
-  // Comb. outputs, Sync. outputs
-  localparam NUM_CLB_OUTS           = NUM_LUTS * 2 * 2;
+  // 1x S44 LUT inputs, Inter-LUT MUX inputs, reg_ce
+  localparam NUM_CLB_INS            = 2 * S_XX_BASE + MUX_LVLS + 1;
+  // 2x Comb. outputs, Sync. outputs
+  localparam NUM_CLB_OUTS           = 2 * 2;
   localparam SWITCH_PER_IN          = WS + WD + WG + CLBX * NUM_CLB_OUTS;
   localparam SWITCH_PER_OUT         = CLBOS + CLBOD;
 
@@ -63,12 +84,18 @@ module fpga_clb_tiles #(
   wire [MUX_LVLS-1:0]             CLB_higher_order_addr [NUM_CLB_TILES-1:0];
   wire CLB_reg_ce [NUM_CLB_TILES-1:0];
 
-  wire [NUM_CLB_INS-1:0] CLB_inputs [NUM_CLB_TILES-1:0];
+  wire [NUM_CLB_INS-1:0] CLB_inputE [NUM_CLB_TILES-1:0];
+  wire [NUM_CLB_INS-1:0] CLB_inputS [NUM_CLB_TILES-1:0];
+  wire [NUM_CLB_INS-1:0] CLB_inputW [NUM_CLB_TILES-1:0];
+  wire [NUM_CLB_INS-1:0] CLB_inputN [NUM_CLB_TILES-1:0];
 
   wire [2*NUM_LUTS-1:0] CLB_out      [NUM_CLB_TILES-1:0];
   wire [2*NUM_LUTS-1:0] CLB_sync_out [NUM_CLB_TILES-1:0];
 
-  wire [NUM_CLB_OUTS-1:0] CLB_outputs [NUM_CLB_TILES-1:0];
+  wire [NUM_CLB_OUTS-1:0] CLB_outputE [NUM_CLB_TILES-1:0];
+  wire [NUM_CLB_OUTS-1:0] CLB_outputS [NUM_CLB_TILES-1:0];
+  wire [NUM_CLB_OUTS-1:0] CLB_outputW [NUM_CLB_TILES-1:0];
+  wire [NUM_CLB_OUTS-1:0] CLB_outputN [NUM_CLB_TILES-1:0];
 
   wire [LUT_CFG_SIZE*NUM_LUTS-1:0] CLB_luts_config_in       [NUM_CLB_TILES-1:0];
   wire [MUX_LVLS-1:0]              CLB_inter_lut_mux_config [NUM_CLB_TILES-1:0];
@@ -90,6 +117,7 @@ module fpga_clb_tiles #(
   wire [WS-1:0] CB0_single1 [NUM_CLB_TILES-1:0];
   wire [WD-1:0] CB0_double0 [NUM_CLB_TILES-1:0];
   wire [WD-1:0] CB0_double1 [NUM_CLB_TILES-1:0];
+
   wire [WG-1:0] CB0_global  [NUM_CLB_TILES-1:0];
   wire [NUM_CLB_OUTS-1:0] CB0_clb0_output [NUM_CLB_TILES-1:0];
   wire [NUM_CLB_OUTS-1:0] CB0_clb1_output [NUM_CLB_TILES-1:0];
@@ -308,46 +336,55 @@ module fpga_clb_tiles #(
         end
 
         // CLB_outputs --> CBs
-        assign CLB_outputs[index] = {CLB_out[index], CLB_sync_out[index]};
+        assign CLB_outputE[index] = {CLB_sync_out[index][1], CLB_sync_out[index][0], CLB_out[index][1], CLB_out[index][0]};
+        assign CLB_outputS[index] = {CLB_sync_out[index][3], CLB_sync_out[index][2], CLB_out[index][3], CLB_out[index][2]};
+        assign CLB_outputW[index] = {CLB_sync_out[index][5], CLB_sync_out[index][4], CLB_out[index][5], CLB_out[index][4]};
+        assign CLB_outputN[index] = {CLB_sync_out[index][7], CLB_sync_out[index][6], CLB_out[index][7], CLB_out[index][6]};
+        assign CB0_clb0_output[index] = CLB_outputE[index];
+        assign CB1_clb0_output[index] = CLB_outputN[index];
 
-        assign CB0_clb0_output[index] = CLB_outputs[index];
         if (has_e == 1) begin
-          assign CB0_clb1_output[index] = CLB_outputs[index];
+          assign CB0_clb1_output[index] = CLB_outputW[index_e];
+        end
+        if (has_n == 1) begin
+          assign CB1_clb1_output[index] = CLB_outputS[index_n];
         end
 
-        assign CB1_clb0_output[index] = CLB_outputs[index];
-        if (has_n == 1) begin
-          assign CB1_clb1_output[index] = CLB_outputs[index];
-        end
 
         // CLB_inputs  <-- CBs
-        assign {CLB_reg_ce[index],
-                CLB_higher_order_addr[index],
-                CLB_luts_in[index]} = CLB_inputs[index];
+        assign CLB_luts_in[index][7:0]   = CLB_inputW[index][7:0]; // lut0, lut1
+        assign CLB_luts_in[index][15:8]  = CLB_inputS[index][7:0]; // lut2, lut3
+        assign CLB_luts_in[index][23:16] = CLB_inputE[index][7:0]; // lut4, lut5
+        assign CLB_luts_in[index][31:24] = CLB_inputN[index][7:0]; // lut6, lut7
+
+        assign CLB_inputE[index] = CB0_clb0_input[index];
+        assign CLB_inputN[index] = CB1_clb0_input[index];
+        if (has_w == 1) begin
+          assign CLB_inputW[index] = CB0_clb1_input[index_w];
+        end
+        if (has_s == 1) begin
+          assign CLB_inputS[index] = CB1_clb1_input[index_s];
+        end
 
         // This block of code tries to combine multiple drivers to the CLB input pins
         // We use test 'z' to avoid having to instantiate additional MUXes
         // This only works for functional/behavioral simulation (not intended for synthesis)
         // The assumption is that a single CLB input pin should not be driven by any two CB pins simultaneously
         // The tool (FPGA place & route & bitstream generation) should ensure that situation never happens
-        for (k = 0; k < NUM_CLB_INS; k = k + 1) begin
-          if (has_w == 1 && has_s == 1) begin
-            assign CLB_inputs[index][k] = (CB0_clb0_input[index][k] !== 1'bz)   ? CB0_clb0_input[index][k]   :
-                                          (CB1_clb0_input[index][k] !== 1'bz)   ? CB1_clb0_input[index][k]   :
-                                          (CB0_clb1_input[index_w][k] !== 1'bz) ? CB0_clb1_input[index_w][k] : CB1_clb1_input[index_s][k];
-         end
-         else if (has_w == 1) begin
-            assign CLB_inputs[index][k] = (CB0_clb0_input[index][k] !== 1'bz) ? CB0_clb0_input[index][k] :
-                                          (CB1_clb0_input[index][k] !== 1'bz) ? CB1_clb0_input[index][k] : CB0_clb1_input[index_w][k];
-         end
-         else if (has_s == 1) begin
-            assign CLB_inputs[index][k] = (CB0_clb0_input[index][k] !== 1'bz) ? CB0_clb0_input[index][k] :
-                                          (CB1_clb0_input[index][k] !== 1'bz) ? CB1_clb0_input[index][k] : CB1_clb1_input[index_s][k];
-         end
-         else begin
-            assign CLB_inputs[index][k] = (CB0_clb0_input[index][k] !== 1'bz) ? CB0_clb0_input[index][k] : CB1_clb0_input[index][k];
-         end
-        end
+
+        assign CLB_higher_order_addr[index][0] = CLB_inputW[index][8] !== 1'bz ? CLB_inputW[index][8] :
+                                                 CLB_inputS[index][8] !== 1'bz ? CLB_inputS[index][8] :
+                                                 CLB_inputE[index][8] !== 1'bz ? CLB_inputE[index][8] :
+                                                                                 CLB_inputN[index][8];
+        assign CLB_higher_order_addr[index][1] = CLB_inputW[index][9] !== 1'bz ? CLB_inputW[index][9] :
+                                                 CLB_inputS[index][9] !== 1'bz ? CLB_inputS[index][9] :
+                                                 CLB_inputE[index][9] !== 1'bz ? CLB_inputE[index][9] :
+                                                                                 CLB_inputN[index][9];
+
+        assign CLB_reg_ce[index] = CLB_inputW[index][10] !== 1'bz ? CLB_inputW[index][10] :
+                                   CLB_inputS[index][10] !== 1'bz ? CLB_inputS[index][10] :
+                                   CLB_inputE[index][10] !== 1'bz ? CLB_inputE[index][10] :
+                                                                    CLB_inputN[index][10];
 
         // CLB carry in/out
         // For now, let's only wire them vertically
@@ -361,10 +398,10 @@ module fpga_clb_tiles #(
           tran(SB_south_single[index][k], CB0_single0[index][k]);
           tran(SB_west_single[index][k],  CB1_single0[index][k]);
           if (has_n == 1) begin
-            tran(SB_north_single[index][k], CB0_single1[index_n][k]);
+            tran(SB_north_single[index][k], CB0_single0[index_n][k]);
           end
           if (has_e == 1) begin
-            tran(SB_east_single[index][k], CB1_single1[index_e][k]);
+            tran(SB_east_single[index][k], CB1_single0[index_e][k]);
           end
         end
 
@@ -372,10 +409,10 @@ module fpga_clb_tiles #(
           tran(SB_south_double[index][k], CB0_double0[index][k]);
           tran(SB_west_double[index][k],  CB1_double0[index][k]);
           if (has_n == 1) begin
-            tran(SB_north_double[index][k], CB0_double1[index_n][k]);
+            tran(SB_north_double[index][k], CB0_double0[index_n][k]);
           end
           if (has_e == 1) begin
-            tran(SB_east_double[index][k], CB1_double1[index_e][k]);
+            tran(SB_east_double[index][k], CB1_double0[index_e][k]);
           end
         end
 
