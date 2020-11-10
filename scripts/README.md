@@ -19,15 +19,14 @@ You define some or all of these in a text file, indicating what they should be s
 ```
 .macaroni.width_mode=QUAD
 .macaroni.multiply_only=0
-.macaroni.signed=1
+.macaroni.signed=
 .macaroni.initial0=5
 .macaroni.initial1=5
 .macaroni.initial2=5
 .macaroni.initial3=5
-.dataroni.=
-.djaroni.=
-.configuroni.=
 ```
+
+(Keys without values should default to `1`.)
 
 You can then run the script with the single argument being this text file, and it should produce the bitstream:
 
