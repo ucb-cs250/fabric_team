@@ -18,7 +18,7 @@ class Config():
         self.children = collections.OrderedDict()
 
     def Load(self, config_dict):
-        print('{} loading {}'.format(self.instance_name, config_dict))
+        #print('{} loading {}'.format(self.instance_name, config_dict))
         child_configs = collections.defaultdict(dict)
         for k, v in config_dict.items():
             path = k.split('.')
@@ -96,7 +96,6 @@ class MacClusterConfig(Config):
         final['signed'] = int(self.keys.get('signed', 0))
         final['multiply_only'] = int(self.keys.get('multiply_only', 0))
         width_mode_key = self.keys.get('width_mode', 'SINGLE')
-        print(final)
         try:
             final['width_mode'] = MacClusterConfig.WidthMode[width_mode_key].value
         except Exception as err:
