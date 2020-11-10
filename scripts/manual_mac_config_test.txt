@@ -2,11 +2,13 @@
 # can be named (e.g. 'mac_tile.') or blank (e.g. '.'). Any keys given without
 # values are assumed to be 1.
 
-.macaroni.mode=QUAD
-.macaroni.initial0=0
-.macaroni.initial1=0
-.macaroni.initial2=0
-.macaroni.initial3=0
+.macaroni.width_mode=QUAD
+.macaroni.multiply_only=0
+.macaroni.signed=1
+.macaroni.initial0=5
+.macaroni.initial1=5
+.macaroni.initial2=5
+.macaroni.initial3=5
 .dataroni.=
 .djaroni.=
 .configuroni.=

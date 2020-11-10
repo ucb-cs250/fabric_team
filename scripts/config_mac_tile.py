@@ -2,6 +2,7 @@
 # Hello and welcome to my proof of concept?
 
 import collections
+from enum import Enum
 from optparse import OptionParser
 import os
 import sys
@@ -17,15 +18,24 @@ class Config():
         self.children = collections.OrderedDict()
 
     def Load(self, config_dict):
+        print('{} loading {}'.format(self.instance_name, config_dict))
         child_configs = collections.defaultdict(dict)
         for k, v in config_dict.items():
             path = k.split('.')
             if path[0] != self.instance_name and path[0] != '':
+                #print('{} will not configure {}'.format(self.instance_name, v))
                 continue
-            elif len(path) == 2:
-                self.keys[k] = v
+            if len(path) == 1:
+                # The key is not sufficiently qualified, so we don't know which
+                # instance it belongs to. We ignore it.
+                continue
+            child_name = path[1]
+            if len(path) == 2:
+                self.keys[child_name] = v
             elif len(path) > 2:
-                child_name = path[1]
+                # Separate all the configuration for each immediate child into
+                # its own dict. These will behanded to the Load() call for that
+                # child all at once.
                 child_key = '.'.join(path[1:])
                 if child_name in self.children:
                     child_configs[child_name].update({child_key: v})
@@ -55,9 +65,16 @@ class DataConnectionBlockConfig(Config):
 
 
 class MacClusterConfig(Config):
+
+    class WidthMode(Enum):
+        '''From mac_team/src/mac_const.vh'''
+        SINGLE = 0
+        DUAL = 1
+        QUAD = 2
+
     def __init__(self, instance_name):
         super().__init__(instance_name)
-        self.MAC_CONF_WIDTH = 3
+        self.MAC_CONF_WIDTH = 4
         self.MAC_MIN_WIDTH = 8
         self.MAC_MULT_WIDTH = 2*self.MAC_MIN_WIDTH
         self.MAC_ACC_WIDTH = 2*self.MAC_MULT_WIDTH
@@ -67,14 +84,32 @@ class MacClusterConfig(Config):
         # Use static configuration and given keys to set configuration
         # bitstream bits.
         #
-        # | acc3_init | acc2_init | acc1_init | acc0_init | mode_config |
-        mac_or
-        mode_config = self.keys.get('mode', default=0)
-        return ('{self.MAC_ACC_WIDTH:b}'
-                '{self.MAC_ACC_WIDTH:b}'
-                '{self.MAC_ACC_WIDTH:b}'
-                '{self.MAC_ACC_WIDTH:b}'
-                '{self.MAC_CONF_WIDTH:b}'.format(
+        # | initial3 | initial2 | initial1 | initial0 | signed | multiply_only | width_mode |
+
+        # When this bit is 0, the block accumulates. If 1, it only multiplies.
+        final = dict()
+        final['acc_width'] = self.MAC_ACC_WIDTH
+        final['initial3'] = int(self.keys.get('initial3', 0))
+        final['initial2'] = int(self.keys.get('initial2', 0))
+        final['initial1'] = int(self.keys.get('initial1', 0))
+        final['initial0'] = int(self.keys.get('initial0', 0))
+        final['signed'] = int(self.keys.get('signed', 0))
+        final['multiply_only'] = int(self.keys.get('multiply_only', 0))
+        width_mode_key = self.keys.get('width_mode', 'SINGLE')
+        print(final)
+        try:
+            final['width_mode'] = MacClusterConfig.WidthMode[width_mode_key].value
+        except Exception as err:
+            print('Unrecognised MAC cluster width mode: {}; {}'.format(width_mode_key, err))
+            sys.exit(1)
+
+        return ('{initial3:0{acc_width}b}'
+                '{initial2:0{acc_width}b}'
+                '{initial1:0{acc_width}b}'
+                '{initial0:0{acc_width}b}'
+                '{signed:01b}'
+                '{multiply_only:01b}'
+                '{width_mode:02b}'.format(**final))
 
 
 
@@ -90,9 +125,11 @@ class MacTileConfig(Config):
         # to hopefully automatically generate this one day.
         self.children['macaroni'] = MacClusterConfig('macaroni')
 
-    def Configure():
-        # Configure self.
-        pass
+    def Configure(self):
+        # Because self.children is an OrderedDict, the order of configuration
+        # streams here should depend on the order in which the children were
+        # added to the dictionary.
+        return ''.join(c.Configure() for _, c in self.children.items())
 
 def main():
     optparser = OptionParser()
@@ -123,7 +160,8 @@ def main():
 
     config = MacTileConfig('mac_tile')
     config.Load(keys)
-    config.Show()
+    # config.Show()
+    print(config.Configure())
 
 if __name__ == '__main__':
     main()
