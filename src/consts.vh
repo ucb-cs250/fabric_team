@@ -111,69 +111,73 @@
 //
 // Note that {Dir1}{Wire1}{Dir2}{Wire2} and {Dir2}{Wire2}{Dir1}{Wire1} are
 // the same (bi-directional)
+//
+// Each wire connects to three different directions => 8 * 3 / 2 = 12 PIPs inside
+// switch_box_element_two (SBE2)
 
-`define SINGLE_N0E0(x) (12 * x + 0)
-`define SINGLE_N0S0(x) (12 * x + 4)
-`define SINGLE_N0W1(x) (12 * x + 11)
+`define NUM_SBE2_PIPS 12
 
-`define SINGLE_N1E1(x) (12 * x + 8)
-`define SINGLE_N1S1(x) (12 * x + 6)
-`define SINGLE_N1W0(x) (12 * x + 3)
+`define SINGLE_N0E0(x) (`NUM_SBE2_PIPS * x + 0)
+`define SINGLE_N0S0(x) (`NUM_SBE2_PIPS * x + 4)
+`define SINGLE_N0W1(x) (`NUM_SBE2_PIPS * x + 11)
 
-`define SINGLE_E0W0(x) (12 * x + 7)
-`define SINGLE_E0N0(x) (12 * x + 0)
-`define SINGLE_E0S1(x) (12 * x + 9)
+`define SINGLE_N1E1(x) (`NUM_SBE2_PIPS * x + 8)
+`define SINGLE_N1S1(x) (`NUM_SBE2_PIPS * x + 6)
+`define SINGLE_N1W0(x) (`NUM_SBE2_PIPS * x + 3)
 
-`define SINGLE_E1W1(x) (12 * x + 5)
-`define SINGLE_E1N1(x) (12 * x + 8)
-`define SINGLE_E1S0(x) (12 * x + 1)
+`define SINGLE_E0W0(x) (`NUM_SBE2_PIPS * x + 7)
+`define SINGLE_E0N0(x) (`NUM_SBE2_PIPS * x + 0)
+`define SINGLE_E0S1(x) (`NUM_SBE2_PIPS * x + 9)
 
-`define SINGLE_S0W0(x) (12 * x + 10)
-`define SINGLE_S0N0(x) (12 * x + 4)
-`define SINGLE_S0E1(x) (12 * x + 1)
+`define SINGLE_E1W1(x) (`NUM_SBE2_PIPS * x + 5)
+`define SINGLE_E1N1(x) (`NUM_SBE2_PIPS * x + 8)
+`define SINGLE_E1S0(x) (`NUM_SBE2_PIPS * x + 1)
 
-`define SINGLE_S1W1(x) (12 * x + 2)
-`define SINGLE_S1N1(x) (12 * x + 6)
-`define SINGLE_S1E0(x) (12 * x + 9)
+`define SINGLE_S0W0(x) (`NUM_SBE2_PIPS * x + 10)
+`define SINGLE_S0N0(x) (`NUM_SBE2_PIPS * x + 4)
+`define SINGLE_S0E1(x) (`NUM_SBE2_PIPS * x + 1)
 
-`define SINGLE_W0E0(x) (12 * x + 7)
-`define SINGLE_W0S0(x) (12 * x + 10)
-`define SINGLE_W0N1(x) (12 * x +  3)
+`define SINGLE_S1W1(x) (`NUM_SBE2_PIPS * x + 2)
+`define SINGLE_S1N1(x) (`NUM_SBE2_PIPS * x + 6)
+`define SINGLE_S1E0(x) (`NUM_SBE2_PIPS * x + 9)
 
-`define SINGLE_W1E1(x) (12 * x + 5)
-`define SINGLE_W1S1(x) (12 * x + 2)
-`define SINGLE_W1N0(x) (12 * x + 11)
+`define SINGLE_W0E0(x) (`NUM_SBE2_PIPS * x + 7)
+`define SINGLE_W0S0(x) (`NUM_SBE2_PIPS * x + 10)
+`define SINGLE_W0N1(x) (`NUM_SBE2_PIPS * x + 3)
 
-`define DOUBLE_N0E0(x) ((`WS / 2) * 12 + 12 * x + 0)
-`define DOUBLE_N0S0(x) ((`WS / 2) * 12 + 12 * x + 4)
-`define DOUBLE_N0W1(x) ((`WS / 2) * 12 + 12 * x + 11)
+`define SINGLE_W1E1(x) (`NUM_SBE2_PIPS * x + 5)
+`define SINGLE_W1S1(x) (`NUM_SBE2_PIPS * x + 2)
+`define SINGLE_W1N0(x) (`NUM_SBE2_PIPS * x + 11)
 
-`define DOUBLE_N1E1(x) ((`WS / 2) * 12 + 12 * x + 8)
-`define DOUBLE_N1S1(x) ((`WS / 2) * 12 + 12 * x + 6)
-`define DOUBLE_N1W0(x) ((`WS / 2) * 12 + 12 * x + 3)
+`define DOUBLE_N0E0(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 0)
+`define DOUBLE_N0S0(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 4)
+`define DOUBLE_N0W1(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 11)
 
-`define DOUBLE_E0W0(x) ((`WS / 2) * 12 + 12 * x + 7)
-`define DOUBLE_E0N0(x) ((`WS / 2) * 12 + 12 * x + 0)
-`define DOUBLE_E0S1(x) ((`WS / 2) * 12 + 12 * x + 9)
+`define DOUBLE_N1E1(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 8)
+`define DOUBLE_N1S1(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 6)
+`define DOUBLE_N1W0(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 3)
 
-`define DOUBLE_E1W1(x) ((`WS / 2) * 12 + 12 * x + 5)
-`define DOUBLE_E1N1(x) ((`WS / 2) * 12 + 12 * x + 8)
-`define DOUBLE_E1S0(x) ((`WS / 2) * 12 + 12 * x + 1)
+`define DOUBLE_E0W0(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 7)
+`define DOUBLE_E0N0(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 0)
+`define DOUBLE_E0S1(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 9)
 
-`define DOUBLE_S0W0(x) ((`WS / 2) * 12 + 12 * x + 10)
-`define DOUBLE_S0N0(x) ((`WS / 2) * 12 + 12 * x + 4)
-`define DOUBLE_S0E1(x) ((`WS / 2) * 12 + 12 * x + 1)
+`define DOUBLE_E1W1(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 5)
+`define DOUBLE_E1N1(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 8)
+`define DOUBLE_E1S0(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 1)
 
-`define DOUBLE_S1W1(x) ((`WS / 2) * 12 + 12 * x + 2)
-`define DOUBLE_S1N1(x) ((`WS / 2) * 12 + 12 * x + 6)
-`define DOUBLE_S1E0(x) ((`WS / 2) * 12 + 12 * x + 9)
+`define DOUBLE_S0W0(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 10)
+`define DOUBLE_S0N0(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 4)
+`define DOUBLE_S0E1(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 1)
 
-`define DOUBLE_W0E0(x) ((`WS / 2) * 12 + 12 * x + 7)
-`define DOUBLE_W0S0(x) ((`WS / 2) * 12 + 12 * x + 10)
-`define DOUBLE_W0N1(x) ((`WS / 2) * 12 + 12 * x +  3)
+`define DOUBLE_S1W1(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 2)
+`define DOUBLE_S1N1(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 6)
+`define DOUBLE_S1E0(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 9)
 
-`define DOUBLE_W1E1(x) ((`WS / 2) * 12 + 12 * x + 5)
-`define DOUBLE_W1S1(x) ((`WS / 2) * 12 + 12 * x + 2)
-`define DOUBLE_W1N0(x) ((`WS / 2) * 12 + 12 * x + 11)
+`define DOUBLE_W0E0(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 7)
+`define DOUBLE_W0S0(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 10)
+`define DOUBLE_W0N1(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 3)
 
+`define DOUBLE_W1E1(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 5)
+`define DOUBLE_W1S1(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 2)
+`define DOUBLE_W1N0(x) ((`WS / 2) * `NUM_SBE2_PIPS + `NUM_SBE2_PIPS * x + 11)
 

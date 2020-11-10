@@ -33,7 +33,6 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        $(IX_YUKIO_PATH)/src/connection_block.v \
        $(SRAM_PATH)/src/behavioral/unit_sram.v \
        $(SRAM_PATH)/src/behavioral/unit_sram_reduced.v \
-       src/fpga_clb_tiles.v \
        $(MAC_PATH)/src/multiply.v \
        $(MAC_PATH)/src/accumulate.v \
        $(MAC_PATH)/src/mac_mul_block_0.v \
@@ -42,7 +41,11 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        $(MAC_PATH)/src/mac_mul_block_3.v \
        $(MAC_PATH)/src/mac_cluster.v \
        $(MAC_PATH)/src/mac_acc_block.v \
-       $(MAC_PATH)/src/mac_acc_block_2.v
+       $(MAC_PATH)/src/mac_acc_block_2.v \
+       $(MAC_PATH)/src/mac_mul_negator_block.v \
+       $(MAC_PATH)/src/mac_acc_negator_block.v \
+       src/consts.vh \
+       src/fpga_clb_tiles.v \
 
 
 OPTS = -notice \
