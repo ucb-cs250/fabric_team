@@ -37,7 +37,7 @@
 
 * The number of CB configuration bits is 415. The number of SB configuration bits is 48.
 
-* Area estimations of each block in a CLB tile (results obtained from OpenLane Yosys synthesis; the Configuration block is neglected)
+* Area estimation of the blocks in a CLB tile (results obtained from OpenLane Yosys synthesis; the Configuration block is neglected)
 
   * CLB block: 10000 um^2
   * CB block: 25000 um^2
@@ -53,7 +53,7 @@
 
 <img src="https://github.com/ucb-cs250/fabric_team/blob/master/imgs/clb_tiles.png" height="400" width="450">
 
-* The configuration bits are shifted from external IO to the array one column to the next, from left to right, bottom to top. Once a column is done configuring, the programming circuit shift to configure the next column. The per-column bitstream is shifted from one CLB tile to its neighboring CLB tile from the North; the ones on the last row receive the configuration bits directly from the programming circuit/IO.
+* The configuration bits are shifted from external IO to the array one column to the next, from left to right, bottom to top. Once a column is done configuring, the programming circuit shifts to configure the next column. The per-column bitstream is shifted from one CLB tile to its neighboring CLB tile from the North; the ones on the last row receive the configuration bits directly from the programming circuit/IO.
 
 * The LUT blocks and Flip-flops are distributed equally to the four sides of the CLB in clock-wise order. Therefore, only a subset of CLB input pins and output pins are accessible from one side (North, South, East, West).
 
@@ -76,16 +76,16 @@
 
 * There are two Connection Blocks per a CLB tile. The Connection Block CB0 provides horizontal accessibility between adjacent CLBs, whereas the Connection Block CB1 provides vertical accessibility. When reading the code, one of the adopting conventions is that `CB{X}_clb0_input/CB{X}_clb0_output` refers to connection with the CLB in the same tile with `CB{X}`, and `CB{X}_clb1_input/CB{X}_clb1_output` refers to connection with the CLB in the neighboring tile. If `X == 0`, the neighboring tile is from the East. If `X == 1`, the neighboring tile is from the North.
 
-<img src="https://github.com/ucb-cs250/fabric_team/blob/master/imgs/cb_details.png" height="400" width="500">
+<img src="https://github.com/ucb-cs250/fabric_team/blob/master/imgs/cb_details.png" height="400" width="550">
 
 * A CLB input or output can be connected to the CB's wires (single/double) by activating the appropriate PIP. For now,
-  * all the CLBs' *side* input pins (10x2) and *side* output pins (4x) can connect to any of the CB single wires.
+  * all the CLBs' *side* input pins (10x2) and *side* output pins (4x2) can connect to any of the CB single wires.
   * all the CLBs' *side* input pins (10x2) can connect to any of the CB double wires.
   * all the CLBs' *side* output pins (4x2) can connect to any of the *first half* of the CB double wires (or *bias*)
   
 * The *first half* of the CB double wires skips the switch block from the same tile and connects directly to the CB of the neighboring tile. Checkout Yukio's CLB switch box diagram for a concrete detail.
 
-
+* The CB can also enable the direct connections between the adjacent CLBs. Any CLB `side` input pins of one CLB can feed to any CLB `side` output pins of the other CLB.
 
 * TODO: missing CBs and SBs at the left and bottom boundary
 
@@ -99,9 +99,15 @@
 
 * The finest granularity of a bitstream is a CLB tile bitstream. There are total of 148 + 415 * 2 + 48 + 2 = 1028 bits for a CLB tile (including all the bits that setting up LUTs, FFs, CBs' PIPs, SBs' PIPs). There are two additional bits from the Configuration block used for internal configuration. Checkout https://github.com/ucb-cs250/config_team/blob/master/docs/config_tile/DetailedDesign.svg
 
-<img src="https://github.com/ucb-cs250/fabric_team/blob/master/imgs/bitstream_tile_format.png" height="400" width="450">
+<img src="https://github.com/ucb-cs250/fabric_team/blob/master/imgs/bitstream_tile_format.png" height="400" width="500">
 
-* The `CB` config bits dominates the tile bitstream. The `MEM` config bits set the initial states of the Flip-flops of the CLB. The `USE_CC` config bit enables the output of the carry chain to the CLB, and the `IXMUX` config bits activates the inter LUT multiplexers to implement a wide-width logic function. The LUTs config bits include the bits for setting up the logic functions for all the LUTs (8 in this case). The `SOFTMUX_S44_{X}` bits select which of the two, CLB input or the output of the first LUT (LUT0) of `S44_X`, as an input to the second LUT. Refer to the CLB implementation for the detail.
+* The `CB` config bits dominate the tile bitstream. The `MEM` config bits set the initial states of the Flip-flops of the CLB. The `USE_CC` config bit enables the output of the carry chain to the CLB, and the `IXMUX` config bits activate the inter LUT multiplexers to implement a wide-width logic function. The LUTs config bits include the bits for setting up the logic functions for all the LUTs (8 in this case). The `SOFTMUX_S44_{X}` bits select which of the two, CLB input or the output of the first LUT (LUT0) of `S44_X`, as an input to the second LUT. Refer to the CLB implementation for the detail.
 
 * The file `src/consts.vh` provides additional documentation on the bitstream (e.g., correct offset values to specific bitstream blocks), as well as utility functions that return the PIP indices given the valid connections supported by the CB/SB architecture.
+
+# Testing
+
+* There is a small test for the array of 2x2 CLB tiles. The testbench is `sim/fpga_clb_tiles_tb.v`, and the source is `src/fpga_clb_tiles.v`. The test basically implements a tiny circuit on the 2x2 array. Input data is initialized in some CLB Flip-flops. Some CLB LUTs are also configured to implement logic functions. The input signals are routed to those LUTs using the PIPs inside the CBs and SBs. The final result is compared against the expected output of the tiny circuit. At the moment, the bistream for configuring the array is written by hands. Automation of this process is very much neccesary!
+
+* To simulate the small test, use the following command `make sim test=sim/fpga_clb_tiles_tb.v`. The simulation uses VCS (iverilog takes too long to compile; not sure about Verilator). The EDA-{1-8} and C125m-{1-20} machines should have VCS installed.
 
