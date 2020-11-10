@@ -362,24 +362,26 @@ module fpga_clb_tiles_tb();
 
   end
 
-  wire [`CLB_TILE_BITSTREAM_SIZE*`NUM_ROWS-1:0] bitstream [`NUM_COLS-1:0];
+  wire [`CLB_TILE_BITSTREAM_SIZE*`NUM_CLB_TILES-1:0] bitstream;
+
+  localparam BITSTREAM_SIZE_PER_COL = `CLB_TILE_BITSTREAM_SIZE * `NUM_ROWS;
 
   generate
-    for (m = 0; m < `NUM_ROWS; m = m + 1) begin: BITSTREAM_ROWS
-      for (n = 0; n < `NUM_COLS; n = n + 1) begin: BITSTREAM_COLS
+    for (n = 0; n < `NUM_COLS; n = n + 1) begin: BITSTREAM_COLS
+      for (m = 0; m < `NUM_ROWS; m = m + 1) begin: BITSTREAM_ROWS
         localparam index = m * `NUM_COLS + n;
-        localparam OFFSET = `CLB_TILE_BITSTREAM_SIZE * m;
+        localparam OFFSET = n * BITSTREAM_SIZE_PER_COL + `CLB_TILE_BITSTREAM_SIZE * m;
 
         // two additional bits for internal config bits of CFG block
-        assign bitstream[n][1+OFFSET:0+OFFSET] = 2'b0;
+        assign bitstream[1+OFFSET:0+OFFSET] = 2'b0;
 
-        assign bitstream[n][`CFG_USE_CC_END_BIT+2+OFFSET   : `CFG_USE_CC_START_BIT+2+OFFSET]   = 1'b0;
-        assign bitstream[n][`CFG_IXLUTMUX_END_BIT+2+OFFSET : `CFG_IXLUTMUX_START_BIT+2+OFFSET] = {`MUX_LVLS{1'b0}};
-        assign bitstream[n][`CFG_LUTS_END_BIT+2+OFFSET     : `CFG_LUTS_START_BIT+2+OFFSET]     = LUTS_CFG_BITS[index];
-        assign bitstream[n][`CFG_CB0_END_BIT+2+OFFSET      : `CFG_CB0_START_BIT+2+OFFSET]      = CB0_CFG_BITS[index];
-        assign bitstream[n][`CFG_CB1_END_BIT+2+OFFSET      : `CFG_CB1_START_BIT+2+OFFSET]      = CB1_CFG_BITS[index];
-        assign bitstream[n][`CFG_SB_END_BIT+2+OFFSET       : `CFG_SB_START_BIT+2+OFFSET]       = SB_CFG_BITS[index];
-        assign bitstream[n][`CFG_MEM_END_BIT+2+OFFSET      : `CFG_MEM_START_BIT+2+OFFSET]      = MEM_CFG_BITS[index];
+        assign bitstream[`CFG_USE_CC_END_BIT+2+OFFSET   : `CFG_USE_CC_START_BIT+2+OFFSET]   = 1'b0;
+        assign bitstream[`CFG_IXLUTMUX_END_BIT+2+OFFSET : `CFG_IXLUTMUX_START_BIT+2+OFFSET] = {`MUX_LVLS{1'b0}};
+        assign bitstream[`CFG_LUTS_END_BIT+2+OFFSET     : `CFG_LUTS_START_BIT+2+OFFSET]     = LUTS_CFG_BITS[index];
+        assign bitstream[`CFG_CB0_END_BIT+2+OFFSET      : `CFG_CB0_START_BIT+2+OFFSET]      = CB0_CFG_BITS[index];
+        assign bitstream[`CFG_CB1_END_BIT+2+OFFSET      : `CFG_CB1_START_BIT+2+OFFSET]      = CB1_CFG_BITS[index];
+        assign bitstream[`CFG_SB_END_BIT+2+OFFSET       : `CFG_SB_START_BIT+2+OFFSET]       = SB_CFG_BITS[index];
+        assign bitstream[`CFG_MEM_END_BIT+2+OFFSET      : `CFG_MEM_START_BIT+2+OFFSET]      = MEM_CFG_BITS[index];
     end
   end
   endgenerate
@@ -387,6 +389,12 @@ module fpga_clb_tiles_tb();
   reg [`NUM_COLS-1:0] shift_enable;
   reg [`NUM_COLS-1:0] set_hard;
   reg [`NUM_COLS-1:0] shift_in_hard;
+
+  reg [`CLB_TILE_BITSTREAM_SIZE*`NUM_CLB_TILES-1:0] bitstream_from_file [1];
+  initial begin
+    #1;
+    $readmemb("sim/bitstream.txt", bitstream_from_file);
+  end
 
   fpga_clb_tiles FPGA (
     .clk(clk),
@@ -396,11 +404,6 @@ module fpga_clb_tiles_tb();
     .set_hard(set_hard),
     .shift_in_hard(shift_in_hard)
   );
-
-//  always @(posedge cclk) begin
-//    $display("[%t] Check cfg bit: en=%b, bit_shift=%b, set_hard=%b, mem=%b", $time,
-//      FPGA.CFG_shift_enable[0], FPGA.CFG_shift_in_hard[0], FPGA.CFG_set_hard[0], FPGA.CFG_mem_config[0]);
-//  end
 
   initial begin
     $dumpfile("fpga_clb_tiles_test.vcd");
@@ -421,21 +424,15 @@ module fpga_clb_tiles_tb();
       shift_enable[j]  = 1'b1;
     end
 
-    for (k = 0; k < `CLB_TILE_BITSTREAM_SIZE*`NUM_ROWS; k = k + 1) begin
-      for (j = 0; j < `NUM_COLS; j = j + 1) begin
-        shift_in_hard[j] = bitstream[j][`CLB_TILE_BITSTREAM_SIZE * `NUM_ROWS - 1 - k];
-      end
-      @(negedge cclk);
-    end
-
+    // Shifting the bitstream column-by-column from left to right
     for (j = 0; j < `NUM_COLS; j = j + 1) begin
+      for (k = 0; k < BITSTREAM_SIZE_PER_COL; k = k + 1) begin
+        shift_in_hard[j] = bitstream_from_file[0][BITSTREAM_SIZE_PER_COL * j + BITSTREAM_SIZE_PER_COL - 1 - k];
+        @(negedge cclk);
+      end
       shift_enable[j] = 1'b0;
       set_hard[j] = 1'b1;
-    end
-
-    @(negedge cclk);
-
-    for (j = 0; j < `NUM_COLS; j = j + 1) begin
+      @(negedge cclk);
       set_hard[j] = 1'b0;
     end
 
@@ -451,8 +448,7 @@ module fpga_clb_tiles_tb();
     $display("SB: %d %d",       `CFG_SB_END_BIT,       `CFG_SB_START_BIT);
     $display("MEM: %d %d",      `CFG_MEM_END_BIT,      `CFG_MEM_START_BIT);
 
-//    $display("Bistream00: %b", bitstream[0]);
-//    $display("Bistream01: %b", bitstream[1]);
+    //$display("Bitstream: %b", bitstream_from_file[0]);
 
     $display("clb00_luts_config = %b",
       FPGA.CLB_luts_config_in[0 * `NUM_COLS + 0]);
