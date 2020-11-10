@@ -12,7 +12,7 @@ SRAM_PATH     = sram_team
 IX_YUKIO_PATH = ix_yukio
 IX_NATE_PATH  = ix_nate
 
-INCS = $(MAC_PATH)/src
+INCS = src+$(MAC_PATH)/src
 
 SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        $(CLB_PATH)/src/behavioral/lut_sXX_softcode.v \
@@ -31,16 +31,18 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        $(IX_YUKIO_PATH)/src/transmission_gate.v \
        $(IX_YUKIO_PATH)/src/transmission_gate_oneway.v \
        $(IX_YUKIO_PATH)/src/connection_block.v \
+       $(SRAM_PATH)/src/behavioral/unit_sram.v \
+       $(SRAM_PATH)/src/behavioral/unit_sram_reduced.v \
+       src/fpga_clb_tiles.v \
        $(MAC_PATH)/src/multiply.v \
+       $(MAC_PATH)/src/accumulate.v \
        $(MAC_PATH)/src/mac_mul_block_0.v \
        $(MAC_PATH)/src/mac_mul_block_1.v \
        $(MAC_PATH)/src/mac_mul_block_2.v \
        $(MAC_PATH)/src/mac_mul_block_3.v \
        $(MAC_PATH)/src/mac_cluster.v \
        $(MAC_PATH)/src/mac_acc_block.v \
-       $(SRAM_PATH)/src/behavioral/unit_sram.v \
-       $(SRAM_PATH)/src/behavioral/unit_sram_reduced.v \
-       src/fpga_clb_tiles.v \
+       $(MAC_PATH)/src/mac_acc_block_2.v
 
 
 OPTS = -notice \
@@ -48,7 +50,6 @@ OPTS = -notice \
        -line \
        +lint=all,noVCDE,noONGS,noUI \
        +warn=noTMR \
-       -error=PCWM-L \
        +v2k \
        +vcs+lic+wait \
        +rad \
