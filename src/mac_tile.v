@@ -10,7 +10,9 @@ module mac_tile #(
   // To be fully connectedable to the fabric, we need 8*4*2*2=128 at the
   // output, and 8*4*2=64 at the input.
   parameter DCB_NS_W=128,
-  parameter IX_IN_OUT_W=DCB_NS_W+2
+  parameter IX_IN_OUT_W=DCB_NS_W+2,
+  parameter DCB_DATAIN = 8,
+  parameter DCB_DATAOUT = 16
 )(
   input clk,
   input rst,
@@ -36,10 +38,7 @@ module mac_tile #(
 localparam TOTAL_MAC_CONF_WIDTH=4*MAC_ACC_WIDTH+MAC_CONF_WIDTH;
 localparam TOTAL_MAC_INPUT_WIDTH=4*MAC_MIN_WIDTH;
 localparam TOTAL_MAC_OUTPUT_WIDTH=4*MAC_ACC_WIDTH;
-
-localparam DCB_DATAIN = 8;
-localparam DCB_DATAOUT = 16;
-localparam DCB_CONF_WIDTH = MAC_MIN_WIDTH*(DCB_DATAIN+DCB_DATAOUT);
+localparam DCB_CONF_WIDTH = DCB_NS_W*(DCB_DATAIN+DCB_DATAOUT);
 
 localparam DSB_CONF_WIDTH = 6*IX_IN_OUT_W;
 
@@ -63,7 +62,7 @@ assign cset_out = ix_cset;
 
 config_tile #(
   .COMB_N(IX_CONF_WIDTH),
-  .MEM_N(MAC_CONF_WIDTH)
+  .MEM_N(TOTAL_MAC_CONF_WIDTH)
 ) configuroni (
   .clk(clk),
   .rst(rst),
@@ -161,7 +160,7 @@ disjoint_switch_box #(
 ) djaroni (
   .clk(clk),
   .rst(rst),
-  .cset(ix_set),
+  .cset(ix_cset),
   .c(dsb_conf_bus),
 
   .north(north),
