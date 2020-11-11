@@ -30,11 +30,11 @@ You define some or all of these in a text file, indicating what they should be s
 
 You can then run the script with the single argument being this text file, and it should produce the bitstream:
 
-`./config_mac_tile.py manual_mac_config_test.txt`
+`./config_mac_tile.py -H manual_mac_config_test.txt`
 
 For example:
 
 ```
-$ scripts/config_mac_tile.py scripts/manual_mac_config_test.txt 
+$ scripts/config_mac_tile.py -H scripts/manual_mac_config_test.txt 
 000000000000000000000000000001010000000000000000000000000000010100000000000000000000000000000101000000000000000000000000000001011010
 ```

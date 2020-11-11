@@ -5,7 +5,7 @@ module fpga_250 (
   input wire config_in,
 
   input wire [15:0] fake_in,
-  output wire [15:0] fake_out,
+  output wire [15:0] fake_out
 );
 
 localparam NUM = 8;

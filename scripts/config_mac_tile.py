@@ -97,6 +97,8 @@ def main():
     optparser = OptionParser()
     #optparser.add_option('-v', '--version', action='store_true', dest='showversion',
     #                     default=False, help='Show the version')
+    optparser.add_option('-H', '--human-readable', action='store_true', dest='human_readable',
+                         default=False, help='Produce human-readable ASCII')
 
     opts, args = optparser.parse_args()
 
@@ -122,8 +124,17 @@ def main():
 
     config = MacTileConfig('mac_tile')
     config.Load(keys)
+
     # config.Show()
-    print(config.Configure())
+
+    bitstream = config.Configure() 
+    if opts.human_readable:
+        # TODO(aryap): Group values every x bits.
+        print(bitstream)
+    else:
+        # White-space separate every binary value so that it can be read by
+        # $readmemb in a verilog testbench.
+        print(' '.join(bitstream))
 
 if __name__ == '__main__':
     main()
