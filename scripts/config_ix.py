@@ -49,6 +49,14 @@ def main():
     sb_univ_odd_0.map_input_to_config()
     print(sb_univ_odd_0.output_bitstream())
 
+    # test 5: fabric test
+    fab_0 = Fabric()
+    fab_0.add_element(sb_element_one_0, 4)
+    fab_0.add_element(sb_element_two_0, 3)
+    fab_0.add_element(sb_univ_even_0, 2)
+    fab_0.add_element(sb_univ_odd_0, 10)
+    print(fab_0.output_bitstream())
+
 
 if __name__ == '__main__':
     main()

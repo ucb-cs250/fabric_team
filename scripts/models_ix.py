@@ -1,6 +1,7 @@
 from config import Config
 import sys
 import traceback
+import collections
 
 """
 Configs
@@ -189,4 +190,42 @@ class UniversalSwitchBox(SwitchBoxModel):
             connections.append((nodes["n"+str(self.W-1)], nodes["s"+str(self.W-1)]))
 
         return nodes, connections
+
+
+# model for the overall fabric
+class Fabric():
+    def __init__(self):
+        self.elements = list()    # hold elements
+        self.type_count = dict()  # keep track of types
+    
+    def add_element(self, instantiated_model, priority):
+        self.elements.append((instantiated_model, priority))
+        if instantiated_model.model.name not in self.type_count.keys():
+            self.type_count[instantiated_model.model.name] = 1
+        else:
+            self.type_count[instantiated_model.model.name] += 1
+    
+    def change_priority(self, instantiated_model, old_piority, new_priority):
+        try:
+            res = self.elements.index((instantiated_model, old_piority))
+            self.elements.remove((instantiated_model, old_piority))
+            self.elements.append((instantiated_model, new_priority))
+        except ValueError as e:
+            print(traceback.format_exception(None, e, e.__traceback__), file=sys.stderr, flush=True)
+            return "update not successful, the pair cannot be found"
+
+    # output the bitstream of all elements within this fabric in terms of the priority
+    def output_bitstream(self):
+        self.elements.sort(key=lambda x: x[1], reverse=True)
+        # for i in self.elements:
+        #     print(i)
+
+        # output the bitsteam from high priority to the lowest
+        res = ""
+        for index, item in enumerate(self.elements):
+            if index == len(self.elements) - 1:
+                res += item[0].output_bitstream()
+            else:
+                res += item[0].output_bitstream() + "_"
+        return res
 
