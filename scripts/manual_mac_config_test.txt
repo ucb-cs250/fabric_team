@@ -23,4 +23,4 @@
 .djaroni.connect_wire_4_north_east
 .djaroni.connect_wire_5_south_west
 .configuroni.set_soft=0
-.configuroni.enable_mem_shift=0
+.configuroni.disable_mem_shift=0

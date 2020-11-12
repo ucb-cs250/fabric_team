@@ -23,8 +23,8 @@ class ConfigTileConfig(Config):
         # This is 'input_mux' in the config tile code.
         final['set_soft'] = int(self.keys.get('set_soft', 0))
         # This is 'mem_ctrl' in the config tile code.
-        final['enable_mem_shift'] = int(self.keys.get('enable_mem_shift', 0))
-        return '{set_soft:01b}{enable_mem_shift:01b}'.format(**final)
+        final['disable_mem_shift'] = int(self.keys.get('disable_mem_shift', 0))
+        return '{set_soft:01b}{disable_mem_shift:01b}'.format(**final)
 
 class DisjointSwitchBoxConfig(Config):
 
