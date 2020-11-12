@@ -33,8 +33,23 @@ class DisjointSwitchBoxConfig(Config):
         SOUTH = 1
         EAST = 2
         WEST = 3
-    
+
     CONNECT_RE = re.compile('connect_wire_(\d+)_(\S+)_(\S+)')
+
+    DIRECTION_BIT_MAP = {
+        Direction.EAST: {
+            Direction.NORTH: 0,
+            Direction.SOUTH: 1,
+            Direction.WEST: 5
+        },
+        Direction.NORTH: {
+            Direction.WEST: 3,
+            Direction.SOUTH: 4
+        },
+        Direction.SOUTH: {
+            Direction.WEST: 2
+        }
+    }
 
     def __init__(self, instance_name):
         super().__init__(instance_name)
@@ -64,7 +79,7 @@ class DisjointSwitchBoxConfig(Config):
         config_bits = self.CONF_WIDTH * [0]
 
         # Determine which wires are connected.
-        connections = collections.defaultdict(dict)
+        connections = collections.defaultdict(lambda: collections.defaultdict(dict))
         for k, v in self.keys.items():
             if v != 1:
                 continue
@@ -79,7 +94,15 @@ class DisjointSwitchBoxConfig(Config):
                 left = DisjointSwitchBoxConfig.Direction[left_key.upper()]
                 right = DisjointSwitchBoxConfig.Direction[right_key.upper()]
                 # print('Connecting wire {} {} <-> {}'.format(wire, left_key, right_key))
-                connections[left][right] = 1
+                connections[wire][left][right] = 1
+
+        for w, left_and_right in connections.items():
+            for left, right_and_value in left_and_right.items():
+                for right, value in right_and_value.items():
+                    dir_bit = DisjointSwitchBoxConfig.DIRECTION_BIT_MAP[left][right]
+                    config_index = w * self.SWITCHES_PER_JUNCTION + dir_bit
+                    #print('Setting bit {} = {}'.format(config_index, value))
+                    config_bits[config_index] = value
 
         return ''.join(str(c) for c in config_bits)
 
