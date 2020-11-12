@@ -21,4 +21,6 @@
 # These should be the same.
 .djaroni.connect_wire_3_east_north
 .djaroni.connect_wire_4_north_east
-.configuroni.=
+.djaroni.connect_wire_5_south_west
+.configuroni.set_soft=0
+.configuroni.enable_mem_shift=0
