@@ -9,6 +9,16 @@
 .macaroni.initial1=5
 .macaroni.initial2=5
 .macaroni.initial3=5
-.dataroni.=
-.djaroni.=
+.dataroni.connect_ext_0_to_input_0
+.dataroni.connect_ext_1_to_input_1
+.dataroni.connect_ext_2_to_input_2
+.dataroni.connect_ext_3_to_input_3
+.dataroni.connect_ext_4_to_input_4
+.dataroni.connect_output_0_to_ext_0
+.dataroni.connect_output_1_to_ext_1
+.dataroni.connect_output_2_to_ext_2
+.dataroni.connect_output_3_to_ext_3
+# These should be the same.
+.djaroni.connect_wire_3_east_north
+.djaroni.connect_wire_4_north_east
 .configuroni.=
