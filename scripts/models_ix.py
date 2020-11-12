@@ -1,4 +1,6 @@
 from config import Config
+import sys
+import traceback
 
 """
 Configs
@@ -26,7 +28,7 @@ def generate_config(type_name):
         return IxConfig(
             'switch_box_element_one_config',
             1,
-            {1:"north", 2:"south", 3:"east", 4:"west"},
+            {"n0":1, "s0":2, "e0":3, "w0":4},
             [(1,3), (2,3), (2,4), (1,4), (1,2), (3,4)],
             True
         )
@@ -34,7 +36,7 @@ def generate_config(type_name):
         return IxConfig(
             'switch_box_element_two_config',
             1,
-            {1:"north0", 2:"north1", 3:"south0", 4:"south1", 5:"east0", 6:"east1", 7:"west0", 8:"west1"},
+            {"n0":1, "n1":2, "s0":3, "s1":4, "e0":5, "e1":6, "w0":7, "w1":8},
             [(1,5), (3,6), (4,8), (2,7), (2,6), (4,5), (3,7), (1,8), (1,3), (6,8), (2,4), (5,7)],
             True
         )
@@ -53,18 +55,29 @@ def generate_config(type_name):
 Models
 """
 
-# model this switch box
-class SwitchBox():
-    # model the switch box based on existing config and user input
-    def __init__(self, config, active_mapping):
-        self.config = config
-        self.active_mapping = active_mapping
-        self.bitstream = [None] * len(config.switches)
+# model of an instantiated switch box
+class InstantiatedSwitchBox():
+    # model the switch box based on existing model (model) and user input (active_mapping)
+    def __init__(self, model, active_mapping):
+        self.model = model
+        self.nodes = self.model.nodes
+        self.active_mapping = self.match_mapping_to_internal(active_mapping)
+        self.switches = self.model.connections
+        self.bitstream = [None] * len(self.switches)
+
+    # user passes in text format, this method converts it to internal format
+    # for example, use passes: [("n0","w1"), ("n0","e0")]
+    # the method convert to:   [(1,3), (1,4)]
+    def match_mapping_to_internal(self, mapping):
+        converted = list()
+        for start_label, end_label in mapping:
+            converted.append((self.nodes[start_label], self.nodes[end_label]))
+        return converted
+
 
     # map the active config to the given config
     def map_input_to_config(self):
-        switches = self.config.switches
-        for index, edge in enumerate(switches):
+        for index, edge in enumerate(self.switches):
             # assume the user follows the naming convention
             if edge in self.active_mapping:
                 self.bitstream[index] = 1    
@@ -77,3 +90,103 @@ class SwitchBox():
         for bit in self.bitstream:
             result += str(bit)
         return result    
+
+
+# model for generic switch box
+class SwitchBoxModel():
+    def __init__(self):
+        pass
+
+    def report_index(self, start, end):
+        try:
+            return self.connections.index((self.nodes[start], self.nodes[end]))
+        except ValueError as e:
+            print(traceback.format_exception(None, e, e.__traceback__), file=sys.stderr, flush=True)
+            return "Note the above error"
+
+
+# model for switch_box_element_one
+class SwitchBoxElementOne(SwitchBoxModel):
+    def __init__(self):
+        self.config = generate_config("switch_box_element_one_config")
+        self.name = "switch_box_element_one"
+        # North -> south -> east -> west
+        self.nodes = {"n0":1, "s0":2, "e0":3, "w0":4}
+        self.connections = self.config.switches
+
+
+# model for switch_box_element_one
+class SwitchBoxElementTwo(SwitchBoxModel):
+    def __init__(self):
+        self.config = generate_config("switch_box_element_two_config")
+        self.name = "switch_box_element_two"
+        # North -> south -> east -> west
+        self.nodes = {"n0":1, "n1":2, "s0":3, "s1":4, "e0":5, "e1":6, "w0":7, "w1":8}
+        self.connections = self.config.switches
+
+
+class UniversalSwitchBox(SwitchBoxModel):
+    def __init__(self, W):
+        self.name = "universal_switch_box"
+        self.W = W
+        self.nodes, self.connections = self.configure()
+        
+
+    def configure(self):
+        nodes = dict()
+        connections = list()
+
+        count = 0
+        for i in range (0, self.W-1, 2):
+            # configure the nodes
+            count += 1
+            nodes["n"+str(i)] = count
+            count += 1
+            nodes["n"+str(i+1)] = count
+            count += 1
+            nodes["s"+str(i)] = count                
+            count += 1
+            nodes["s"+str(i+1)] = count   
+            count += 1
+            nodes["e"+str(i)] = count                
+            count += 1
+            nodes["e"+str(i+1)] = count 
+            count += 1
+            nodes["w"+str(i)] = count                
+            count += 1
+            nodes["w"+str(i+1)] = count 
+
+            # configure the connections
+            connections.append((nodes["n"+str(i)], nodes["e"+str(i)]))
+            connections.append((nodes["s"+str(i)], nodes["e"+str(i+1)]))
+            connections.append((nodes["s"+str(i+1)], nodes["w"+str(i+1)]))
+            connections.append((nodes["n"+str(i+1)], nodes["w"+str(i)]))
+            connections.append((nodes["n"+str(i+1)], nodes["e"+str(i+1)]))
+            connections.append((nodes["s"+str(i+1)], nodes["e"+str(i)]))
+            connections.append((nodes["s"+str(i)], nodes["w"+str(i)]))
+            connections.append((nodes["n"+str(i)], nodes["w"+str(i+1)]))
+            connections.append((nodes["n"+str(i)], nodes["s"+str(i)]))
+            connections.append((nodes["e"+str(i+1)], nodes["w"+str(i+1)]))
+            connections.append((nodes["n"+str(i+1)], nodes["e"+str(i+1)]))
+            connections.append((nodes["e"+str(i)], nodes["w"+str(i)]))
+
+        if self.W % 2 != 0:
+            # generate one more sb_element_one
+            count += 1
+            nodes["n"+str(self.W-1)] = count
+            count += 1
+            nodes["s"+str(self.W-1)] = count
+            count += 1
+            nodes["e"+str(self.W-1)] = count
+            count += 1
+            nodes["w"+str(self.W-1)] = count
+
+            # configure the connections
+            connections.append((nodes["n"+str(self.W-1)], nodes["e"+str(self.W-1)]))
+            connections.append((nodes["s"+str(self.W-1)], nodes["e"+str(self.W-1)]))
+            connections.append((nodes["s"+str(self.W-1)], nodes["w"+str(self.W-1)]))
+            connections.append((nodes["n"+str(self.W-1)], nodes["w"+str(self.W-1)]))
+            connections.append((nodes["n"+str(self.W-1)], nodes["s"+str(self.W-1)]))
+
+        return nodes, connections
+
