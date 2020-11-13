@@ -3,6 +3,7 @@
 
 import collections
 import re
+import math
 from enum import Enum
 from optparse import OptionParser
 import os
@@ -25,6 +26,7 @@ class ConfigTileConfig(Config):
         # This is 'mem_ctrl' in the config tile code.
         final['disable_mem_shift'] = int(self.keys.get('disable_mem_shift', 0))
         return '{set_soft:01b}{disable_mem_shift:01b}'.format(**final)
+
 
 class DisjointSwitchBoxConfig(Config):
 
@@ -101,11 +103,10 @@ class DisjointSwitchBoxConfig(Config):
                 for right, value in right_and_value.items():
                     dir_bit = DisjointSwitchBoxConfig.DIRECTION_BIT_MAP[left][right]
                     config_index = w * self.SWITCHES_PER_JUNCTION + dir_bit
-                    #print('Setting bit {} = {}'.format(config_index, value))
+                    # print('Setting bit {} = {}'.format(config_index, value))
                     config_bits[config_index] = value
 
-        return ''.join(str(c) for c in config_bits)
-
+        return ''.join(str(c) for c in reversed(config_bits))
 
 
 class DataConnectionBlockConfig(Config):
@@ -164,7 +165,7 @@ class DataConnectionBlockConfig(Config):
                 external_index = external_word * self.WW + i
                 config_index = external_index + input_word * self.W
                 config_bits[config_index] = 1
-                # print('connecting external bit {} to mac input bit {}; setting bit {}'.format(external_index, mac_input_index, config_index))
+                #print('connecting external bit {} to mac input bit {}; setting bit {}'.format(external_index, mac_input_index, config_index))
 
         config_offset = self.DATAIN * self.W
         for match in out_to_ext:
@@ -173,11 +174,11 @@ class DataConnectionBlockConfig(Config):
             for i in range(self.WW):
                 mac_output_index = output_word * self.WW + i
                 external_index = external_word * self.WW + i
-                config_index = external_index + input_word * self.W + config_offset
+                config_index = external_index + output_word * self.W + config_offset
                 config_bits[config_index] = 1
-                # print('connecting mac output bit {} to external bit {}; setting bit {}'.format(mac_output_index, external_index, config_index))
+                #print('connecting mac output bit {} to external bit {}; setting bit {}'.format(mac_output_index, external_index, config_index))
 
-        return ''.join(str(c) for c in config_bits)
+        return ''.join(str(c) for c in reversed(config_bits))
 
 
 class MacClusterConfig(Config):
@@ -200,7 +201,7 @@ class MacClusterConfig(Config):
         # Use static configuration and given keys to set configuration
         # bitstream bits.
         #
-        # | initial3 | initial2 | initial1 | initial0 | signed | multiply_only | width_mode |
+        # | initial3 | initial2 | initial1 | initial0 | signed | accumulate | width_mode |
 
         # When this bit is 0, the block accumulates. If 1, it only multiplies.
         final = dict()
@@ -210,7 +211,7 @@ class MacClusterConfig(Config):
         final['initial1'] = int(self.keys.get('initial1', 0))
         final['initial0'] = int(self.keys.get('initial0', 0))
         final['signed'] = int(self.keys.get('signed', 0))
-        final['multiply_only'] = int(self.keys.get('multiply_only', 0))
+        final['accumulate'] = int(self.keys.get('accumulate', 0))
         width_mode_key = self.keys.get('width_mode', 'SINGLE')
         try:
             final['width_mode'] = MacClusterConfig.WidthMode[width_mode_key].value
@@ -223,7 +224,7 @@ class MacClusterConfig(Config):
                 '{initial1:0{acc_width}b}'
                 '{initial0:0{acc_width}b}'
                 '{signed:01b}'
-                '{multiply_only:01b}'
+                '{accumulate:01b}'
                 '{width_mode:02b}'.format(**final))
 
 
@@ -237,19 +238,24 @@ class MacTileConfig(Config):
 
         # TODO(aryap): Use instance names from the mac_tile verilog description
         # to hopefully automatically generate this one day.
+
         # This order is defined by the fact that the config block shifts
         # config into the combinatorial config bits before the memory config
         # bits. The combinatorial config bits set the DCB and DSB configs in
         # that order.
+        self.children['configuroni'] = ConfigTileConfig('configuroni')
         self.children['dataroni'] = DataConnectionBlockConfig('dataroni')
         self.children['djaroni'] = DisjointSwitchBoxConfig('djaroni')
         self.children['macaroni'] = MacClusterConfig('macaroni')
+
+    def ConfigureEach(self):
+        return [(instance, c.Configure()) for instance, c in self.children.items()]
 
     def Configure(self):
         # Because self.children is an OrderedDict, the order of configuration
         # streams here should depend on the order in which the children were
         # added to the dictionary.
-        return ''.join(c.Configure() for _, c in self.children.items())
+        return ''.join(c for _, c in self.ConfigureEach())
 
 
 def main():
@@ -286,14 +292,30 @@ def main():
 
     # config.Show()
 
-    bitstream = config.Configure() 
     if opts.human_readable:
-        # TODO(aryap): Group values every x bits.
-        print(bitstream)
+        for instance, bitstream in config.ConfigureEach():
+            print('{} ({}):'.format(instance, len(bitstream)))
+            GROUP=8
+            LINE_WIDTH=GROUP*8
+            for i in range(math.ceil(len(bitstream) / LINE_WIDTH)):
+                line = bitstream[i*LINE_WIDTH:(i+1)*LINE_WIDTH]
+                num_groups = math.ceil(LINE_WIDTH/GROUP)
+                words = []
+                for j in range(num_groups):
+                    words.append(line[j*GROUP:(j+1)*GROUP])
+                print(' '.join(words))
+            print()
     else:
+        bitstream = config.Configure() 
         # White-space separate every binary value so that it can be read by
         # $readmemb in a verilog testbench.
-        print(' '.join(bitstream))
+        #
+        # The bitstream is written in reverse order. This makes it possible to
+        # stream the file without having to buffer and then reverse it. The
+        # first entry in the file is the first value to be shifted into the
+        # fabric.
+        print('\n'.join(reversed(bitstream)), end='')
+
 
 if __name__ == '__main__':
     main()
