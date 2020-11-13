@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # Hello and welcome to my proof of concept?
 
+import collections
+import re
 from enum import Enum
 from optparse import OptionParser
 import os
@@ -12,19 +14,170 @@ from config import Config
 def show_version():
     print('nope')
 
-
-class DisjointSwitchBoxConfig(Config):
+class ConfigTileConfig(Config):
     def __init__(self, instance_name):
         super().__init__(instance_name)
+
+    def Configure(self):
+        final = dict()
+        # This is 'input_mux' in the config tile code.
+        final['set_soft'] = int(self.keys.get('set_soft', 0))
+        # This is 'mem_ctrl' in the config tile code.
+        final['disable_mem_shift'] = int(self.keys.get('disable_mem_shift', 0))
+        return '{set_soft:01b}{disable_mem_shift:01b}'.format(**final)
+
+class DisjointSwitchBoxConfig(Config):
+
+    class Direction(Enum):
+        NORTH = 0
+        SOUTH = 1
+        EAST = 2
+        WEST = 3
+
+    CONNECT_RE = re.compile('connect_wire_(\d+)_(\S+)_(\S+)')
+
+    DIRECTION_BIT_MAP = {
+        Direction.EAST: {
+            Direction.NORTH: 0,
+            Direction.SOUTH: 1,
+            Direction.WEST: 5
+        },
+        Direction.NORTH: {
+            Direction.WEST: 3,
+            Direction.SOUTH: 4
+        },
+        Direction.SOUTH: {
+            Direction.WEST: 2
+        }
+    }
+
+    def __init__(self, instance_name):
+        super().__init__(instance_name)
+        self.SWITCHES_PER_JUNCTION = 6
+        self.W = 192 + 2
+        self.CONF_WIDTH = self.W * self.SWITCHES_PER_JUNCTION
+
+    def Configure(self):
+        # For each wire in/out of the box, there are 6 possible connections:
+        #   north/south, east/west, west/north, west/south, east/north,
+        #   east/south.
+        #
+        # The i-th wire in any direction can only connect to the i-th wire in
+        # any other direction, so our configuration is limited to picking the
+        # wire and then picking which directions it connects to.
+        #
+        # We can specify this withy the text config:
+        #       .djaroni.connect_wire_0_east_west
+        #       .djaroni.connect_wire_1_east_west
+        #       .djaroni.connect_wire_2_east_west
+        #       .djaroni.connect_wire_3_north_south
+        #       .djaroni.connect_wire_4_north_south
+        #       .djaroni.connect_wire_5_north_south
+        #
+        # It doesn't matter which way around the directions are specified.
+        
+        config_bits = self.CONF_WIDTH * [0]
+
+        # Determine which wires are connected.
+        connections = collections.defaultdict(lambda: collections.defaultdict(dict))
+        for k, v in self.keys.items():
+            if v != 1:
+                continue
+            match = self.CONNECT_RE.match(k)
+            if not match or len(match.groups()) != 3:
+                print('Cannot make sense of this config line: {}'.format(k))
+                continue
+            if match:
+                wire = int(match.group(1))
+                # Sorted so order doesn't matter.
+                left_key, right_key = sorted(match.groups()[1:3])
+                left = DisjointSwitchBoxConfig.Direction[left_key.upper()]
+                right = DisjointSwitchBoxConfig.Direction[right_key.upper()]
+                # print('Connecting wire {} {} <-> {}'.format(wire, left_key, right_key))
+                connections[wire][left][right] = 1
+
+        for w, left_and_right in connections.items():
+            for left, right_and_value in left_and_right.items():
+                for right, value in right_and_value.items():
+                    dir_bit = DisjointSwitchBoxConfig.DIRECTION_BIT_MAP[left][right]
+                    config_index = w * self.SWITCHES_PER_JUNCTION + dir_bit
+                    #print('Setting bit {} = {}'.format(config_index, value))
+                    config_bits[config_index] = value
+
+        return ''.join(str(c) for c in config_bits)
+
 
 
 class DataConnectionBlockConfig(Config):
+    
+    EXT_TO_IN_KEY_RE = re.compile('connect_ext_(\d+)_to_input_(\d+)')
+    OUT_TO_EXT_KEY_RE = re.compile('connect_output_(\d+)_to_ext_(\d+)')
+
     def __init__(self, instance_name):
         super().__init__(instance_name)
-        self.W = 128
-        self.WW =  8
-        self.DATAIN = 8
-        self.DATAOUT = 16
+        self.W = 192        # The number of wires connecting in/out of the block.
+        self.WW =  8        # Word width.
+        self.DATAIN = 8     # The number of words at the input.
+        self.DATAOUT = 16   # The number of words at the output.
+
+    def Configure(self):
+        # Each wire north is connected to a wire south.
+        #
+        # The inputs and outputs are organised into words to reduce the
+        # number of switches.
+        # 
+        # It's probably easiest to define connection of input words to MAC
+        # words and vice versa.
+        #
+        # e.g. To connect North/South word 0 to mac input 0:
+        #       .dataroni.connect_ext_0_to_input_0
+        #       .dataroni.connect_ext_1_to_input_1
+        #       .dataroni.connect_ext_2_to_input_2
+        #       .dataroni.connect_ext_3_to_input_3
+        #       .dataroni.connect_ext_4_to_input_4
+        #       .dataroni.connect_output_0_to_ext_0
+        #       .dataroni.connect_output_1_to_ext_1
+        #       .dataroni.connect_output_2_to_ext_2
+        #       .dataroni.connect_output_3_to_ext_3
+
+        config_bits = self.W * (self.DATAIN + self.DATAOUT) * [0]
+        
+        # Find defined keys.
+        ext_to_in = []
+        out_to_ext = []
+        for k, v in self.keys.items():
+            if v != 1:
+                continue
+            ext_match = self.EXT_TO_IN_KEY_RE.match(k)
+            if ext_match:
+                ext_to_in.append(ext_match)
+                continue
+            out_match = self.OUT_TO_EXT_KEY_RE.match(k)
+            if out_match:
+                out_to_ext.append(out_match)
+
+        for match in ext_to_in:
+            external_word = int(match.group(1))
+            input_word = int(match.group(2))
+            for i in range(self.WW):
+                mac_input_index = input_word * self.WW + i
+                external_index = external_word * self.WW + i
+                config_index = external_index + input_word * self.W
+                config_bits[config_index] = 1
+                # print('connecting external bit {} to mac input bit {}; setting bit {}'.format(external_index, mac_input_index, config_index))
+
+        config_offset = self.DATAIN * self.W
+        for match in out_to_ext:
+            output_word = int(match.group(1))
+            external_word = int(match.group(2))
+            for i in range(self.WW):
+                mac_output_index = output_word * self.WW + i
+                external_index = external_word * self.WW + i
+                config_index = external_index + input_word * self.W + config_offset
+                config_bits[config_index] = 1
+                # print('connecting mac output bit {} to external bit {}; setting bit {}'.format(mac_output_index, external_index, config_index))
+
+        return ''.join(str(c) for c in config_bits)
 
 
 class MacClusterConfig(Config):
@@ -74,7 +227,6 @@ class MacClusterConfig(Config):
                 '{width_mode:02b}'.format(**final))
 
 
-
 # Here we manually encode our configuration for the Verilog mac_tile module
 # (and its constituents).
 class MacTileConfig(Config):
@@ -85,6 +237,12 @@ class MacTileConfig(Config):
 
         # TODO(aryap): Use instance names from the mac_tile verilog description
         # to hopefully automatically generate this one day.
+        # This order is defined by the fact that the config block shifts
+        # config into the combinatorial config bits before the memory config
+        # bits. The combinatorial config bits set the DCB and DSB configs in
+        # that order.
+        self.children['dataroni'] = DataConnectionBlockConfig('dataroni')
+        self.children['djaroni'] = DisjointSwitchBoxConfig('djaroni')
         self.children['macaroni'] = MacClusterConfig('macaroni')
 
     def Configure(self):
@@ -92,6 +250,7 @@ class MacTileConfig(Config):
         # streams here should depend on the order in which the children were
         # added to the dictionary.
         return ''.join(c.Configure() for _, c in self.children.items())
+
 
 def main():
     optparser = OptionParser()
