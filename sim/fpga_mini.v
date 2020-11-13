@@ -1,4 +1,4 @@
-module fpga
+module fpga_mini
   #(
     parameter WS = 4,
     parameter WD = 4, // WD must be multiple of 2
@@ -14,8 +14,8 @@ module fpga
     parameter WESTMOST = 0, // boolean
     parameter ROW = 5, // the row index of the tile (this affects which switches CLB outputs are connected)
     parameter COLUMN = 3, // the column index of the tile (this affects which switches CLB outputs are connected)
-	parameter S_XX_BASE=4, 
-    parameter CFG_SIZE=2**S_XX_BASE+1,
+    parameter S_XX_BASE = 4, 
+    parameter CFG_SIZE = 2**S_XX_BASE+1,
     parameter NUM_LUTS = 4, 
     parameter MUX_LVLS = $clog2(NUM_LUTS)
     )
