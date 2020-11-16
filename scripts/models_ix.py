@@ -192,6 +192,108 @@ class UniversalSwitchBox(SwitchBoxModel):
         return nodes, connections
 
 
+class CLBSwitchBox(SwitchBoxModel):
+    def __init__(self, WS, WD):
+        self.name = "clb_switch_box"
+        self.WS = WS
+        self.WD = WD  # WD must be multiple of 2
+        self.nodes, self.connections = self.configure()    
+
+    # note that the double line direct connections do not need to be configured
+    def configure(self):
+        nodes = dict()
+        connections = list()
+
+        # configure the single line Universal Switch Box
+        count = 0
+        for i in range (0, self.WS-1, 2):
+            # configure the nodes
+            count += 1
+            nodes["n"+str(i)] = count
+            count += 1
+            nodes["n"+str(i+1)] = count
+            count += 1
+            nodes["s"+str(i)] = count                
+            count += 1
+            nodes["s"+str(i+1)] = count   
+            count += 1
+            nodes["e"+str(i)] = count                
+            count += 1
+            nodes["e"+str(i+1)] = count 
+            count += 1
+            nodes["w"+str(i)] = count                
+            count += 1
+            nodes["w"+str(i+1)] = count 
+
+            # configure the connections
+            connections.append((nodes["n"+str(i)], nodes["e"+str(i)]))
+            connections.append((nodes["s"+str(i)], nodes["e"+str(i+1)]))
+            connections.append((nodes["s"+str(i+1)], nodes["w"+str(i+1)]))
+            connections.append((nodes["n"+str(i+1)], nodes["w"+str(i)]))
+            connections.append((nodes["n"+str(i+1)], nodes["e"+str(i+1)]))
+            connections.append((nodes["s"+str(i+1)], nodes["e"+str(i)]))
+            connections.append((nodes["s"+str(i)], nodes["w"+str(i)]))
+            connections.append((nodes["n"+str(i)], nodes["w"+str(i+1)]))
+            connections.append((nodes["n"+str(i)], nodes["s"+str(i)]))
+            connections.append((nodes["e"+str(i+1)], nodes["w"+str(i+1)]))
+            connections.append((nodes["n"+str(i+1)], nodes["e"+str(i+1)]))
+            connections.append((nodes["e"+str(i)], nodes["w"+str(i)]))
+
+        if self.WS % 2 != 0:
+            # generate one more sb_element_one
+            count += 1
+            nodes["n"+str(self.WS-1)] = count
+            count += 1
+            nodes["s"+str(self.WS-1)] = count
+            count += 1
+            nodes["e"+str(self.WS-1)] = count
+            count += 1
+            nodes["w"+str(self.WS-1)] = count
+
+            # configure the connections
+            connections.append((nodes["n"+str(self.WS-1)], nodes["e"+str(self.WS-1)]))
+            connections.append((nodes["s"+str(self.WS-1)], nodes["e"+str(self.WS-1)]))
+            connections.append((nodes["s"+str(self.WS-1)], nodes["w"+str(self.WS-1)]))
+            connections.append((nodes["n"+str(self.WS-1)], nodes["w"+str(self.WS-1)]))
+            connections.append((nodes["n"+str(self.WS-1)], nodes["s"+str(self.WS-1)]))
+
+        # configure the double line Universal Switch Box
+        for i in range (0, self.WD//2, 2):
+            # configure the nodes
+            count += 1
+            nodes["dn"+str(i)] = count
+            count += 1
+            nodes["dn"+str(i+1)] = count
+            count += 1
+            nodes["ds"+str(i)] = count                
+            count += 1
+            nodes["ds"+str(i+1)] = count   
+            count += 1
+            nodes["de"+str(i)] = count                
+            count += 1
+            nodes["de"+str(i+1)] = count 
+            count += 1
+            nodes["dw"+str(i)] = count                
+            count += 1
+            nodes["dw"+str(i+1)] = count 
+
+            # configure the connections
+            connections.append((nodes["dn"+str(i)], nodes["de"+str(i)]))
+            connections.append((nodes["ds"+str(i)], nodes["de"+str(i+1)]))
+            connections.append((nodes["ds"+str(i+1)], nodes["dw"+str(i+1)]))
+            connections.append((nodes["dn"+str(i+1)], nodes["dw"+str(i)]))
+            connections.append((nodes["dn"+str(i+1)], nodes["de"+str(i+1)]))
+            connections.append((nodes["ds"+str(i+1)], nodes["de"+str(i)]))
+            connections.append((nodes["ds"+str(i)], nodes["dw"+str(i)]))
+            connections.append((nodes["dn"+str(i)], nodes["dw"+str(i+1)]))
+            connections.append((nodes["dn"+str(i)], nodes["ds"+str(i)]))
+            connections.append((nodes["de"+str(i+1)], nodes["dw"+str(i+1)]))
+            connections.append((nodes["dn"+str(i+1)], nodes["de"+str(i+1)]))
+            connections.append((nodes["de"+str(i)], nodes["dw"+str(i)]))
+
+        return nodes, connections
+
+
 # model for the overall fabric
 class Fabric():
     def __init__(self):
