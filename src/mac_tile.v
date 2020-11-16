@@ -1,5 +1,5 @@
 module mac_tile #(
-  parameter MAC_CONF_WIDTH=3,
+  parameter MAC_CONF_WIDTH=4,
   // MAC input width (for each input).
   parameter MAC_MIN_WIDTH=8,
   parameter MAC_MULT_WIDTH=2*MAC_MIN_WIDTH,
@@ -8,11 +8,14 @@ module mac_tile #(
   parameter MAC_INT_WIDTH=5*MAC_MIN_WIDTH,
   // This is W on the data_connection_block.
   // To be fully connectedable to the fabric, we need 8*4*2*2=128 at the
-  // output, and 8*4*2=64 at the input.
-  parameter DCB_NS_W=128,
+  // output, and 8*4*2=64 at the input. North/south wires are shared between
+  // input and output.
+  parameter DCB_NS_W=192,
   parameter IX_IN_OUT_W=DCB_NS_W+2,
+  // The number of incoming words.
   parameter DCB_DATAIN = 8,
-  parameter DCB_DATAOUT = 16
+  // The number of outgoing words.
+  parameter DCB_DATAOUT = 8
 )(
   input clk,
   input rst,
@@ -60,6 +63,8 @@ wire config_set_soft;
 assign {dcb_conf_bus, dsb_conf_bus} = ix_conf_bus;
 assign cset_out = ix_cset;
 
+// According to the diagram, this shifts into "combinatorial config bits"
+// before shifting into "memory state config bits".
 config_tile #(
   .COMB_N(IX_CONF_WIDTH),
   .MEM_N(TOTAL_MAC_CONF_WIDTH)
