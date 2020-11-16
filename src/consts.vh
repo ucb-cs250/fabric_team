@@ -15,8 +15,8 @@
 //
 
 // Array dimension
-`define NUM_ROWS 2
-`define NUM_COLS 2
+`define NUM_ROWS 4
+`define NUM_COLS 4
 
 // LUT parameters
 `define S_XX_BASE 4
@@ -55,6 +55,8 @@
 `define CLB_TILE_BITSTREAM_SIZE (`CLB_TILE_COMB_CFG_SIZE + `CLB_TILE_MEM_CFG_SIZE + 2)
 
 // Define the sequence of configuration bits for a tile
+`define CFG_MEM_START_BIT      0
+`define CFG_MEM_END_BIT        `CFG_MEM_START_BIT + `CLB_MEM_CFG_SIZE - 1
 `define CFG_USE_CC_START_BIT   0
 `define CFG_USE_CC_END_BIT     `CFG_USE_CC_START_BIT + 1 - 1
 `define CFG_IXLUTMUX_START_BIT `CFG_USE_CC_END_BIT + 1
@@ -67,8 +69,6 @@
 `define CFG_CB1_END_BIT        `CFG_CB1_START_BIT + `CB_CFG_SIZE - 1
 `define CFG_SB_START_BIT       `CFG_CB1_END_BIT + 1
 `define CFG_SB_END_BIT         `CFG_SB_START_BIT + `SB_CFG_SIZE - 1
-`define CFG_MEM_START_BIT      `CFG_SB_END_BIT + 1
-`define CFG_MEM_END_BIT        `CFG_MEM_START_BIT + `CLB_MEM_CFG_SIZE - 1
 
 `define CB_OFFSET0 (`NUM_CLB_INS * `SWITCH_PER_IN)
 `define CB_OFFSET1 (`CB_OFFSET0 + `NUM_CLB_OUTS * `SWITCH_PER_OUT)
