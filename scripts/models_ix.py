@@ -2,6 +2,7 @@ from config import Config
 import sys
 import traceback
 import collections
+import random
 
 """
 Configs
@@ -330,4 +331,53 @@ class Fabric():
             else:
                 res += item[0].output_bitstream() + "_"
         return res
+
+"""
+LUTs
+"""
+
+# model for generic logic block
+class LogicBlock():
+    def __init__(self):
+        pass
+
+    def output_bitstream(self):
+        return self.config_bits
+
+# 
+class ConfiguredLUT(LogicBlock):
+    # INPUT_WIDTH is the width of the input
+    # config_bits are the input config bits stored at each location (ascending index)
+    def __init__(self, INPUT_WIDTH, generate, config_bits="0000111100001111"):
+        self.name = str(INPUT_WIDTH) + "_LUT"
+        self.config_width = int(pow(2, INPUT_WIDTH))
+        self.config_bits = self.configure() if generate else config_bits
+
+    # randomly generate a sequence
+    def configure(self):
+        bitstream = ""
+        for i in range(0, self.config_width):
+            k = random.randint(0, 1)
+            bitstream += str(k)
+        return bitstream
+            
+
+class ConfiguredS44(LogicBlock):
+    def __init__(self, INPUT_WIDTH, generate, split="1", lut_left_config="0000111100001111", lut_right_config="0000111100001111"):
+        self.mem_size = int(pow(2, INPUT_WIDTH))
+        self.config_width = 2 * self.mem_size + 1
+        self.name = str(INPUT_WIDTH) + "_S44"
+        # the top config bits determine the split signal
+        self.config_bits = self.configure() if generate else split + lut_left_config + lut_right_config
+        # create two Configured LUTs (with the config bits distributed)
+        self.lut_left = ConfiguredLUT(INPUT_WIDTH, False, self.config_bits[2*self.mem_size-1:self.mem_size])
+        self.lut_right = ConfiguredLUT(INPUT_WIDTH, False, lut_right_config[self.mem_size-1:0])
+
+    def configure(self):
+        bitstream = ""
+        for i in range(0, self.config_width):
+            k = random.randint(0, 1)
+            bitstream += str(k)
+        return bitstream        
+
 
