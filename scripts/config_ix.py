@@ -81,5 +81,11 @@ def main():
     ss = ConfiguredS44(4, True,)
     print(ss.output_bitstream())
 
+    params = dict()
+    params["s_xx_base"] = 4
+    params["num_luts"] = 4
+    slicel = ConfiguredSliceL(params, True,)
+    print(slicel.output_bitstream())
+
 if __name__ == '__main__':
     main()

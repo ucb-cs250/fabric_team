@@ -3,6 +3,7 @@ import sys
 import traceback
 import collections
 import random
+import math as m
 
 """
 Configs
@@ -344,6 +345,14 @@ class LogicBlock():
     def output_bitstream(self):
         return self.config_bits
 
+    # randomly generate a sequence
+    def configure(self):
+        bitstream = ""
+        for i in range(0, self.config_width):
+            k = random.randint(0, 1)
+            bitstream += str(k)
+        return bitstream
+
 # 
 class ConfiguredLUT(LogicBlock):
     # INPUT_WIDTH is the width of the input
@@ -353,14 +362,6 @@ class ConfiguredLUT(LogicBlock):
         self.config_width = int(pow(2, INPUT_WIDTH))
         self.config_bits = self.configure() if generate else config_bits
 
-    # randomly generate a sequence
-    def configure(self):
-        bitstream = ""
-        for i in range(0, self.config_width):
-            k = random.randint(0, 1)
-            bitstream += str(k)
-        return bitstream
-            
 
 class ConfiguredS44(LogicBlock):
     def __init__(self, INPUT_WIDTH, generate, split="1", lut_left_config="0000111100001111", lut_right_config="0000111100001111"):
@@ -373,11 +374,45 @@ class ConfiguredS44(LogicBlock):
         self.lut_left = ConfiguredLUT(INPUT_WIDTH, False, self.config_bits[2*self.mem_size-1:self.mem_size])
         self.lut_right = ConfiguredLUT(INPUT_WIDTH, False, lut_right_config[self.mem_size-1:0])
 
-    def configure(self):
-        bitstream = ""
-        for i in range(0, self.config_width):
-            k = random.randint(0, 1)
-            bitstream += str(k)
-        return bitstream        
+
+class ConfiguredMuxFSlice(LogicBlock):
+    def __init__(self, INPUT_WIDTH, generate, mux_f_slice_config="10"):
+        self.name = str(INPUT_WIDTH) + "_mux_f_slice"
+        self.config_width = int(m.log2(INPUT_WIDTH))
+        self.config_bits = self.configure() if generate else mux_f_slice_config
+
+
+class ConfiguredRegisters(LogicBlock):
+    def __init__(self, INPUT_WIDTH, generate, regs_config="11001100"):
+        self.name = str(INPUT_WIDTH) + "_regs"
+        self.config_width = 2 * INPUT_WIDTH
+        self.config_bits = self.configure() if generate else regs_config
+
+
+# the configuration bits are carried out as (LEFT IS THE MSB):
+# [mux_f_slice (2bits)] [config_use_cc (1bit)] [regs (8bits)] [S44_3 (33bits)] [S44_2 (33bits)] [S44_1 (33bits)] [S44_0 (33bits)]
+class ConfiguredSliceL(LogicBlock):
+    def __init__ (self, params, generate, slicel_config="1" * 143):
+        # parameters
+        self.s_xx_base = params["s_xx_base"]
+        self.num_luts = params["num_luts"]
+        self.name = str(self.num_luts) + "_SliceL"
+        self.cfg_size = 2 * int(pow(2, self.s_xx_base)) + 1
+        self.mux_lvls = int(m.log2(self.num_luts))
+
+        # models
+        self.luts = list()
+
+        # config size and bits
+        self.config_width = (self.num_luts * self.cfg_size) + self.mux_lvls + 1 + (2 * self.num_luts)
+        self.config_bits = self.configure() if generate else slicel_config
+
+        # instantiated models
+        # fslice, config_use_cc, regs, luts
+        for i in range(0, self.num_luts):
+            self.luts.append(ConfiguredS44(self.s_xx_base, False, self.config_bits[(i+1)*self.cfg_size-1:i*self.cfg_size]))    
+        self.regs = ConfiguredRegisters(self.num_luts, False, self.config_bits[(self.num_luts * self.cfg_size + 2 * self.num_luts - 1):self.num_luts * self.cfg_size])
+        self.config_use_cc = self.config_bits[(self.num_luts * self.cfg_size + 2 * self.num_luts + 1):self.num_luts * self.cfg_size + 2 * self.num_luts]
+        self.fslice = ConfiguredMuxFSlice(self.num_luts, False, self.config_bits[self.config_width-1:self.config_width-1-int(m.log2(self.num_luts))])
 
 
