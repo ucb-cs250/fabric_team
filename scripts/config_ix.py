@@ -84,7 +84,7 @@ def main():
     params = dict()
     params["s_xx_base"] = 4
     params["num_luts"] = 4
-    slicel = ConfiguredSliceL(params, True,)
+    slicel = ConfiguredSliceL(params, True, True,)
     print(slicel.output_bitstream())
 
 if __name__ == '__main__':
