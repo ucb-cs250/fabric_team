@@ -389,10 +389,18 @@ class ConfiguredRegisters(LogicBlock):
         self.config_bits = self.configure() if generate else regs_config
 
 
+class ConfiguredUseCC(LogicBlock):
+    def __init__(self, generate, from_carry_chain):
+        self.name = "use_cc"
+        self.config_width = 1
+        val = "1" if from_carry_chain else "0"
+        self.config_bits = self.configure() if generate else val
+
+
 # the configuration bits are carried out as (LEFT IS THE MSB):
 # [mux_f_slice (2bits)] [config_use_cc (1bit)] [regs (8bits)] [S44_3 (33bits)] [S44_2 (33bits)] [S44_1 (33bits)] [S44_0 (33bits)]
 class ConfiguredSliceL(LogicBlock):
-    def __init__ (self, params, generate, slicel_config="1" * 143):
+    def __init__ (self, params, from_carry_chain, generate, slicel_config="1" * 143):
         # parameters
         self.s_xx_base = params["s_xx_base"]
         self.num_luts = params["num_luts"]
@@ -412,7 +420,7 @@ class ConfiguredSliceL(LogicBlock):
         for i in range(0, self.num_luts):
             self.luts.append(ConfiguredS44(self.s_xx_base, False, self.config_bits[(i+1)*self.cfg_size-1:i*self.cfg_size]))    
         self.regs = ConfiguredRegisters(self.num_luts, False, self.config_bits[(self.num_luts * self.cfg_size + 2 * self.num_luts - 1):self.num_luts * self.cfg_size])
-        self.config_use_cc = self.config_bits[(self.num_luts * self.cfg_size + 2 * self.num_luts + 1):self.num_luts * self.cfg_size + 2 * self.num_luts]
+        self.config_use_cc = ConfiguredUseCC(False, from_carry_chain)
         self.fslice = ConfiguredMuxFSlice(self.num_luts, False, self.config_bits[self.config_width-1:self.config_width-1-int(m.log2(self.num_luts))])
 
 
