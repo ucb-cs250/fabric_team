@@ -25,16 +25,16 @@ module slicel_tile_tb;
     reg [MUX_LVLS-1:0] higher_order_addr;         // 2
 
     // configs set by the input file
-    wire [CFG_SIZE*NUM_LUTS-1:0] luts_config_in;   // 33*4
-    wire [MUX_LVLS-1:0] inter_lut_mux_config;      // 2
-    wire config_use_cc;                            // 1
-    wire [2*NUM_LUTS-1:0] regs_config_in;          // 8
+    reg [CFG_SIZE*NUM_LUTS-1:0] luts_config_in;   // 33*4
+    reg [MUX_LVLS-1:0] inter_lut_mux_config;      // 2
+    reg config_use_cc;                            // 1
+    reg [2*NUM_LUTS-1:0] regs_config_in;          // 8
 
     // hardcoded for now
-    assign luts_config_in = config_storage[1][131:0];
-    assign inter_lut_mux_config = config_storage[1][133:132];
-    assign config_use_cc = config_storage[1][134];
-    assign regs_config_in = config_storage[1][142:135];
+    //assign luts_config_in = config_storage[1][131:0];
+    //assign inter_lut_mux_config = config_storage[1][133:132];
+    //assign config_use_cc = config_storage[1][134];
+    //assign regs_config_in = config_storage[1][142:135];
 
     // outputs
     wire Co;                                      // 1   
@@ -62,23 +62,13 @@ module slicel_tile_tb;
         .sync_out(sync_out)
     );
 
+    integer i;
+
     initial begin
         $vcdpluson;
         // Read test vector containing configuration bitstream.
         $display("Loading bitstream...");
-        $readmemb("/home/cc/eecs151/fa20/class/eecs151-abp/project_skeleton/src/bitstream.txt", config_storage);        
-        $display();
-
-        // these are hardcoded for now
-        $display("The loaded configs are parsed as:");
-        $display("The memory config bits for 0th S44 is: %b", luts_config_in[32:0]);
-        $display("The memory config bits for 1th S44 is: %b", luts_config_in[65:33]);
-        $display("The memory config bits for 2th S44 is: %b", luts_config_in[98:66]);
-        $display("The memory config bits for 3th S44 is: %b", luts_config_in[131:99]);
-        $display("the config for f8mux is: %b", inter_lut_mux_config[1]);
-        $display("the config for f7mux is: %b", inter_lut_mux_config[0]); 
-        $display("the config for use_cc is: %b", config_use_cc);
-        $display("the initial value config for registers are: %b", regs_config_in);  // initial state of FF (sync_out)
+        $readmemb("slicel_bitstream", config_storage);        
         $display();
 
         // here we set the input to the slicel
@@ -88,34 +78,57 @@ module slicel_tile_tb;
         Ci = 1'b1;
         $display();
 
-        $display("Verifying results...");
-        $display();
 
-        reg_ce <= 0; cen <= 1; @(posedge clk)
-        @(posedge clk)
+        for (i = 0; i < 2; i = i + 1) begin
+            $display("Running config case %d", i);
+            $display();        
 
-        $display("test1: the initial config for registers is properly loaded:");
-        $display("the correct value is %b, and the value from the ouput is %b", regs_config_in, sync_out);
-        $display();
+            // these are hardcoded for now
+            luts_config_in = config_storage[i][131:0];
+            inter_lut_mux_config = config_storage[i][133:132];
+            config_use_cc = config_storage[i][134];
+            regs_config_in = config_storage[i][142:135];
 
-        $display("test2: the async output has the correct value:");
-        $display("the correct value is %b, and the value from the ouput is %b", 8'b11111111, out);
-        $display();
+            $display("The loaded configs are parsed as:");
+            $display("The memory config bits for 0th S44 is: %b", luts_config_in[32:0]);
+            $display("The memory config bits for 1th S44 is: %b", luts_config_in[65:33]);
+            $display("The memory config bits for 2th S44 is: %b", luts_config_in[98:66]);
+            $display("The memory config bits for 3th S44 is: %b", luts_config_in[131:99]);
+            $display("the config for f8mux is: %b", inter_lut_mux_config[1]);
+            $display("the config for f7mux is: %b", inter_lut_mux_config[0]); 
+            $display("the config for use_cc is: %b", config_use_cc);
+            $display("the initial value config for registers are: %b", regs_config_in);  // initial state of FF (sync_out)
+            $display();
 
-        reg_ce <= 1; cen <= 0; @(posedge clk)
-        @(posedge clk)
+            $display("Verifying results...");
+            $display();
 
-        $display("test3: after cen is low, we now test the correct value for registers:");
-        $display("the correct value is %b, and the value from the output is %b", 8'b11111111, sync_out);
-        $display();
+            reg_ce <= 0; cen <= 1; @(posedge clk);
+            @(posedge clk);
 
-        $display("test4: after cen is low, the async output has the correct value:");
-        $display("the correct value is %b, and the value from the ouput is %b", 8'b11111111, out);
-        $display();
+            $display("test1: the initial config for registers is properly loaded:");
+            $display("the correct value is %b, and the value from the ouput is %b", regs_config_in, sync_out);
+            $display();
 
-        @(posedge clk)
-        @(posedge clk)
-        @(posedge clk)
+            $display("test2: the async output has the correct value:");
+            $display("the correct value is %b, and the value from the ouput is %b", 8'b11111111, out);
+            $display();
+
+            reg_ce <= 1; cen <= 0; @(posedge clk);
+            @(posedge clk);
+
+            $display("test3: after cen is low, we now test the correct value for registers:");
+            $display("the correct value is %b, and the value from the output is %b", 8'b11111111, sync_out);
+            $display();
+
+            $display("test4: after cen is low, the async output has the correct value:");
+            $display("the correct value is %b, and the value from the ouput is %b", 8'b11111111, out);
+            $display();
+
+            @(posedge clk);
+            @(posedge clk);
+            @(posedge clk);
+        end
         $vcdplusoff;
         $finish();
     end
