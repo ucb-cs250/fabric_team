@@ -1498,6 +1498,8 @@ def pack(design, device):
     num_cells = len(design.get_cells())
     # Worst possible packing solution: every cell is packed in different CLB
     max_clbs = num_cells
+    # Use Optimization solvers from Google OrTools
+    # References: https://developers.google.com/optimization/bin/bin_packing
     solver = pywraplp.Solver.CreateSolver("SCIP")
 
     cellvar_map = dict()
@@ -1598,8 +1600,6 @@ def pack(design, device):
         for cell_id in packs[clb_id]:
             cell = design.find_cell(cell_id)
             clb.pack_cell(cell)
-
-    print("Test");
 
 def place(design, device):
     print("Placing")
