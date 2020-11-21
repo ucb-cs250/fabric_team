@@ -120,27 +120,27 @@ module slicel_tile_tb;
               $display();
   
               $display("test2: the async output has the correct value:");
-              $display("the correct value is %b, and the value from the ouput is %b", 8'b11111111, out);
+              $display("(verify) the value from the ouput is %b", out);
               $display();
   
               reg_ce <= 1; cen <= 0; @(posedge clk);
               @(posedge clk);
   
               $display("test3: after cen is low, we now test the correct value for registers:");
-              $display("the correct value is %b, and the value from the output is %b", 8'b11111111, sync_out);
+              $display("(verify) the value from the output is %b", sync_out);
               $display();
   
               $display("test4: after cen is low, the async output has the correct value:");
-              $display("the correct value is %b, and the value from the ouput is %b", 8'b11111111, out);
+              $display("(verify) the value from the ouput is %b", out);
               $display();
   
               @(posedge clk);
               @(posedge clk);
               @(posedge clk);
           end
-          $vcdplusoff;
-          $finish();
       end
+      $vcdplusoff;
+      $finish();
     end
   
 endmodule
