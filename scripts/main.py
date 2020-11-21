@@ -2,6 +2,7 @@ import sys
 import json
 from enum import Enum
 from random import randrange
+from ortools.linear_solver import pywraplp
 
 class CLB_PIN(Enum):
     LUT1_I0 = 0
@@ -1492,50 +1493,113 @@ def pack(design, device):
     print(lut_dff)
     print(dff_lut)
 
-#    for cell in design.get_cells():
-#        cell_id = cell.get_id()
-#        packed = False
-#        for packed_id in packs.values():
-#            # cell is already packed
-#            if cell_id in packed_id:
-#                packed = True
-#                break
-#
-#        if packed:
-#            continue
-#
-#        for cluster in packs:
-#            num_luts_in_cluster = design.get_num_cells_of_type(packs[cluster], "LUT4")
-#            num_dffs_in_cluster = design.get_num_cells_of_type(packs[cluster], "DFFER")
-#            print(num_luts_in_cluster, num_dffs_in_cluster)
-#
-#            if cell.is_lut() and num_luts_in_cluster == CLB.LUT:
-#                continue
-#            else:
-#                packs[cluster].append(cell.get_id())
-#                packed = True
-#                break
-#
-#            if cell.is_dff() and num_dffs_in_cluster == CLB.LUT:
-#                continue
-#            else:
-#                packs[cluster].append(cell.get_id())
-#                packed = True
-#                break
-#
-#        if packed:
-#            continue
-#
-#        # If there is no existing CLB that we can pack the cell to, create a new CLB
-#        clb = device.create_clb()
-#        packs[clb.get_id()] = [cell_id]
+    num_luts = len(luts)
+    num_dffs = len(dffs)
+    num_cells = len(design.get_cells())
+    # Worst possible packing solution: every cell is packed in different CLB
+    max_clbs = num_cells
+    solver = pywraplp.Solver.CreateSolver("SCIP")
 
+    cellvar_map = dict()
+
+    # lut_vars[i, j] = 1 if LUT i is packed in CLB j
+    lut_vars = {}
+    # dff_vars[i, j] = 1 if DFF i is packed in CLB j
+    dff_vars = {}
+    # clb[j] = 1 if CLB j is used
+    clb_vars = {}
+
+    for i in range(num_luts):
+        for j in range(max_clbs):
+            lut_vars[(i, j)] = solver.IntVar(0, 1, "lut_vars_%i_%i" % (i, j))
+        cellvar_map[luts[i].get_id()] = i
+
+    for i in range(num_dffs):
+        for j in range(max_clbs):
+            dff_vars[(i, j)] = solver.IntVar(0, 1, "dff_vars_%i_%i" % (i, j))
+        cellvar_map[dffs[i].get_id()] = i
+
+    for j in range(max_clbs):
+        clb_vars[j] = solver.IntVar(0, 1, "clb_vars_%i" % j)
+
+    # Constraints
+    # A LUT cell can only be mapped to a single CLB
+    for i in range(num_luts):
+        solver.Add(sum(lut_vars[(i, j)] for j in range(max_clbs)) == 1)
+
+    # A DFF cell can only be mapped to a single CLB
+    for i in range(num_dffs):
+        solver.Add(sum(dff_vars[(i, j)] for j in range(max_clbs)) == 1)
+
+    # A CLB can have as much as 8 LUTs
+    for j in range(max_clbs):
+        solver.Add(sum(lut_vars[(i, j)] for i in range(num_luts)) <= 8 * clb_vars[j])
+
+    # A CLB can have as much as 8 DFFs
+    for j in range(max_clbs):
+        solver.Add(sum(dff_vars[(i, j)] for i in range(num_dffs)) <= 8 * clb_vars[j])
+
+    # We would like a LUT->LUT pair to pack in a single CLB
+    for lut0_id, lut1_id in lut44s.items():
+        idx0 = cellvar_map[lut0_id]
+        idx1 = cellvar_map[lut1_id]
+        print("check0", idx0, idx1)
+        for j in range(max_clbs):
+            solver.Add(lut_vars[(idx0, j)] - lut_vars[(idx1, j)] == 0)
+ 
+    # We would like a LUT->DFF pair to pack in a single CLB
+    for lut_id, dff_id in lut_dff.items():
+        idx0 = cellvar_map[lut_id]
+        idx1 = cellvar_map[dff_id]
+
+        for j in range(max_clbs):
+            solver.Add(lut_vars[(idx0, j)] - dff_vars[(idx1, j)] == 0)
+ 
+    # We would like a DFF->LUT pair to pack in different CLBs
+    # Not sure if it's a good idea
+    # If there is enough local routing resource within a CLB for a feedback from
+    # DFF to a LUT, this might not be necessary
+    for dff_id, lut_id in dff_lut.items():
+        idx0 = cellvar_map[dff_id]
+        idx1 = cellvar_map[lut_id]
+        print("check", idx0, idx1)
+        for j in range(max_clbs):
+            solver.Add(dff_vars[(idx0, j)] + lut_vars[(idx1, j)] <= 1 * clb_vars[j])
+ 
+    # TODO: for more complicated relationships between the cells, we need to figure
+    # a proper way to assign weights for each
+         
+    # Objective
+    # We would like to minimize the number of CLBs for packing
+    solver.Minimize(solver.Sum([clb_vars[j] for j in range(max_clbs)]))
+
+    status = solver.Solve()
+
+    print("Solver status (0 is good):", status)
+    if status == pywraplp.Solver.OPTIMAL:
+        print("OPTIMAL!")
+        for j in range(max_clbs):
+            if clb_vars[j].solution_value() == 1:
+                clb = device.create_clb()
+                packs[clb.get_id()] = []
+            for i in range(num_luts):
+                if lut_vars[(i, j)].solution_value() == 1:
+                    print("Pack LUT %i to CLB %i" % (i, j))
+                    packs[clb.get_id()].append(luts[i].get_id())
+            for i in range(num_dffs):
+                if dff_vars[(i, j)].solution_value() == 1:
+                    print("Pack DFF %i to CLB %i" % (i, j))
+                    packs[clb.get_id()].append(dffs[i].get_id())
+
+    print("Number of packed CLB:", len(packs))
     print(packs)
-    for cluster in packs:
-        clb = device.find_clb(0)
-        for cell_id in packs[cluster]:
+    for clb_id in packs:
+        clb = device.find_clb(clb_id)
+        for cell_id in packs[clb_id]:
             cell = design.find_cell(cell_id)
             clb.pack_cell(cell)
+
+    print("Test");
 
 def place(design, device):
     print("Placing")
