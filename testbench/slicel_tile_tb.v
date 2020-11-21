@@ -18,6 +18,7 @@ module slicel_tile_tb;
 
     // config storage: 143 bits in total
     reg [(CFG_SIZE*NUM_LUTS+MUX_LVLS+2*NUM_LUTS):0] config_storage [1:0];
+    reg [34:0] input_storage [1:0];
 
     // inputs
     reg reg_ce, cen, Ci;
@@ -62,75 +63,84 @@ module slicel_tile_tb;
         .sync_out(sync_out)
     );
 
-    integer i;
+    integer i, j;
 
     initial begin
         $vcdpluson;
         // Read test vector containing configuration bitstream.
         $display("Loading bitstream...");
-        $readmemb("slicel_bitstream", config_storage);        
+        $readmemb("/home/cc/eecs151/fa20/class/eecs151-abp/project_skeleton/src/slicel_bitstream", config_storage);        
         $display();
 
         // here we set the input to the slicel
-        $display("Setting inputs...");
-        luts_in = 32'hfa0f;
-        higher_order_addr = 2'b10;
-        Ci = 1'b1;
-        $display();
+        $display("Loading inputs...");
+        $readmemb("/home/cc/eecs151/fa20/class/eecs151-abp/project_skeleton/src/slicel_input", input_storage);
+        for (j = 0; j < 2; j = j + 1) begin
+          $display("The loaded inputs are parsed as:");
+          luts_in = input_storage[j][31:0];
+          higher_order_addr = input_storage[j][33:32];
+          Ci = input_storage[j][34];
+          $display("the luts addr for 0th S44 is %b", luts_in[7:0]);
+          $display("the luts addr for 1st S44 is %b", luts_in[15:8]);
+          $display("the luts addr for 2nd S44 is %b", luts_in[23:16]);
+          $display("the luts addr for 3rd S44 is %b", luts_in[31:24]);
+          $display("the higher order addr is %b", higher_order_addr);
+          $display("the ci is %b", Ci);
+          $display();
 
+          for (i = 0; i < 2; i = i + 1) begin
+              $display("For %dth input, running config case %d", j, i);
+              $display();        
 
-        for (i = 0; i < 2; i = i + 1) begin
-            $display("Running config case %d", i);
-            $display();        
+              // these are hardcoded for now
+              luts_config_in = config_storage[i][131:0];
+              inter_lut_mux_config = config_storage[i][133:132];
+              config_use_cc = config_storage[i][134];
+              regs_config_in = config_storage[i][142:135];
 
-            // these are hardcoded for now
-            luts_config_in = config_storage[i][131:0];
-            inter_lut_mux_config = config_storage[i][133:132];
-            config_use_cc = config_storage[i][134];
-            regs_config_in = config_storage[i][142:135];
+              $display("The loaded configs are parsed as:");
+              $display("The memory config bits for 0th S44 is: %b", luts_config_in[32:0]);
+              $display("The memory config bits for 1th S44 is: %b", luts_config_in[65:33]);
+              $display("The memory config bits for 2th S44 is: %b", luts_config_in[98:66]);
+              $display("The memory config bits for 3th S44 is: %b", luts_config_in[131:99]);
+              $display("the config for f8mux is: %b", inter_lut_mux_config[1]);
+              $display("the config for f7mux is: %b", inter_lut_mux_config[0]); 
+              $display("the config for use_cc is: %b", config_use_cc);
+              $display("the initial value config for registers are: %b", regs_config_in);  // initial state of FF (sync_out)
+              $display();
 
-            $display("The loaded configs are parsed as:");
-            $display("The memory config bits for 0th S44 is: %b", luts_config_in[32:0]);
-            $display("The memory config bits for 1th S44 is: %b", luts_config_in[65:33]);
-            $display("The memory config bits for 2th S44 is: %b", luts_config_in[98:66]);
-            $display("The memory config bits for 3th S44 is: %b", luts_config_in[131:99]);
-            $display("the config for f8mux is: %b", inter_lut_mux_config[1]);
-            $display("the config for f7mux is: %b", inter_lut_mux_config[0]); 
-            $display("the config for use_cc is: %b", config_use_cc);
-            $display("the initial value config for registers are: %b", regs_config_in);  // initial state of FF (sync_out)
-            $display();
+              $display("Verifying results...");
+              $display();
 
-            $display("Verifying results...");
-            $display();
-
-            reg_ce <= 0; cen <= 1; @(posedge clk);
-            @(posedge clk);
-
-            $display("test1: the initial config for registers is properly loaded:");
-            $display("the correct value is %b, and the value from the ouput is %b", regs_config_in, sync_out);
-            $display();
-
-            $display("test2: the async output has the correct value:");
-            $display("the correct value is %b, and the value from the ouput is %b", 8'b11111111, out);
-            $display();
-
-            reg_ce <= 1; cen <= 0; @(posedge clk);
-            @(posedge clk);
-
-            $display("test3: after cen is low, we now test the correct value for registers:");
-            $display("the correct value is %b, and the value from the output is %b", 8'b11111111, sync_out);
-            $display();
-
-            $display("test4: after cen is low, the async output has the correct value:");
-            $display("the correct value is %b, and the value from the ouput is %b", 8'b11111111, out);
-            $display();
-
-            @(posedge clk);
-            @(posedge clk);
-            @(posedge clk);
-        end
-        $vcdplusoff;
-        $finish();
+              reg_ce <= 0; cen <= 1; @(posedge clk);
+              @(posedge clk);
+ 
+              $display("test1: the initial config for registers is properly loaded:");
+              $display("the correct value is %b, and the value from the ouput is %b", regs_config_in, sync_out);
+              $display();
+  
+              $display("test2: the async output has the correct value:");
+              $display("the correct value is %b, and the value from the ouput is %b", 8'b11111111, out);
+              $display();
+  
+              reg_ce <= 1; cen <= 0; @(posedge clk);
+              @(posedge clk);
+  
+              $display("test3: after cen is low, we now test the correct value for registers:");
+              $display("the correct value is %b, and the value from the output is %b", 8'b11111111, sync_out);
+              $display();
+  
+              $display("test4: after cen is low, the async output has the correct value:");
+              $display("the correct value is %b, and the value from the ouput is %b", 8'b11111111, out);
+              $display();
+  
+              @(posedge clk);
+              @(posedge clk);
+              @(posedge clk);
+          end
+          $vcdplusoff;
+          $finish();
+      end
     end
-
+  
 endmodule
