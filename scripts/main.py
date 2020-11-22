@@ -351,6 +351,13 @@ class Device():
         # Pin-to-pin connections
         self.routed_paths = dict()
         self.pins = dict()
+        self.sb_cong = dict()
+        for y in range(num_rows):
+            for x in range(num_cols):
+                self.sb_cong[((y, x), 0)] = 0 # from (y, x) heading North
+                self.sb_cong[((y, x), 1)] = 0 # from (y, x) heading South
+                self.sb_cong[((y, x), 2)] = 0 # from (y, x) heading East
+                self.sb_cong[((y, x), 3)] = 0 # from (y, x) heading West
 
     def get_num_rows(self):
         return self.num_rows
@@ -383,7 +390,7 @@ class Device():
         self.clb_array[y][x] = clb.get_id()
         clb.set_place(y, x)
 
-    def print_placement_array(self):
+    def print_placement_map(self):
         for y in range(self.num_rows):
             for x in range(self.num_cols):
                 placed_obj = self.clb_array[self.num_rows - 1 - y][x]
@@ -539,7 +546,7 @@ class Device():
                     connected_pins.append(self.create_pin(Device.Pins.cb_double_pins[idx - Device.Config.H_DOUBLE_WIDTH], pin_type, pin_x, pin_y - 1))
                 elif pin_type == Pin.Type.CB1:
                     # SB in the same tile with west pins
-                    connected_pin_num = Device.Pins.sb_west_double_pins[idx - self.doub]
+                    connected_pin_num = Device.Pins.sb_west_double_pins[idx - Device.Config.H_DOUBLE_WIDTH]
                     connected_pins.append(self.create_pin(connected_pin_num, Pin.Type.SB, pin_x, pin_y))
                     # Direct connection to the CB in the West tile (skip SB in the west tile)
                     connected_pins.append(self.create_pin(Device.Pins.cb_double_pins[idx - Device.Config.H_DOUBLE_WIDTH], pin_type, pin_x - 1, pin_y))
@@ -715,19 +722,29 @@ class Device():
         output_pins = []
         input_pins = []
         for clb in self.clbs:
-            for pin_num, port in clb.pin_map:
+            for pin_num, (port, conn_id) in clb.pin_map:
+                # Ignore constant net
+                if conn_id == 0 or conn_id == 1:
+                    continue
+
                 tile_y, tile_x = clb.get_yx()
                 pin = self.create_pin(pin_num, Pin.Type.CLB, tile_x, tile_y)
                 if pin.is_clb_output():
-                    output_pins.append((pin, port))
+                    output_pins.append((pin, (port, conn_id)))
                 else:
-                    input_pins.append((pin, port))
+                    input_pins.append((pin, (port, conn_id)))
 
-        for output_pin, port0 in output_pins:
-            for input_pin, port1 in input_pins:
-                for net in design_nets:
-                    if net.is_connecting(port0, port1):
-                        paths.append((output_pin, input_pin))
+        for output_pin, (port0, conn_id0) in output_pins:
+            for input_pin, (port1, conn_id1) in input_pins:
+                out_y, out_x = output_pin.get_yx()
+                in_y, in_x = input_pin.get_yx()
+                if out_y == in_y and out_x == in_x:
+                    continue
+
+                if conn_id0 != conn_id1:
+                    continue
+                # if the conn_ids match, they are connected
+                paths.append((output_pin, input_pin))
 
         return paths
 
@@ -780,19 +797,69 @@ class Device():
         if is_src_pin_from_south or is_src_pin_from_west:
             global_path.append((imm_y, imm_x))
 
+        old_moves = []
+        # 8 is the switchbox maximum capacity per direction
+        # (4 single wires + 4 double wires (first-half))
+        congestion_threshold = 7
+        print("Finding Global Routing Path from (y=%i, x=%i) to (y=%i, x=%i)" %
+             (imm_y, imm_x, imm_snk_y, imm_snk_x))
         while imm_x != imm_snk_x or imm_y != imm_snk_y:
-            #TODO: check for congestion to ripup and reroute in case
+            north_cong = self.sb_cong[((imm_y, imm_x), 0)]
+            south_cong = self.sb_cong[((imm_y, imm_x), 1)]
+            east_cong  = self.sb_cong[((imm_y, imm_x), 2)]
+            west_cong  = self.sb_cong[((imm_y, imm_x), 3)]
 
-            if imm_x < imm_snk_x:
-                imm_x += 1
-            elif imm_x > imm_snk_x:
-                imm_x -= 1
-            elif imm_x == imm_snk_x:
-                if imm_y < imm_snk_y:
-                    imm_y += 1
-                elif imm_y > imm_snk_y:
-                    imm_y -= 1
-            global_path.append((imm_y, imm_x))
+            print("Switchbox Congestion at (%i, %i)" % (imm_y, imm_x))
+            print("->North", north_cong)
+            print("->South", south_cong)
+            print("->East", east_cong)
+            print("->West", west_cong)
+
+            north_move = (imm_y + 1, imm_x)
+            south_move = (imm_y - 1, imm_x)
+            east_move  = (imm_y, imm_x + 1)
+            west_move  = (imm_y, imm_x - 1)
+
+            # Calculate Manhanttan distance to the destination for each move
+            north_mhdist = abs(north_move[0] - imm_snk_y) + abs(north_move[1] - imm_snk_x)
+            south_mhdist = abs(south_move[0] - imm_snk_y) + abs(south_move[1] - imm_snk_x)
+            east_mhdist  = abs(east_move[0]  - imm_snk_y) + abs(east_move[1]  - imm_snk_x)
+            west_mhdist  = abs(west_move[0]  - imm_snk_y) + abs(west_move[1]  - imm_snk_x)
+
+            moves = []
+            moves.append((north_mhdist, north_move, north_cong, "N"))
+            moves.append((south_mhdist, south_move, south_cong, "S"))
+            moves.append((east_mhdist, east_move, east_cong, "E"))
+            moves.append((west_mhdist, west_move, west_cong, "W"))
+            # Sort in ascending order of the Manhattan distance to the destination
+            moves.sort(key=lambda x: x[0], reverse=False)
+
+            print("All possible moves", moves)
+            found_move = False
+            for dist, move, cong, direction in moves:
+                # Reject move that leads to highly congested region
+                if cong > congestion_threshold:
+                    continue
+
+                # Reject move that steps beyond the fabric boundary
+                if move[0] >= self.num_rows or move[1] >= self.num_cols or\
+                   move[0] < 0 or move[1] < 0:
+                    continue
+
+                # Ignore old moves since they may lead to deadlock
+                if move in old_moves:
+                    continue
+
+                global_path.append((move[0], move[1]))
+                imm_y, imm_x = move
+                found_move = True
+                print("Heading", direction)
+                old_moves.append(move)
+                break
+
+            # TODO: Instead of triggering an error here, consider back up one
+            # (or several steps) so that we might find a less congested path
+            assert found_move == True, "Failed to find the next move for Global Routing!"
 
         if is_snk_pin_from_south or is_snk_pin_from_west:
             global_path.append((snk_y, snk_x))
@@ -854,16 +921,24 @@ class Device():
                 # found path
                 found_path = True
                 break
-            elif (cur_y, cur_x) != (snk_y, snk_x):
+            elif ((cur_y, cur_x) != (snk_y, snk_x)) or\
+                ((cur_y, cur_x) == (snk_y, snk_x) and pin_step < len(global_path) - 1):
                 # If we have not reached the destination, check the next step
                 # from the global routing path and try to steer the direction
                 # towards it
+                # Another corner case is that the destination is one intermediate stop
+                # of the global routing path
                 step = global_path.index((cur_y, cur_x), pin_step)
-                next_y, next_x = global_path[step + 1]
+                if step < pin_step:
+                    next_y, next_x = global_path[pin_step]
+                elif step > pin_step:
+                    next_y, next_x = global_path[step]
+                else:
+                    next_y, next_x = global_path[step + 1]
 
-            #print("Src Pin:", pin.get_pin_num(),
-            #      pin.get_pin_type(), pin.get_yx(), " level ", cur_level,
-            #      " (next_y, next_x)", next_y, next_x)
+            print("Src Pin:", pin.get_pin_num(),
+                  pin.get_pin_type(), pin.get_yx(), " level ", cur_level,
+                  " (next_y, next_x)", next_y, next_x)
 
             next_pins = []
             for cpin in self.get_connected_pins(pin):
@@ -882,8 +957,8 @@ class Device():
             # Sort in descending order of priority values
             next_pins.sort(key=lambda x: x[0], reverse=True)
             for pnum, npin in next_pins:
-                #print("Next Pin:", npin.get_pin_num(),
-                #  npin.get_pin_type(), npin.get_yx(), " level ", cur_level + 1)
+                print("Next Pin:", npin.get_pin_num(),
+                  npin.get_pin_type(), npin.get_yx(), " level ", cur_level + 1)
 
                 # Add the next level of pins for exploration (DFS-style)
                 visits.append((cur_level + 1, npin, step))
@@ -895,12 +970,33 @@ class Device():
         assert found_path, "Failed to find path!"
 
         new_pins = []
-        for level, pin in route_pins:
+        for i in range(len(route_pins)):
+            level, pin = route_pins[i]
+            # skip the pin that is just (redundantly) transitive in a Switchbox
+            # This might be caused by using weak criteria when selecting pin
+            if i > 0 and i < len(route_pins) - 1:
+                plevel, ppin = route_pins[i - 1]
+                nlevel, npin = route_pins[i + 1]
+                if pin.get_pin_type() == ppin.get_pin_type() == npin.get_pin_type() == Pin.Type.SB and\
+                   pin.get_yx() == ppin.get_yx() == npin.get_yx():
+                   continue
+
+            # Keep track of the congestion level for each Switchbox
+            if pin.get_pin_type() == Pin.Type.SB:
+                if pin.is_north_pin():
+                    self.sb_cong[(pin.get_yx(), 0)] += 1
+                elif pin.is_south_pin():
+                    self.sb_cong[(pin.get_yx(), 1)] += 1
+                elif pin.is_east_pin():
+                    self.sb_cong[(pin.get_yx(), 2)] += 1
+                elif pin.is_west_pin():
+                    self.sb_cong[(pin.get_yx(), 3)] += 1
+
             pin.set_routed()
             print("Route Pin:", pin.get_pin_num(),
                   pin.get_pin_type(), pin.get_yx(), " level ", level)
             new_pins.append(pin)
-        print("Routed path length", len(route_pins))
+        print("Routed path length", len(new_pins))
 
         self.routed_paths[src_pin_hash] += [new_pins]
         return route_pins
@@ -1050,23 +1146,23 @@ class CLB():
         self.lut_id = dict()
         self.dff_id = dict()
 
-        self.lut_id[CLB.LUT.SXX_0] = None
-        self.lut_id[CLB.LUT.SXX_1] = None
-        self.lut_id[CLB.LUT.SXX_2] = None
-        self.lut_id[CLB.LUT.SXX_3] = None
-        self.lut_id[CLB.LUT.SXX_4] = None
-        self.lut_id[CLB.LUT.SXX_5] = None
-        self.lut_id[CLB.LUT.SXX_6] = None
-        self.lut_id[CLB.LUT.SXX_7] = None
+        self.lut_id[CLB.LUT.SXX_0] = -1
+        self.lut_id[CLB.LUT.SXX_1] = -1
+        self.lut_id[CLB.LUT.SXX_2] = -1
+        self.lut_id[CLB.LUT.SXX_3] = -1
+        self.lut_id[CLB.LUT.SXX_4] = -1
+        self.lut_id[CLB.LUT.SXX_5] = -1
+        self.lut_id[CLB.LUT.SXX_6] = -1
+        self.lut_id[CLB.LUT.SXX_7] = -1
 
-        self.dff_id[CLB.LUT.SXX_0] = None
-        self.dff_id[CLB.LUT.SXX_1] = None
-        self.dff_id[CLB.LUT.SXX_2] = None
-        self.dff_id[CLB.LUT.SXX_3] = None
-        self.dff_id[CLB.LUT.SXX_4] = None
-        self.dff_id[CLB.LUT.SXX_5] = None
-        self.dff_id[CLB.LUT.SXX_6] = None
-        self.dff_id[CLB.LUT.SXX_7] = None
+        self.dff_id[CLB.LUT.SXX_0] = -1
+        self.dff_id[CLB.LUT.SXX_1] = -1
+        self.dff_id[CLB.LUT.SXX_2] = -1
+        self.dff_id[CLB.LUT.SXX_3] = -1
+        self.dff_id[CLB.LUT.SXX_4] = -1
+        self.dff_id[CLB.LUT.SXX_5] = -1
+        self.dff_id[CLB.LUT.SXX_6] = -1
+        self.dff_id[CLB.LUT.SXX_7] = -1
 
         self.carry_chain_id = None
 
@@ -1089,87 +1185,91 @@ class CLB():
     def is_placed(self):
         return (self.x != -1 and self.y != -1)
 
-    def place_lut(self, lut_number, cell_id, ports):
+    def place_lut(self, lut_number, cell_id, port_map):
         self.lut_id[lut_number] = cell_id
         if lut_number == CLB.LUT.SXX_1:
-            self.pin_map.append((CLB_PIN.LUT1_I0, ports[0]))
-            self.pin_map.append((CLB_PIN.LUT1_I1, ports[1]))
-            self.pin_map.append((CLB_PIN.LUT1_I2, ports[2]))
-            self.pin_map.append((CLB_PIN.LUT1_I3, ports[3]))
-            self.pin_map.append((CLB_PIN.COMB_OUT1, ports[4]))
+            self.pin_map.append((CLB_PIN.LUT1_I0, port_map[0]))
+            self.pin_map.append((CLB_PIN.LUT1_I1, port_map[1]))
+            self.pin_map.append((CLB_PIN.LUT1_I2, port_map[2]))
+            self.pin_map.append((CLB_PIN.LUT1_I3, port_map[3]))
+            self.pin_map.append((CLB_PIN.COMB_OUT1, port_map[4]))
         elif lut_number == CLB.LUT.SXX_0:
-            self.pin_map.append((CLB_PIN.LUT0_I0, ports[0]))
-            self.pin_map.append((CLB_PIN.LUT0_I1, ports[1]))
-            self.pin_map.append((CLB_PIN.LUT0_I2, ports[2]))
-            self.pin_map.append((CLB_PIN.LUT0_I3, ports[3]))
-            self.pin_map.append((CLB_PIN.COMB_OUT0, ports[4]))
+            self.pin_map.append((CLB_PIN.LUT0_I0, port_map[0]))
+            self.pin_map.append((CLB_PIN.LUT0_I1, port_map[1]))
+            self.pin_map.append((CLB_PIN.LUT0_I2, port_map[2]))
+            self.pin_map.append((CLB_PIN.LUT0_I3, port_map[3]))
+            self.pin_map.append((CLB_PIN.COMB_OUT0, port_map[4]))
         elif lut_number == CLB.LUT.SXX_3:
-            self.pin_map.append((CLB_PIN.LUT3_I0, ports[0]))
-            self.pin_map.append((CLB_PIN.LUT3_I1, ports[1]))
-            self.pin_map.append((CLB_PIN.LUT3_I2, ports[2]))
-            self.pin_map.append((CLB_PIN.LUT3_I3, ports[3]))
-            self.pin_map.append((CLB_PIN.COMB_OUT3, ports[4]))
+            self.pin_map.append((CLB_PIN.LUT3_I0, port_map[0]))
+            self.pin_map.append((CLB_PIN.LUT3_I1, port_map[1]))
+            self.pin_map.append((CLB_PIN.LUT3_I2, port_map[2]))
+            self.pin_map.append((CLB_PIN.LUT3_I3, port_map[3]))
+            self.pin_map.append((CLB_PIN.COMB_OUT3, port_map[4]))
         elif lut_number == CLB.LUT.SXX_2:
-            self.pin_map.append((CLB_PIN.LUT2_I0, ports[0]))
-            self.pin_map.append((CLB_PIN.LUT2_I1, ports[1]))
-            self.pin_map.append((CLB_PIN.LUT2_I2, ports[2]))
-            self.pin_map.append((CLB_PIN.LUT2_I3, ports[3]))
-            self.pin_map.append((CLB_PIN.COMB_OUT2, ports[4]))
+            self.pin_map.append((CLB_PIN.LUT2_I0, port_map[0]))
+            self.pin_map.append((CLB_PIN.LUT2_I1, port_map[1]))
+            self.pin_map.append((CLB_PIN.LUT2_I2, port_map[2]))
+            self.pin_map.append((CLB_PIN.LUT2_I3, port_map[3]))
+            self.pin_map.append((CLB_PIN.COMB_OUT2, port_map[4]))
         elif lut_number == CLB.LUT.SXX_5:
-            self.pin_map.append((CLB_PIN.LUT5_I0, ports[0]))
-            self.pin_map.append((CLB_PIN.LUT5_I1, ports[1]))
-            self.pin_map.append((CLB_PIN.LUT5_I2, ports[2]))
-            self.pin_map.append((CLB_PIN.LUT5_I3, ports[3]))
-            self.pin_map.append((CLB_PIN.COMB_OUT5, ports[4]))
+            self.pin_map.append((CLB_PIN.LUT5_I0, port_map[0]))
+            self.pin_map.append((CLB_PIN.LUT5_I1, port_map[1]))
+            self.pin_map.append((CLB_PIN.LUT5_I2, port_map[2]))
+            self.pin_map.append((CLB_PIN.LUT5_I3, port_map[3]))
+            self.pin_map.append((CLB_PIN.COMB_OUT5, port_map[4]))
         elif lut_number == CLB.LUT.SXX_4:
-            self.pin_map.append((CLB_PIN.LUT4_I0, ports[0]))
-            self.pin_map.append((CLB_PIN.LUT4_I1, ports[1]))
-            self.pin_map.append((CLB_PIN.LUT4_I2, ports[2]))
-            self.pin_map.append((CLB_PIN.LUT4_I3, ports[3]))
-            self.pin_map.append((CLB_PIN.COMB_OUT4, ports[4]))
+            self.pin_map.append((CLB_PIN.LUT4_I0, port_map[0]))
+            self.pin_map.append((CLB_PIN.LUT4_I1, port_map[1]))
+            self.pin_map.append((CLB_PIN.LUT4_I2, port_map[2]))
+            self.pin_map.append((CLB_PIN.LUT4_I3, port_map[3]))
+            self.pin_map.append((CLB_PIN.COMB_OUT4, port_map[4]))
         elif lut_number == CLB.LUT.SXX_7:
-            self.pin_map.append((CLB_PIN.LUT7_I0, ports[0]))
-            self.pin_map.append((CLB_PIN.LUT7_I1, ports[1]))
-            self.pin_map.append((CLB_PIN.LUT7_I2, ports[2]))
-            self.pin_map.append((CLB_PIN.LUT7_I3, ports[3]))
-            self.pin_map.append((CLB_PIN.COMB_OUT7, ports[4]))
+            self.pin_map.append((CLB_PIN.LUT7_I0, port_map[0]))
+            self.pin_map.append((CLB_PIN.LUT7_I1, port_map[1]))
+            self.pin_map.append((CLB_PIN.LUT7_I2, port_map[2]))
+            self.pin_map.append((CLB_PIN.LUT7_I3, port_map[3]))
+            self.pin_map.append((CLB_PIN.COMB_OUT7, port_map[4]))
         elif lut_number == CLB.LUT.SXX_6:
-            self.pin_map.append((CLB_PIN.LUT6_I0, ports[0]))
-            self.pin_map.append((CLB_PIN.LUT6_I1, ports[1]))
-            self.pin_map.append((CLB_PIN.LUT6_I2, ports[2]))
-            self.pin_map.append((CLB_PIN.LUT6_I3, ports[3]))
-            self.pin_map.append((CLB_PIN.COMB_OUT6, ports[4]))
+            self.pin_map.append((CLB_PIN.LUT6_I0, port_map[0]))
+            self.pin_map.append((CLB_PIN.LUT6_I1, port_map[1]))
+            self.pin_map.append((CLB_PIN.LUT6_I2, port_map[2]))
+            self.pin_map.append((CLB_PIN.LUT6_I3, port_map[3]))
+            self.pin_map.append((CLB_PIN.COMB_OUT6, port_map[4]))
+        else:
+            assert False, "Illegal lut number!"
 
-    def place_dff(self, dff_number, cell_id, ports):
+    def place_dff(self, dff_number, cell_id, port_map):
         self.dff_id[dff_number] = cell_id
         #FIXME: D-input?
 
-        self.pin_map.append((CLB_PIN.REG_CE, ports[0])) # clock-enable
+        self.pin_map.append((CLB_PIN.REG_CE, port_map[0])) # clock-enable
 
         if dff_number == CLB.LUT.SXX_1:
-            self.pin_map.append((CLB_PIN.SYNC_OUT1, ports[1]))
+            self.pin_map.append((CLB_PIN.SYNC_OUT1, port_map[1]))
         elif dff_number == CLB.LUT.SXX_0:
-            self.pin_map.append((CLB_PIN.SYNC_OUT0, ports[1]))
+            self.pin_map.append((CLB_PIN.SYNC_OUT0, port_map[1]))
         elif dff_number == CLB.LUT.SXX_3:
-            self.pin_map.append((CLB_PIN.SYNC_OUT3, ports[1]))
+            self.pin_map.append((CLB_PIN.SYNC_OUT3, port_map[1]))
         elif dff_number == CLB.LUT.SXX_2:
-            self.pin_map.append((CLB_PIN.SYNC_OUT2, ports[1]))
+            self.pin_map.append((CLB_PIN.SYNC_OUT2, port_map[1]))
         elif dff_number == CLB.LUT.SXX_5:
-            self.pin_map.append((CLB_PIN.SYNC_OUT5, ports[1]))
+            self.pin_map.append((CLB_PIN.SYNC_OUT5, port_map[1]))
         elif dff_number == CLB.LUT.SXX_4:
-            self.pin_map.append((CLB_PIN.SYNC_OUT4, ports[1]))
+            self.pin_map.append((CLB_PIN.SYNC_OUT4, port_map[1]))
         elif dff_number == CLB.LUT.SXX_7:
-            self.pin_map.append((CLB_PIN.SYNC_OUT7, ports[1]))
+            self.pin_map.append((CLB_PIN.SYNC_OUT7, port_map[1]))
         elif dff_number == CLB.LUT.SXX_6:
-            self.pin_map.append((CLB_PIN.SYNC_OUT6, ports[1]))
+            self.pin_map.append((CLB_PIN.SYNC_OUT6, port_map[1]))
+        else:
+            assert False, "Illegal dff number!"
 
-    def place_carry_chain(self, cell_id, ports):
+    def place_carry_chain(self, cell_id, port_map):
         self.carry_chain_id = cell_id
 
-        self.pin_map.append((CLB_PIN.COMB_OUT1, ports[0]))
-        self.pin_map.append((CLB_PIN.COMB_OUT3, ports[1]))
-        self.pin_map.append((CLB_PIN.COMB_OUT5, ports[2]))
-        self.pin_map.append((CLB_PIN.COMB_OUT7, ports[3]))
+        self.pin_map.append((CLB_PIN.COMB_OUT1, port_map[0]))
+        self.pin_map.append((CLB_PIN.COMB_OUT3, port_map[1]))
+        self.pin_map.append((CLB_PIN.COMB_OUT5, port_map[2]))
+        self.pin_map.append((CLB_PIN.COMB_OUT7, port_map[3]))
 
     def pack_cell(self, cell):
         self.cells.append(cell)
@@ -1177,12 +1277,25 @@ class CLB():
     def get_packed_cells(self):
         return self.cells
 
+    def get_available_dff_ids(self):
+        dff_ids = [x for x in CLB.LUT if self.dff_id[x] == -1]
+        return dff_ids
+
+    def get_available_lut_ids(self):
+        lut_ids = [x for x in CLB.LUT if self.lut_id[x] == -1]
+        return lut_ids
+
+class INTRA_WIRE():
+    LUT_TO_CRC_P = [CLB.LUT.SXX_1, CLB.LUT.SXX_3, CLB.LUT.SXX_5, CLB.LUT.SXX_7]
+    LUT_TO_CRC_G = [CLB.LUT.SXX_0, CLB.LUT.SXX_2, CLB.LUT.SXX_4, CLB.LUT.SXX_6]
+    CRC_S_TO_DFF = [CLB.LUT.SXX_1, CLB.LUT.SXX_3, CLB.LUT.SXX_5, CLB.LUT.SXX_7]
+
 class Port():
     def __init__(self, port_name, port_dir, is_top = False):
         self.port_name = port_name
         self.port_dir  = port_dir # True: input, False: output
         self.is_top    = is_top
-        self.const_value = None
+        self.conn_ids = []
 
     def is_top_port(self):
         return self.is_top
@@ -1211,11 +1324,17 @@ class Port():
     def get_cell_id(self):
         return self.cell_id
 
-    def set_const_value(self, const_value):
-        self.const_value = const_value
+    def add_conn_id(self, conn_id):
+        self.conn_ids.append(conn_id)
+
+    def get_conn_ids(self):
+        return self.conn_ids
+
+    def get_const_value(self, const_value):
+        return self.conn_ids[0]
 
     def is_const_port(self):
-        return self.const_value == None
+        return len(self.conn_ids) == 1 and (self.conn_ids[0] == 0 or self.conn_ids[0] == 1)
 
 class Cell():
     def __init__(self, cell_id, cell_type, cell_params):
@@ -1223,6 +1342,7 @@ class Cell():
         self.cell_type = cell_type
         self.cell_params = cell_params
         self.ports = []
+        self.placed = False
 
     def get_name(self):
         return self.cell_type + '_' + str(self.cell_id)
@@ -1274,6 +1394,15 @@ class Cell():
         output_ports = [p for p in self.ports if p.is_cell_output()]
         return output_ports
 
+    def set_placed(self):
+        self.placed = True
+
+    def unplaced(self):
+        self.fplaced = False
+
+    def is_placed(self):
+        return self.placed
+
 class Net():
     def __init__(self, net_name, net_id, conn_ids):
         self.net_name = net_name
@@ -1311,12 +1440,12 @@ class Net():
         else:
             self.src[conn_id] = port
 
-    def is_connecting(self, src_port, snk_port):
-        for conn_id in self.conn_ids:
-            if self.src[conn_id].is_top_port():
-                continue
-            if self.src[conn_id] == src_port and snk_port in self.snks[conn_id]:
-                return True
+    def is_connecting(self, src_port, snk_port, conn_id):
+        if conn_id not in self.conn_ids:
+            return False
+
+        if self.src[conn_id] == src_port and snk_port in self.snks[conn_id]:
+            return True
         return False
             
     def get_src_ports(self, snk_port):
@@ -1443,8 +1572,42 @@ class Design():
 
         return num_cells
 
+    def get_src_cell_from_conn_id(self, conn_id):
+        src_cells = []
+        for net in self.nets:
+            net_conn_ids = net.get_conn_ids()
+            if conn_id not in net_conn_ids:
+                continue
+            src_port = net.get_src(conn_id)
+            cell_id = src_port.get_cell_id()
+            cell = self.find_cell(cell_id)
+            src_cells.append(cell)
+
+        assert len(src_cells) <= 1, "A port is driven by multiple sources!"
+        return src_cells[0]
+
+    def get_snk_cells_from_conn_id(self, conn_id):
+        snk_cells = []
+        for net in self.nets:
+            net_conn_ids = net.get_conn_ids()
+            if conn_id not in net_conn_ids:
+                continue
+            snk_ports = net.get_snks(conn_id)
+            cell_ids = [x.get_cell_id() for x in snk_ports]
+            snk_cells = [self.find_cell(x) for x in cell_ids]
+
+        return snk_cells
+
+    def get_num_unplaced_cells(self):
+        count = 0
+        for cell in self.cells:
+            if cell.is_placed() == False:
+                count += 1
+
+        return count
+
 def pack(design, device):
-    print("Packing")
+    print("[Packing]=========")
 
     packs = dict()
 
@@ -1455,20 +1618,15 @@ def pack(design, device):
     # Things to consider:
     #   - Pack LUT4 and FF together if there is a direct connection LUT4->FF
     #   - Pack LUT4 and LUT4 into a S44 cluster if there is a direct connection LUT4->LUT4
-    for cell in design.get_cells():
-        cell_id = cell.get_id()
-        if cell.is_carry_chain():
-            driving_cells = design.get_all_src_cell_ids(cell)
-            assert len(driving_cells) == len(CLB.LUT), "Something strange"
-            clb = device.create_clb()
-            packs[clb.get_id()] = [cell_id] + driving_cells
 
+    crcs = [x for x in design.get_cells() if x.is_carry_chain()]
     luts = [x for x in design.get_cells() if x.is_lut()]
     dffs = [x for x in design.get_cells() if x.is_dff()]
 
-    lut44s = dict()
+    lut44s  = dict()
     lut_dff = dict()
     dff_lut = dict()
+    lut_crc = dict()
 
     # Find LUT44 and LUT-DFF pairs
     for lut in luts:
@@ -1489,17 +1647,29 @@ def pack(design, device):
             if driven_cell.is_lut():
                 dff_lut[dff_cell_id] = cell_id
 
-    print(lut44s)
-    print(lut_dff)
-    print(dff_lut)
+    for crc in crcs:
+        crc_cell_id = crc.get_id()
+        lut_crc[crc_cell_id] = []
+        cell_ids = design.get_all_src_cell_ids(crc)
+        for cell_id in cell_ids:
+            driving_cell = design.find_cell(cell_id)
+            if driving_cell.is_lut():
+                lut_crc[crc_cell_id].append(cell_id)
+        assert len(lut_crc[crc_cell_id]) == len(CLB.LUT), "Something strange"
+
+    print("S44 pairs:", lut44s)
+    print("LUT->DFF pairs:", lut_dff)
+    print("DFF->LUT pairs:", dff_lut)
+    print("LUT->CarryChain pairs:", lut_crc)
 
     num_luts = len(luts)
     num_dffs = len(dffs)
+    num_crcs = len(crcs)
     num_cells = len(design.get_cells())
-    # Worst possible packing solution: every cell is packed in different CLB
+    # The worst possible packing solution: every cell is packed in different CLB
     max_clbs = num_cells
     # Use Optimization solvers from Google OrTools
-    # References: https://developers.google.com/optimization/bin/bin_packing
+    # Reference: https://developers.google.com/optimization/bin/bin_packing
     solver = pywraplp.Solver.CreateSolver("SCIP")
 
     cellvar_map = dict()
@@ -1508,6 +1678,8 @@ def pack(design, device):
     lut_vars = {}
     # dff_vars[i, j] = 1 if DFF i is packed in CLB j
     dff_vars = {}
+    # crc_vars[i, j] = 1 if CarryChain i is packed in CLB j
+    crc_vars = {}
     # clb[j] = 1 if CLB j is used
     clb_vars = {}
 
@@ -1521,6 +1693,11 @@ def pack(design, device):
             dff_vars[(i, j)] = solver.IntVar(0, 1, "dff_vars_%i_%i" % (i, j))
         cellvar_map[dffs[i].get_id()] = i
 
+    for i in range(num_crcs):
+        for j in range(max_clbs):
+            crc_vars[(i, j)] = solver.IntVar(0, 1, "crc_vars_%i_%i" % (i, j))
+        cellvar_map[crcs[i].get_id()] = i
+
     for j in range(max_clbs):
         clb_vars[j] = solver.IntVar(0, 1, "clb_vars_%i" % j)
 
@@ -1533,6 +1710,10 @@ def pack(design, device):
     for i in range(num_dffs):
         solver.Add(sum(dff_vars[(i, j)] for j in range(max_clbs)) == 1)
 
+     # A CarryChain cell can only be mapped to a single CLB
+    for i in range(num_crcs):
+        solver.Add(sum(crc_vars[(i, j)] for j in range(max_clbs)) == 1)
+   
     # A CLB can have as much as 8 LUTs
     for j in range(max_clbs):
         solver.Add(sum(lut_vars[(i, j)] for i in range(num_luts)) <= 8 * clb_vars[j])
@@ -1541,11 +1722,14 @@ def pack(design, device):
     for j in range(max_clbs):
         solver.Add(sum(dff_vars[(i, j)] for i in range(num_dffs)) <= 8 * clb_vars[j])
 
+    # A CLB can have as much as 1 CarryChain
+    for j in range(max_clbs):
+        solver.Add(sum(crc_vars[(i, j)] for i in range(num_crcs)) <= 1 * clb_vars[j])
+
     # We would like a LUT->LUT pair to pack in a single CLB
     for lut0_id, lut1_id in lut44s.items():
         idx0 = cellvar_map[lut0_id]
         idx1 = cellvar_map[lut1_id]
-        print("check0", idx0, idx1)
         for j in range(max_clbs):
             solver.Add(lut_vars[(idx0, j)] - lut_vars[(idx1, j)] == 0)
  
@@ -1557,6 +1741,14 @@ def pack(design, device):
         for j in range(max_clbs):
             solver.Add(lut_vars[(idx0, j)] - dff_vars[(idx1, j)] == 0)
  
+    # We would like a LUT->CarryChain pair to pack in a single CLB
+    for crc_id, lut_ids in lut_crc.items():
+        idx1 = cellvar_map[crc_id]
+        for lut_id in lut_ids:
+            idx0 = cellvar_map[lut_id]
+            for j in range(max_clbs):
+                solver.Add(lut_vars[(idx0, j)] - crc_vars[(idx1, j)] == 0)
+
     # We would like a DFF->LUT pair to pack in different CLBs
     # Not sure if it's a good idea
     # If there is enough local routing resource within a CLB for a feedback from
@@ -1564,7 +1756,6 @@ def pack(design, device):
     for dff_id, lut_id in dff_lut.items():
         idx0 = cellvar_map[dff_id]
         idx1 = cellvar_map[lut_id]
-        print("check", idx0, idx1)
         for j in range(max_clbs):
             solver.Add(dff_vars[(idx0, j)] + lut_vars[(idx1, j)] <= 1 * clb_vars[j])
  
@@ -1584,6 +1775,10 @@ def pack(design, device):
             if clb_vars[j].solution_value() == 1:
                 clb = device.create_clb()
                 packs[clb.get_id()] = []
+            for i in range(num_crcs):
+                if crc_vars[(i, j)].solution_value() == 1:
+                    print("Pack CarryChain %i to CLB %i" % (i, j))
+                    packs[clb.get_id()].append(crcs[i].get_id())
             for i in range(num_luts):
                 if lut_vars[(i, j)].solution_value() == 1:
                     print("Pack LUT %i to CLB %i" % (i, j))
@@ -1602,22 +1797,139 @@ def pack(design, device):
             clb.pack_cell(cell)
 
 def place(design, device):
-    print("Placing")
+    print("[Placing]=========")
 
-    clb0 = device.get_clbs()[0]
-    # lut_cell1 --> lut_cell0
-    lut_cell0 = clb0.get_packed_cells()[0]
-    lut_cell1 = clb0.get_packed_cells()[1]
+    for clb in device.get_clbs():
+        print(">>>Place cells in CLB", clb.get_id())
+        cells = clb.get_packed_cells()
+        crcs  = [x for x in cells if x.is_carry_chain()]
+        luts = [x for x in cells if x.is_lut()]
+        dffs = [x for x in cells if x.is_dff()]
 
-    lut_cell0_ports = lut_cell0.get_ports()
-    lut_cell1_ports = lut_cell1.get_ports()
+        assert len(crcs) <= 1
+        assert len(luts) <= 8
+        assert len(dffs) <= 8
 
-    clb0.place_lut(CLB.LUT.SXX_0, lut_cell1.get_id(), lut_cell1_ports)
-    clb1 = device.create_clb()
-    clb1.place_lut(CLB.LUT.SXX_0, lut_cell0.get_id(), lut_cell0_ports)
+        # Place CarryChain cells (within CLBs)
+        for crc in crcs:
+            port_s = crc.get_port('S') # output -- sum
+            port_p = crc.get_port('P') # input -- propagate
+            port_g = crc.get_port('G') # input -- generate
 
-    #device.place_clb(clb0, 1, 1)
-    #device.place_clb(clb1, 2, 2)
+            # This port is 4-bit wide
+            port_map = [(port_s, port_s.get_conn_ids()[0]),
+                        (port_s, port_s.get_conn_ids()[1]),
+                        (port_s, port_s.get_conn_ids()[2]),
+                        (port_s, port_s.get_conn_ids()[3])]
+
+            clb.place_carry_chain(crc.get_id(), port_map)
+            crc.set_placed()
+            print("Placed CarryChain %i to CLB %i" % (crc.get_id(), clb.get_id()))
+
+            port_s_conn_ids = port_s.get_conn_ids()
+            port_p_conn_ids = port_p.get_conn_ids()
+            port_g_conn_ids = port_g.get_conn_ids()
+
+            for i in range(len(port_s_conn_ids)):
+                conn_id = port_s_conn_ids[i]
+                snk_cells = design.get_snk_cells_from_conn_id(conn_id)
+                for snk_cell in snk_cells:
+                    if snk_cell not in dffs:
+                        # DFF cell is not packed in the same CLB with this CarryChain
+                        continue
+                    else:
+                        port_q = snk_cell.get_port('q') # output
+                        port_e = snk_cell.get_port('e') # input (clock-enable)
+                        #port_r = snk_cell.get_port('r')
+                        port_map = [(port_e, port_e.get_conn_ids()[0]),
+                                    (port_q, port_q.get_conn_ids()[0])]
+                        clb.place_dff(INTRA_WIRE.CRC_S_TO_DFF[i], snk_cell.get_id(), port_map)
+                        snk_cell.set_placed()
+                        print("Placed DFF %i to CLB %i" % (snk_cell.get_id(), clb.get_id()), " at slot", INTRA_WIRE.CRC_S_TO_DFF[i])
+
+            for i in range(len(port_p_conn_ids)):
+                conn_id = port_p_conn_ids[i]
+                src_cell = design.get_src_cell_from_conn_id(conn_id)
+                assert src_cell in luts
+                port_i0 = src_cell.get_port("I0")
+                port_i1 = src_cell.get_port("I1")
+                port_i2 = src_cell.get_port("I2")
+                port_i3 = src_cell.get_port("I3")
+                port_o  = src_cell.get_port("O")
+
+                lut_ports = src_cell.get_ports()
+                port_map = [(port_i0, port_i0.get_conn_ids()[0]),  # I0
+                            (port_i1, port_i1.get_conn_ids()[0]),  # I1
+                            (port_i2, port_i2.get_conn_ids()[0]),  # I2
+                            (port_i3, port_i3.get_conn_ids()[0]),  # I3
+                            (port_o, port_o.get_conn_ids()[0])]    # O
+                clb.place_lut(INTRA_WIRE.LUT_TO_CRC_P[i], src_cell.get_id(), port_map)
+                src_cell.set_placed()
+                print("Placed LUT %i to CLB %i" % (src_cell.get_id(), clb.get_id()), " at slot", INTRA_WIRE.LUT_TO_CRC_P[i])
+
+            for i in range(len(port_g_conn_ids)):
+                conn_id = port_g_conn_ids[i]
+                src_cell = design.get_src_cell_from_conn_id(conn_id)
+                assert src_cell in luts
+                assert src_cell in luts
+                port_i0 = src_cell.get_port("I0")
+                port_i1 = src_cell.get_port("I1")
+                port_i2 = src_cell.get_port("I2")
+                port_i3 = src_cell.get_port("I3")
+                port_o  = src_cell.get_port("O")
+
+                lut_ports = src_cell.get_ports()
+                port_map = [(port_i0, port_i0.get_conn_ids()[0]),  # I0
+                            (port_i1, port_i1.get_conn_ids()[0]),  # I1
+                            (port_i2, port_i2.get_conn_ids()[0]),  # I2
+                            (port_i3, port_i3.get_conn_ids()[0]),  # I3
+                            (port_o, port_o.get_conn_ids()[0])]    # O
+                clb.place_lut(INTRA_WIRE.LUT_TO_CRC_G[i], src_cell.get_id(), port_map)
+                src_cell.set_placed()
+                print("Placed LUT %i to CLB %i" % (src_cell.get_id(), clb.get_id()), " at slot", INTRA_WIRE.LUT_TO_CRC_G[i])
+
+        # Place LUT cells (within CLBs)
+        for lut in luts:
+            if lut.is_placed():
+                continue
+
+            # Simply fill up free slots with LUT cells one-by-one
+            # This could lead to suboptimal result
+            free_slot =  clb.get_available_LUT_ids()[0]
+            port_i0 = lut.get_port("I0")
+            port_i1 = lut.get_port("I1")
+            port_i2 = lut.get_port("I2")
+            port_i3 = lut.get_port("I3")
+            port_o  = lut.get_port("O")
+
+            lut_ports = lut.get_ports()
+            port_map = [(port_i0, port_i0.get_conn_ids()[0]),  # I0
+                        (port_i1, port_i1.get_conn_ids()[0]),  # I1
+                        (port_i2, port_i2.get_conn_ids()[0]),  # I2
+                        (port_i3, port_i3.get_conn_ids()[0]),  # I3
+                        (port_o, port_o.get_conn_ids()[0])]    # O
+            clb.place_lut(CLB.LUT(free_slot), lut.get_id(), port_map)
+            lut.set_placed()
+            print("Placed LUT %i to CLB %i" % (lut.get_id(), clb.get_id()), " at slot", free_slot)
+
+        # Place DFF cells (within CLBs)
+        for dff in dffs:
+            if dff.is_placed():
+                continue
+
+            # Simpy fill up free slots with DFF cells one-by-one
+            # This could lead to suboptimal result
+            free_slot =  clb.get_available_dff_ids()[0]
+            port_q = dff.get_port('q') # output
+            port_e = dff.get_port('e') # input (clock-enable)
+            #port_r = dff.get_port('r')
+            port_map = [(port_e, port_e.get_conn_ids()[0]),
+                        (port_q, port_q.get_conn_ids()[0])]
+            clb.place_dff(CLB.LUT(free_slot), dff.get_id(), port_map)
+            dff.set_placed()
+            print("Placed DFF %i to CLB %i" % (dff.get_id(), clb.get_id()), " at slot", free_slot)
+
+    assert design.get_num_unplaced_cells() == 0, "There're still ronin cells!"
 
     # Random placement
     for clb in device.get_clbs():
@@ -1627,16 +1939,31 @@ def place(design, device):
             x = randrange(device.get_num_cols() - 1) + 1
             y = randrange(device.get_num_rows() - 1) + 1
         device.place_clb(clb, y, x)
-        print("Placed", clb.get_id(), "to (y, x) =", y, x)
+        print("Placed CLB", clb.get_id(), "to (y, x) =", y, x)
 
-    device.print_placement_array()
+    # "Hand" placement
+#    clb0 = device.get_clbs()[0]
+#    clb1 = device.get_clbs()[1]
+#    device.place_clb(clb0, 1, 5)
+#    device.place_clb(clb1, 7, 7)
+#    device.place_clb(clb0, 6, 4)
+#    device.place_clb(clb1, 6, 5)
+
+    print("Placement map")
+    device.print_placement_map()
 
 def route(design, device):
     print("Routing")
 
     paths = device.collect_routing_paths(design.get_nets())
+    num = 0
+    num_paths = len(paths)
     for src_pin, snk_pin in paths:
+        print("Path[%i/%i]" % (num+1, num_paths), src_pin.get_pin_num(), " (y, x) =", src_pin.get_yx(), "->",
+            snk_pin.get_pin_num(), " (y, x) =", snk_pin.get_yx())
+
         device.route_path(src_pin, snk_pin)
+        num += 1
 
 def main(argv):
     netlist_file = argv[0]
@@ -1666,34 +1993,40 @@ def main(argv):
         cell_type = "DFFER"
         cell_params = dict()
         is_input = value["direction"] == "input"
+        conn_ids = value["bits"]
         if is_input == True:
             random_bit_init = randrange(2)
             cell_params["INIT"] = str(random_bit_init)
 
-        cell = design.create_cell(cell_type, cell_params)
-        cell.add_port("d", True)
-        cell.add_port("e", True)
-        cell.add_port("r", True)
-        cell.add_port("clk", True)
-        cell.add_port("q", False)
-        conn_ids = value["bits"]
-
-        # We don't route clock signal for now
-        port_q = cell.get_port("q")
-        port_e = cell.get_port("e")
-        port_r = cell.get_port("r")
-        port_d = cell.get_port("d")
-
-        if is_input == True:
-            # Always stay reset (to an init value)
-            port_e.set_const_value(0)
-            port_r.set_const_value(1)
-        else:
-            # Always stay enable
-            port_e.set_const_value(1)
-            port_r.set_const_value(0)
-
+        # create a DFF cell for each bit
         for conn_id in conn_ids:
+            cell = design.create_cell(cell_type, cell_params)
+            cell.add_port("d", True)
+            cell.add_port("e", True)
+            cell.add_port("r", True)
+            cell.add_port("clk", True)
+            cell.add_port("q", False)
+
+            # We don't route clock signal for now
+            port_q = cell.get_port("q")
+            port_e = cell.get_port("e")
+            port_r = cell.get_port("r")
+            port_d = cell.get_port("d")
+
+            port_q.add_conn_id(conn_id)
+            port_e.add_conn_id(conn_id)
+            port_r.add_conn_id(conn_id)
+            port_d.add_conn_id(conn_id)
+
+            if is_input == True:
+                # Always stay reset (to an init value)
+                port_e.add_conn_id(0)
+                port_r.add_conn_id(1)
+            else:
+                # Always stay enable
+                port_e.add_conn_id(1)
+                port_r.add_conn_id(0)
+
             for current_net in design.find_connections(conn_id):
                 if is_input == True:
                     current_net.add_connection(port_q, conn_id)
@@ -1716,9 +2049,10 @@ def main(argv):
             for conn_id in conn_ids:
                 # Ignore hard 0 and hard 1 for now
                 if conn_id == "0" or conn_id == "1":
-                    port.set_const_value(int(conn_id))
+                    port.add_conn_id(int(conn_id))
                     continue
 
+                port.add_conn_id(conn_id)
                 for current_net in design.find_connections(conn_id):
                     current_net.add_connection(port, conn_id)
 
@@ -1731,8 +2065,8 @@ def main(argv):
         conn_ids = net.get_conn_ids()
         for conn_id in conn_ids:
             # Ignore hard 0 and hard 1 for now
-            if conn_id == "0" or conn_id == "1":
-                continue
+            #if conn_id == "0" or conn_id == "1":
+            #    continue
 
             # Ignore net that does not have a source or sink
             if net.is_dangling(conn_id):
@@ -1750,8 +2084,8 @@ def main(argv):
     device = Device("borca", 8, 8)
 
     pack(design,  device)
-    #place(design, device)
-    #route(design, device)
+    place(design, device)
+    route(design, device)
 
 if __name__ == '__main__':
     main(sys.argv[1:])
