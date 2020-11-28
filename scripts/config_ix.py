@@ -74,6 +74,18 @@ def main():
     fab_0.add_element(sb_clb_ws_odd_0, 20)
     print(fab_0.output_bitstream())
 
+    # tentative:
+    s = ConfiguredS44(4, False, str(1), "1100110011001100", "0011001100001111")
+    print(s.output_bitstream())
+
+    ss = ConfiguredS44(4, True,)
+    print(ss.output_bitstream())
+
+    params = dict()
+    params["s_xx_base"] = 4
+    params["num_luts"] = 4
+    slicel = ConfiguredSliceL(params, True, True,)
+    print(slicel.output_bitstream())
 
 if __name__ == '__main__':
     main()
