@@ -64,7 +64,7 @@ config_tile #(
   .shift_enable(cen),
   .shift_in_hard(shift_in),
   .shift_in_soft(shift_in),
-  .shift_out(shift_out_to_tile_bodge),
+  .shift_out(shift_out),
 
   .set_hard(set_in),
   .set_soft(set_in),
