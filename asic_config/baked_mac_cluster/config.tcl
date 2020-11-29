@@ -39,8 +39,8 @@ set ::env(SYNTH_MAX_FANOUT) 7
 # Units probably microns
 #set ::env(DIE_AREA) [list 0 0 750 570]
 
-set ::env(FP_CORE_UTIL) 35
-set ::env(PL_TARGET_DENSITY) 0.40
+set ::env(FP_CORE_UTIL) 30
+set ::env(PL_TARGET_DENSITY) 0.35
 
 #set ::env(ROUTING_STRATEGY) 14 ;# run TritonRoute14
 #set ::env(GLB_RT_ADJUSTMENT) 0
