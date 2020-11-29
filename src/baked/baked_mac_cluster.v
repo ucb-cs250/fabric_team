@@ -25,7 +25,7 @@ module baked_mac_cluster #(
 
   input wire shift_in,
 
-  input wire config_shift_soft,
+  input wire shift_in_soft,
   input wire set_soft,
 
   output wire cset_out,
@@ -60,11 +60,11 @@ config_tile #(
   .rst(rst),
 
   .shift_enable(cen),
-  .shift_in_soft(config_shift_soft),
+  .shift_in_soft(shift_in_soft),
   .shift_in_hard(shift_in),
   .shift_out(shift_out),
 
-  .set_soft(config_set_soft),
+  .set_soft(set_soft),
   .set_hard(cset),
 
   .comb_config(),
@@ -89,7 +89,7 @@ mac_cluster #(
   .cset(mac_cset),
 
   .A0(A0),
-  .B0(B0)),
+  .B0(B0),
   .A1(A1),
   .B1(B1),
   .A2(A2),

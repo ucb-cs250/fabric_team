@@ -51,12 +51,12 @@ set ::env(SYNTH_STRATEGY) 2  ;# 1 fails
 set ::env(FP_SIZING) absolute
 # I think this goes LL_X LL_Y UR_X UR_Y, where LL=lower left, UR=upper right
 # Units probably microns
-set ::env(DIE_AREA) [list 0 0 800 800]
+set ::env(DIE_AREA) [list 0 0 700 700]
 
 # Floorplan config
 #set ::env(FP_CORE_UTIL) 5
 # Placement config
-set ::env(PL_TARGET_DENSITY) 0.3
+set ::env(PL_TARGET_DENSITY) 0.4
 
 # CTS config
 # Routing config
