@@ -1,4 +1,4 @@
-module baked_clb_tile #(
+module clb_tile #(
   parameter S_XX_BASE = 4,
   parameter NUM_LUTS = 4,
   
