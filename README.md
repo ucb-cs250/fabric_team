@@ -5,8 +5,7 @@
 * Globally defined signals are:
   * `clk` - the fabric clock for use at application runtime (this is the good clock)
   * `rst` - the fabric reset signal for resetting all submodules
-  * `cclk` - the configuration clock
-  * `cen` - configuration enable
+  * `cen` - configuration shift register shift_enable signal
   * `VPWR` - global power net (for manual layouts)
   * `VGND` - global ground net (for manual layouts)
 * Use named port connections only when instantiating submodules:
