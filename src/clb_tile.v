@@ -5,12 +5,12 @@ module clb_tile #(
   parameter WS = 4,
   parameter WD = 4,
   parameter WG = 3,
-  parameter CLBIN = 2*S_XX_BASE*NUM_LUTS,
-  parameter CLBIN_EACH_SIDE = CLBIN / 4,
-  parameter CLBOUT = 2*NUM_LUTS,
-  parameter CLBOUT_EACH_SIDE = CLBOUT / 4,
-  parameter CLBOS = 4,
-  parameter CLBOD = 4,
+  parameter CLBIN = 10,
+  parameter CLBIN_EACH_SIDE = 10,
+  parameter CLBOUT = 5,
+  parameter CLBOUT_EACH_SIDE = 5,
+  parameter CLBOS = 2,
+  parameter CLBOD = 2,
   parameter CLBX = 1
 
   // Not sure what else is needed here...
@@ -21,8 +21,14 @@ module clb_tile #(
 
   inout [WS-1:0] north_single, east_single, south_single, west_single,
   inout [WD-1:0] north_double, east_double, south_double, west_double,
-  inout [CLBIN_EACH_SIDE-1:0] north_clb_in, east_clb_in,
-  inout [CLBOUT_EACH_SIDE-1:0] north_clb_out, east_clb_out,
+
+  // Connections from the CLBs in the N/E tiles to the N/E CBs in this tile
+  output [CLBIN_EACH_SIDE-1:0] north_clb_in, east_clb_in,
+  input [CLBOUT_EACH_SIDE-1:0] north_clb_out, east_clb_out,
+
+  // Connections from the CLB in this tile to the N/E CBs in the S/W tiles
+  input [CLBIN_EACH_SIDE-1:0] south_clb_in, west_clb_in,
+  output [CLBOUT_EACH_SIDE-1:0] south_clb_out, west_clb_out,
 
   // Not sure if I got the globals right...
   inout [WG-1:0] global_vertical, global_horizontal,
@@ -58,7 +64,25 @@ wire [WD-1:0] sb_west_double, sb_south_double;
 // the south and west wires are connected to CBs in other tiles, i.e. they should be output of this tile
 wire [CLBIN_EACH_SIDE-1:0] clb_in_north, clb_in_east, clb_in_south, clb_in_west;
 wire [CLBOUT_EACH_SIDE-1:0] clb_out_north, clb_out_east, clb_out_south, clb_out_west;
-   
+
+wire [1:0] north_lut_out, east_lut_out, south_lut_out, west_lut_out;
+wire [1:0] north_lut_out_r, east_lut_out_r, south_lut_out_r, west_lut_out_r;
+
+wire [9:0] slicel_n_in, slicel_e_in, slicel_s_in, slicel_w_in;
+wire [4:0] slicel_n_out, slicel_e_out, slicel_s_out, slicel_w_out;
+
+assign slicel_s_in = south_clb_in;
+assign south_clb_out = slicel_s_out;
+assign slicel_w_in = west_clb_in;
+assign west_clb_out = slicel_w_out;
+
+assign set_in_soft = slicel_n_in[9];
+assign shift_in_soft = slicel_n_in[8];
+
+assign slicel_n_out = {set, north_lut_out_r, north_lut_out};
+assign slicel_e_out = {cb_east_so, east_lut_out_r, east_lut_out};
+assign slicel_s_out = {set, south_lut_out_r, south_lut_out};
+assign slicel_w_out = {cb_east_so, west_lut_out_r, west_lut_out};
 
 baked_slicel #(
   .S_XX_BASE(S_XX_BASE),
@@ -77,7 +101,12 @@ baked_slicel #(
   .set_out(set),
   .shift_out(slice_so),
 
-  // Not really sure how the actual CLB is wired up, thats a morning problem...
+  .higher_order_address(slicel_e_in[9:8]),
+  .reg_wr(slicel_s_in[8]),
+
+  .luts_input({slicel_w_in[7:0] slicel_s_in[7:0], slicel_e_in[7:0], slicel_n_in[7:0]}),
+  .luts_output({west_lut_out, south_lut_out, east_lut_out, north_lut_out}),
+  .luts_output_registered({west_lut_out_r, south_lut_out_r, east_lut_out_r, north_lut_out_r})
 );
 
 // carry connection and track rotation (of single and double) should be done somewhere outside of cb
@@ -104,25 +133,17 @@ baked_connection_block #(
   .shift_in(slice_so),
   .shift_out(cb_north_so),
 
-  .single0(west_single),
-  .double0(west_double),
-  .single1(sb_west_single),
-  .double1(sb_west_double),
+  .single0(sb_west_single),
+  .double0(sb_west_double),
+  .single1(west_single),
+  .double1(west_double),
 
   .global(global_horizontal),
 
-  .clb0_output(north_clb_out),
-  .clb1_output(clb_out_north),
-  .clb0_input(north_clb_in),
-  .clb1_input(clb_in_north),
-
-  // The rest of these are for the morning/someone more knowledgable
-  .clk(),
-  .rst(),
-  .cen(),
-  .set_in(),
-  .shift_in(),
-  .shift_out()
+  .clb0_output(slicel_n_out),
+  .clb1_output(north_clb_out),
+  .clb0_input(slicel_n_in),
+  .clb1_input(north_clb_in),
 );
 
 baked_connection_block #(
@@ -155,18 +176,10 @@ baked_connection_block #(
 
   .global(global_vertical),
 
-  .clb0_output(east_clb_out),
-  .clb1_output(clb_out_east),
-  .clb0_input(east_clb_in),
-  .clb1_input(clb_in_east),
-
-  // The rest of these are for the morning/someone more knowledgable
-  .clk(),
-  .rst(),
-  .cen(),
-  .set_in(),
-  .shift_in(),
-  .shift_out()
+  .clb0_output(slicel_e_out),
+  .clb1_output(east_clb_out),
+  .clb0_input(slicel_e_in),
+  .clb1_input(east_clb_in),
 );
 
 baked_clb_switch_box #(
@@ -187,7 +200,7 @@ baked_clb_switch_box #(
   .east_double(east_double),
 
   .south_single(sb_south_single),
-  .south_double(sb_south_double)
+  .south_double(sb_south_double),
   .west_single(sb_west_single),
   .west_double(sb_west_double)
 );
