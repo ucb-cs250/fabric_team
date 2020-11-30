@@ -3,7 +3,7 @@
 #
 
 # User config
-set ::env(DESIGN_NAME) baked_clb_switch_box
+set ::env(DESIGN_NAME) baked_connection_block
 set ::env(PDK_VARIANT) sky130_fd_sc_hd
 
 set design_root $::env(OPENLANE_ROOT)/designs
@@ -20,8 +20,8 @@ set nate_gds $nate_src/transmission_gate_cell.gds
 
 # Verilog files for top level RTL connections. Do not include black boxes!
 set ::env(VERILOG_FILES) [concat \
-    $baked_src/baked_clb_switch_box.v \
-    $ix_src/clb_switch_box.v \
+    $baked_src/baked_connection_block.v \
+    $ix_src/connection_block.v \
     $ix_src/transmission_gate_oneway.v \
     $ix_src/transmission_gate.v \
     $ix_src/switch_box_element_two.v \

@@ -1,15 +1,15 @@
 // To be completely honest I'm not really sure how the connection block works, so someone should probably look over this
 
 module baked_connection_block #(
-  parameter WS = 8,
+  parameter WS = 4,
   parameter WD = 8,
-  parameter WG = 3,
-  parameter CLBIN = 6,
-  parameter CLBIN0 = 6,
-  parameter CLBIN1 = 6,
-  parameter CLBOUT = 1,
-  parameter CLBOUT0 = 1,
-  parameter CLBOUT1 = 1,
+  parameter WG = 0,
+  parameter CLBIN = 10,
+  parameter CLBIN0 = 10,
+  parameter CLBIN1 = 10,
+  parameter CLBOUT = 5,
+  parameter CLBOUT0 = 5,
+  parameter CLBOUT1 = 5,
   parameter CARRY = 1,
   parameter CLBOS = 2,
   parameter CLBOS_BIAS = 0,
@@ -52,7 +52,7 @@ module baked_connection_block #(
 
 localparam SWITCH_PER_IN0 = WS + WD + WG + CLBX * CLBOUT1;
 localparam SWITCH_PER_IN1 = WS + WD + WG + CLBX * CLBOUT0;
-localparam SWITCH_PER_OUT = CLBOS + CLBO;
+localparam SWITCH_PER_OUT = CLBOS + CLBOD;
 
 localparam CB_CONF_WIDTH = CLBIN0*SWITCH_PER_IN0+CLBOUT0*SWITCH_PER_OUT+CLBIN1*SWITCH_PER_IN1+CLBOUT1*SWITCH_PER_OUT;
 
@@ -85,8 +85,13 @@ connection_block #(
 ) connectaroni (
    .single0(single0),
    .single1(single1),
+   .double0(double0),
+   .double1(double1),
    .global(global),
    .clb0_output(clb0_output),
+   .clb1_output(clb1_output),
+   .clb0_input(clb0_input),
+   .clb1_input(clb1_input),
    .clb1_cout(clb1_cout),
    .clb0_cin(clb0_cin),
    .clb1_cin(clb1_cin),

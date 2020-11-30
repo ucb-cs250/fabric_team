@@ -3,35 +3,28 @@
 #
 
 # User config
-set ::env(DESIGN_NAME) baked_clb_switch_box
+set ::env(DESIGN_NAME) baked_slicel
 set ::env(PDK_VARIANT) sky130_fd_sc_hd
 
 set design_root $::env(OPENLANE_ROOT)/designs
 set src_root $design_root/250
-set ix_root $design_root/250/ix_yukio
+set clb_root $design_root/250/clb_team
 # This is ::env(DESIGN_DIR).
-set ix_src $ix_root/src
+set clb_src $clb_root/src/behavioral
 set baked_src $src_root/src/baked
 set config_src $src_root/config_team/src/behavioral
 
-set nate_src $src_root/ix_nate/transmission_gate/from_inv
-set nate_lef $nate_src/transmission_gate_cell.lef
-set nate_gds $nate_src/transmission_gate_cell.gds
-
 # Verilog files for top level RTL connections. Do not include black boxes!
 set ::env(VERILOG_FILES) [concat \
-    $baked_src/baked_clb_switch_box.v \
-    $ix_src/clb_switch_box.v \
-    $ix_src/transmission_gate_oneway.v \
-    $ix_src/transmission_gate.v \
-    $ix_src/switch_box_element_two.v \
-    $ix_src/universal_switch_box.v \
-    $nate_src/../std/transmission_gate_cell.v \
+    $baked_src/baked_slicel.v \
+    $clb_src/slicel.v \
+    $clb_src/lut_sXX_softcode.v \
+    $clb_src/carry_chain.v \
+    $clb_src/mux_f_slice.v \
+    $clb_src/lut.v \
+    $clb_src/block_config_latches.v \
     [glob $config_src/*.v] \
     ]
-
-set ::env(EXTRA_LEFS) [list $nate_lef]
-set ::env(EXTRA_GDS_FILES) [list $nate_gds]
 
 # Design config
 set ::env(CLOCK_PERIOD) 10
@@ -46,7 +39,8 @@ if { [file exists $filename] == 1} {
 set ::env(MACRO_PLACEMENT_CFG) $::env(DESIGN_DIR)/macro_placement.cfg
 
 # Synthesis config
-set ::env(SYNTH_STRATEGY) 1;# 1 fails
+set ::env(SYNTH_STRATEGY) 1;
+set ::env(SYNTH_LATCH_MAP) 1
 
 # set ::env(FP_SIZING) absolute
 # I think this goes LL_X LL_Y UR_X UR_Y, where LL=lower left, UR=upper right
@@ -54,7 +48,7 @@ set ::env(SYNTH_STRATEGY) 1;# 1 fails
 # set ::env(DIE_AREA) [list 0 0 700 700]
 
 # Floorplan config
-set ::env(FP_CORE_UTIL) 40
+set ::env(FP_CORE_UTIL) 47
 # Placement config
 set ::env(PL_TARGET_DENSITY) [ expr ($::env(FP_CORE_UTIL)+5) / 100.0 ]
 
