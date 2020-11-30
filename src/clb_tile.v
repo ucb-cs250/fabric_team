@@ -4,7 +4,14 @@ module clb_tile #(
   
   parameter WS = 4,
   parameter WD = 4,
-  parameter WG = 3
+  parameter WG = 3,
+  parameter CLBIN = 2*S_XX_BASE*NUM_LUTS,
+  parameter CLBIN_EACH_SIDE = CLBIN / 4,
+  parameter CLBOUT = 2*NUM_LUTS,
+  parameter CLBOUT_EACH_SIDE = CLBOUT / 4,
+  parameter CLBOS = 4,
+  parameter CLBOD = 4,
+  parameter CLBX = 1
 
   // Not sure what else is needed here...
 ) (
@@ -14,6 +21,8 @@ module clb_tile #(
 
   inout [WS-1:0] north_single, east_single, south_single, west_single,
   inout [WD-1:0] north_double, east_double, south_double, west_double,
+  inout [CLBIN_EACH_SIDE-1:0] north_clb_in, east_clb_in,
+  inout [CLBOUT_EACH_SIDE-1:0] north_clb_out, east_clb_out,
 
   // Not sure if I got the globals right...
   inout [WG-1:0] global_vertical, global_horizontal,
@@ -44,7 +53,12 @@ wire set;
 assign set_out_to_south = set;
 
 wire [WS-1:0] sb_west_single, sb_south_single;
-wire [WD-1:0] sb_west_double, sb_south_double; 
+wire [WD-1:0] sb_west_double, sb_south_double;
+
+// the south and west wires are connected to CBs in other tiles, i.e. they should be output of this tile
+wire [CLBIN_EACH_SIDE-1:0] clb_in_north, clb_in_east, clb_in_south, clb_in_west;
+wire [CLBOUT_EACH_SIDE-1:0] clb_out_north, clb_out_east, clb_out_south, clb_out_west;
+   
 
 baked_slicel #(
   .S_XX_BASE(S_XX_BASE),
@@ -66,12 +80,21 @@ baked_slicel #(
   // Not really sure how the actual CLB is wired up, thats a morning problem...
 );
 
+// carry connection and track rotation (of single and double) should be done somewhere outside of cb
 baked_connection_block #(
   .WS(WS),
   .WD(WD),
-  .WG(WG)
+  .WG(WG),
+  .CLBIN(CLBIN),
+  .CLBIN0(CLBIN_EACH_SIDE),
+  .CLBIN1(CLBIN_EACH_SIDE),
+  .CLBOUT(CLBOUT),
+  .CLBOUT0(CLBOUT_EACH_SIDE),
+  .CLBOUT1(CLBOUT_EACH_SIDE),
+  .CLBOS(CLBOS),
+  .CLBOD(CLBOD),
+  .CLBX(CLBX)
 
-  // The rest of these are for the morning/someone more knowledgable
 ) cb_north (
   .clk(clk),
   .rst(rst),
@@ -81,7 +104,6 @@ baked_connection_block #(
   .shift_in(slice_so),
   .shift_out(cb_north_so),
 
-  // I think these are right...
   .single0(west_single),
   .double0(west_double),
   .single1(sb_west_single),
@@ -89,15 +111,34 @@ baked_connection_block #(
 
   .global(global_horizontal),
 
+  .clb0_output(north_clb_out),
+  .clb1_output(clb_out_north),
+  .clb0_input(north_clb_in),
+  .clb1_input(clb_in_north),
+
   // The rest of these are for the morning/someone more knowledgable
+  .clk(),
+  .rst(),
+  .cen(),
+  .set_in(),
+  .shift_in(),
+  .shift_out()
 );
 
 baked_connection_block #(
   .WS(WS),
   .WD(WD),
   .WG(WG)
+  .CLBIN(CLBIN),
+  .CLBIN0(CLBIN_EACH_SIDE),
+  .CLBIN1(CLBIN_EACH_SIDE),
+  .CLBOUT(CLBOUT),
+  .CLBOUT0(CLBOUT_EACH_SIDE),
+  .CLBOUT1(CLBOUT_EACH_SIDE),
+  .CLBOS(CLBOS),
+  .CLBOD(CLBOD),
+  .CLBX(CLBX)
 
-  // The rest of these are for the morning/someone more knowledgable
 ) cb_east (
   .clk(clk),
   .rst(rst),
@@ -107,7 +148,6 @@ baked_connection_block #(
   .shift_in(sb_so),
   .shift_out(cb_east_so),
 
-  // I think these are right...
   .single0(sb_south_single),
   .double0(sb_south_double),
   .single1(south_single),
@@ -115,7 +155,18 @@ baked_connection_block #(
 
   .global(global_vertical),
 
+  .clb0_output(east_clb_out),
+  .clb1_output(clb_out_east),
+  .clb0_input(east_clb_in),
+  .clb1_input(clb_in_east),
+
   // The rest of these are for the morning/someone more knowledgable
+  .clk(),
+  .rst(),
+  .cen(),
+  .set_in(),
+  .shift_in(),
+  .shift_out()
 );
 
 baked_clb_switch_box #(
