@@ -1,6 +1,6 @@
 module baked_clb_switch_box #(
-  parameter WS = 4,
-  parameter WD = 4
+  parameter WS = 8,
+  parameter WD = 8
 )(
   // Common
   input wire clk,
