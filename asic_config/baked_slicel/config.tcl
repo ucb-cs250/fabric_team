@@ -48,7 +48,7 @@ set ::env(SYNTH_LATCH_MAP) 1
 # set ::env(DIE_AREA) [list 0 0 700 700]
 
 # Floorplan config
-set ::env(FP_CORE_UTIL) 47
+set ::env(FP_CORE_UTIL) 45
 # Placement config
 set ::env(PL_TARGET_DENSITY) [ expr ($::env(FP_CORE_UTIL)+5) / 100.0 ]
 
