@@ -6,6 +6,7 @@
   * `clk` - the fabric clock for use at application runtime (this is the good clock)
   * `rst` - the fabric reset signal for resetting all submodules
   * `cen` - configuration shift register shift_enable signal
+  * `cset`
   * `VPWR` - global power net (for manual layouts)
   * `VGND` - global ground net (for manual layouts)
 * Use named port connections only when instantiating submodules:
