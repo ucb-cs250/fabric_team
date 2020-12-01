@@ -30,8 +30,9 @@ module clb_tile #(
   input [CLBIN_EACH_SIDE-1:0] south_clb_in, west_clb_in,
   output [CLBOUT_EACH_SIDE-1:0] south_clb_out, west_clb_out,
 
+  // manually disabled since WG = 0 for hardening
   // Not sure if I got the globals right...
-  inout [WG-1:0] global_vertical, global_horizontal,
+  //inout [WG-1:0] global_vertical, global_horizontal,
 
   input shift_in_from_north, set_in_from_north,
   output shift_out_to_south, set_out_to_south,
@@ -139,7 +140,7 @@ baked_connection_block_north #(
   .single1(west_single),
   .double1(west_double),
 
-  .global(global_horizontal),
+  //.global(global_horizontal),  /* manually disabled since WG = 0 for hardening *
 
   .clb0_output(slicel_n_out),
   .clb1_output(north_clb_out),
@@ -175,7 +176,7 @@ baked_connection_block_east #(
   .single1(south_single),
   .double1(south_double),
 
-  .global(global_vertical),
+  //.global(global_vertical),  /* manually disabled since WG = 0 for hardening *
 
   .clb0_output(slicel_e_out),
   .clb1_output(east_clb_out),
