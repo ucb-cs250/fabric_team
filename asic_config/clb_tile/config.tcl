@@ -70,13 +70,14 @@ if { [file exists $filename] == 1} {
   source $filename
 }
 
-#set ::env(MACRO_PLACEMENT_CFG) $our_root/macro_placement.cfg
+set ::env(MACRO_PLACEMENT_CFG) $our_root/macro_placement.cfg
 
 set ::env(CLOCK_PERIOD) 30
 set ::env(CLOCK_PORT) "clk"
 set ::env(CLOCK_TREE_SYNTH) 1
 
 #set ::env(DIODE_INSERTION_STRATEGY) 0
+#
 #set ::env(FP_SIZING) absolute
 #set ::env(DIE_AREA) "0 0 1000 1000"
 #set ::env(SYNTH_STRATEGY) 1
@@ -87,7 +88,7 @@ set ::env(FP_CORE_UTIL) 30
 #set ::env(FP_PDN_VOFFSET) 0
 #set ::env(FP_PDN_VPITCH) 30
 
-set ::env(PL_TARGET_DENSITY) 0.35
+set ::env(PL_TARGET_DENSITY) [expr ($::env(FP_CORE_UTIL) + 5)/100.0]
 
 # These were set to attempt to skip global placement, which we don't seem to be
 # able to satisfy with only 4 cells to move around.
