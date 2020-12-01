@@ -70,14 +70,18 @@ if { [file exists $filename] == 1} {
   source $filename
 }
 
-set ::env(MACRO_PLACEMENT_CFG) $our_root/macro_placement.cfg
+#set ::env(MACRO_PLACEMENT_CFG) $our_root/macro_placement.cfg
 
 set ::env(CLOCK_PERIOD) 30
 set ::env(CLOCK_PORT) "clk"
 set ::env(CLOCK_TREE_SYNTH) 1
 
 #set ::env(DIODE_INSERTION_STRATEGY) 0
+<<<<<<< Updated upstream
 #
+=======
+
+>>>>>>> Stashed changes
 #set ::env(FP_SIZING) absolute
 #set ::env(DIE_AREA) "0 0 1000 1000"
 #set ::env(SYNTH_STRATEGY) 1
