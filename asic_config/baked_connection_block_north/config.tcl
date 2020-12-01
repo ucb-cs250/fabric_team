@@ -3,7 +3,6 @@
 #
 
 # User config
-set ::env(DESIGN_NAME) baked_connection_block_north
 set ::env(PDK_VARIANT) sky130_fd_sc_hd
 
 set design_root $::env(OPENLANE_ROOT)/designs
@@ -12,6 +11,8 @@ set baked_src $src_root/src/baked
 
 # Load configuration for base baked_connection_block.
 source $src_root/asic_config/baked_connection_block/config.tcl
+
+set ::env(DESIGN_NAME) baked_connection_block_north
 
 # Verilog files for top level RTL connections. Do not include black boxes!
 set ::env(VERILOG_FILES) [concat \

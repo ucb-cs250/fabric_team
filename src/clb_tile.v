@@ -86,7 +86,8 @@ assign slicel_w_out = {cb_east_so, west_lut_out_r, west_lut_out};
 
 baked_slicel #(
   .S_XX_BASE(S_XX_BASE),
-  .NUM_LUTS(NUM_LUTS)
+  .NUM_LUTS(NUM_LUTS),
+  .MUX_LVLS(2)
 ) slice (
   .clk(clk),
   .rst(rst),
@@ -102,15 +103,15 @@ baked_slicel #(
   .shift_out(slice_so),
 
   .higher_order_address(slicel_e_in[9:8]),
-  .reg_wr(slicel_s_in[8]),
+  .reg_we(slicel_s_in[8]),
 
-  .luts_input({slicel_w_in[7:0] slicel_s_in[7:0], slicel_e_in[7:0], slicel_n_in[7:0]}),
-  .luts_output({west_lut_out, south_lut_out, east_lut_out, north_lut_out}),
-  .luts_output_registered({west_lut_out_r, south_lut_out_r, east_lut_out_r, north_lut_out_r})
+  .luts_input({slicel_w_in[7:0], slicel_s_in[7:0], slicel_e_in[7:0], slicel_n_in[7:0]}),
+  .lut_output({west_lut_out, south_lut_out, east_lut_out, north_lut_out}),
+  .lut_output_registered({west_lut_out_r, south_lut_out_r, east_lut_out_r, north_lut_out_r})
 );
 
 // carry connection and track rotation (of single and double) should be done somewhere outside of cb
-baked_connection_block #(
+baked_connection_block_north #(
   .WS(WS),
   .WD(WD),
   .WG(WG),
@@ -146,10 +147,10 @@ baked_connection_block #(
   .clb1_input(north_clb_in),
 );
 
-baked_connection_block #(
+baked_connection_block_east #(
   .WS(WS),
   .WD(WD),
-  .WG(WG)
+  .WG(WG),
   .CLBIN(CLBIN),
   .CLBIN0(CLBIN_EACH_SIDE),
   .CLBIN1(CLBIN_EACH_SIDE),
@@ -190,7 +191,7 @@ baked_clb_switch_box #(
   .rst(rst),
   .cen(cen),
 
-  .set_in(set)
+  .set_in(set),
   .shift_in(cb_north_so),
   .shift_out(sb_so),
 

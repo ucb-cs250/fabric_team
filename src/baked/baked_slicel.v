@@ -1,6 +1,8 @@
 module baked_slicel #(
   parameter S_XX_BASE = 4,
-  parameter NUM_LUTS = 4
+  parameter NUM_LUTS = 4,
+  //parameter MUX_LVLS = $clog2(NUM_LUTS)
+  parameter MUX_LVLS = 2
 )(
   // Common
   input wire clk,

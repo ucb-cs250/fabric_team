@@ -53,9 +53,9 @@ set sb_gds $sb_runs/runs/$sb_run/results/magic/baked_clb_switch_box.gds
 
 # Verilog files for top level RTL connections. Do not include black boxes!
 set ::env(VERILOG_FILES) [concat \
-  $fabric_src/mac_tile.v \
-  $baked_bb_src/baked_data_connection_block_north.v \
-  $baked_bb_src/baked_data_connection_block_east.v \
+  $fabric_src/clb_tile.v \
+  $baked_bb_src/baked_connection_block_north.v \
+  $baked_bb_src/baked_connection_block_east.v \
   $baked_bb_src/baked_clb_switch_box.v \
   $baked_bb_src/baked_slicel.v \
 ]
@@ -70,7 +70,7 @@ if { [file exists $filename] == 1} {
   source $filename
 }
 
-#set ::env(MACRO_PLACEMENT_CFG) $our_root/macro_placement.cfg
+set ::env(MACRO_PLACEMENT_CFG) $our_root/macro_placement.cfg
 
 set ::env(CLOCK_PERIOD) 30
 set ::env(CLOCK_PORT) "clk"
@@ -78,25 +78,23 @@ set ::env(CLOCK_TREE_SYNTH) 1
 
 set ::env(DIODE_INSERTION_STRATEGY) 0
 
-#set ::env(FP_SIZING) absolute
-#set ::env(DIE_AREA) "0 0 2100 2200"
+set ::env(FP_SIZING) absolute
+set ::env(DIE_AREA) "0 0 1000 1000"
 #set ::env(SYNTH_STRATEGY) 1
 set ::env(SYNTH_READ_BLACKBOX_LIB) 1
 #set ::set(SYNTH_FLAT_TOP) 1
 
-set ::env(FP_CORE_UTIL) 50
+set ::env(FP_CORE_UTIL) 90
 set ::env(FP_PDN_VOFFSET) 0
 set ::env(FP_PDN_VPITCH) 30
 
-# This was the finest I could tune the parameter, but it still failed.
-set ::env(PL_TARGET_DENSITY) 0.55
+set ::env(PL_TARGET_DENSITY) 0.01
 
 # These were set to attempt to skip global placement, which we don't seem to be
 # able to satisfy with only 4 cells to move around.
 #set ::env(PL_BASIC_PLACEMENT) 0
 #set ::env(PL_SKIP_INITIAL_PLACEMENT) 1
-
-#set ::env(PL_RANDOM_GLB_PLACEMENT) 0
+#set ::env(PL_RANDOM_GLB_PLACEMENT) 1
 #
 #set ::env(PL_OPENPHYSYN_OPTIMIZATIONS) 0
 
@@ -104,6 +102,6 @@ set ::env(PL_TARGET_DENSITY) 0.55
 
 set ::env(ROUTING_CORES) 10
 
-#set ::env(FP_PIN_ORDER_CFG) $our_root/pin_order.cfg
+set ::env(FP_PIN_ORDER_CFG) $our_root/pin_order.cfg
 
 set ::env(PDN_CFG) $our_root/pdn.tcl

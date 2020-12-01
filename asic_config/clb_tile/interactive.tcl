@@ -64,7 +64,7 @@ proc run_flow {args} {
 
   prep -design $script_dir {*}$args
 
-  source $script_dir/scripts/aux.tcl
+  #source $script_dir/scripts/aux.tcl
 
   # -- synthesis
   run_synthesis
@@ -79,12 +79,28 @@ proc run_flow {args} {
   tap_decap_or
 
   # -- placement
-  random_global_placement ;# instead of
-  #global_placement_or
+  if { $::env(PL_RANDOM_GLB_PLACEMENT) } {
+    random_global_placement
+  } else {
+    global_placement_or
+  }
+
+  if { [info exists ::env(PL_TARGET_DENSITY_CELLS)] } {
+    set ::env(PL_TARGET_DENSITY) $old_pl_target_density
+  }
+
+  if { $::env(PL_RESIZER_OVERBUFFER) == 1} {
+    repair_wire_length
+  }
+  if { $::env(PL_OPENPHYSYN_OPTIMIZATIONS) == 1} {
+    run_openPhySyn
+  }
   
-  forbid_area_placement
-  #detailed_placement ;# in lieu of/in addition to:
+  #forbid_area_placement
+
+  detailed_placement ;# in lieu of/in addition to:
   #detailed_placement_or
+
   run_cts
 
   # -- pdn
