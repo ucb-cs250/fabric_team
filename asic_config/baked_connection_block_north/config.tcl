@@ -3,7 +3,7 @@
 #
 
 # User config
-set ::env(DESIGN_NAME) baked_connection_block
+set ::env(DESIGN_NAME) baked_connection_block_north
 set ::env(PDK_VARIANT) sky130_fd_sc_hd
 
 set design_root $::env(OPENLANE_ROOT)/designs
