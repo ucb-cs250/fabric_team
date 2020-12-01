@@ -1,0 +1,6 @@
+*.vcd
+*.vpd
+DVEfiles/
+sim-rundir/
+verilog.dump
+ucli.key
