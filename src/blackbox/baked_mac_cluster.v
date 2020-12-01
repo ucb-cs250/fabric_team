@@ -14,7 +14,7 @@ module baked_mac_cluster #(
   input wire cen,
   input wire cset,
   input wire shift_in,
-  input wire config_shift_soft,
+  input wire shift_in_soft,
   input wire set_soft,
   output wire cset_out,
   output wire shift_out,

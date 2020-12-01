@@ -22,7 +22,7 @@ pdngen::specify_grid stdcell {
 # Specify macro-level info for mac block.
 pdngen::specify_grid macro {
   #instance my_mac
-  macro baked_mac_cluster
+  macro baked_connection_block_north
   power_pins VPWR
   ground_pins VGND
   blockages "li1 met1 met2 met3 met4"
@@ -32,15 +32,10 @@ pdngen::specify_grid macro {
   connect {{met4_PIN_ver met5}}
 }
 
-#pdngen::specify_grid macro {
-#  macro transmission_gate
-#  blockages "li1 met1"
-#  straps {
-#  }
-#}
-
 pdngen::specify_grid macro {
-  macro baked_disjoint_switch_box
+  macro baked_connection_block_east
+  power_pins VPWR
+  ground_pins VGND
   blockages "li1 met1 met2 met3 met4"
   straps {
   }
@@ -48,7 +43,29 @@ pdngen::specify_grid macro {
 }
 
 pdngen::specify_grid macro {
-  macro baked_data_connection_block
+  macro baked_connection_block_north
+  power_pins VPWR
+  ground_pins VGND
+  blockages "li1 met1 met2 met3 met4"
+  straps {
+  }
+  connect {{met4_PIN_ver met5}}
+}
+
+pdngen::specify_grid macro {
+  macro baked_clb_switch_box
+  power_pins VPWR
+  ground_pins VGND
+  blockages "li1 met1 met2 met3 met4"
+  straps {
+  }
+  connect {{met4_PIN_ver met5}}
+}
+
+pdngen::specify_grid macro {
+  macro baked_slicel
+  power_pins VPWR
+  ground_pins VGND
   blockages "li1 met1 met2 met3 met4"
   straps {
   }
