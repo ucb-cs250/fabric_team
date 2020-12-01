@@ -36,7 +36,7 @@ module baked_connection_block_north #(
   // Double Wires
   inout [WD-1:0] double0, double1,
   // Global Wires
-  inout [WG-1:0] global,
+  //inout [WG-1:0] global,  /* manually disabled since WG = 0 for hardening */
 
   input [CLBOUT-1:0] clb0_output,
   input [CLBOUT-1:0] clb1_output,
@@ -75,7 +75,7 @@ baked_connection_block #(
   .single1(single1),
   .double0(double0),
   .double1(double1),
-  .global(global),
+  //.global(global),  /* manually disabled since WG = 0 for hardening */
   .clb0_output(clb0_output),
   .clb1_output(clb1_output),
   .clb0_cout(clb0_cout),

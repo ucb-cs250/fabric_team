@@ -1,6 +1,6 @@
 (* blackbox *)
 module baked_clb_switch_box #(
-  parameter WS = 8,
+  parameter WS = 4,
   parameter WD = 8
 )(
   input wire clk,
