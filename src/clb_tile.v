@@ -3,8 +3,8 @@ module clb_tile #(
   parameter NUM_LUTS = 4,
   
   parameter WS = 4,
-  parameter WD = 4,
-  parameter WG = 3,
+  parameter WD = 8,
+  parameter WG = 0,
   parameter CLBIN = 10,
   parameter CLBIN_EACH_SIDE = 10,
   parameter CLBOUT = 5,
