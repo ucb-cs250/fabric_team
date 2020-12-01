@@ -77,11 +77,6 @@ set ::env(CLOCK_PORT) "clk"
 set ::env(CLOCK_TREE_SYNTH) 1
 
 #set ::env(DIODE_INSERTION_STRATEGY) 0
-<<<<<<< Updated upstream
-#
-=======
-
->>>>>>> Stashed changes
 #set ::env(FP_SIZING) absolute
 #set ::env(DIE_AREA) "0 0 1000 1000"
 #set ::env(SYNTH_STRATEGY) 1
