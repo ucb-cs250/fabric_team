@@ -24,7 +24,7 @@ module baked_connection_block_north #(
   output wire shift_out,
   inout [WS-1:0] single0, single1,
   inout [WD-1:0] double0, double1,
-  inout [WG-1:0] global,
+  //inout [WG-1:0] global, /* manually disabled since WG = 0 for hardening */
   input [CLBOUT-1:0] clb0_output,
   input [CLBOUT-1:0] clb1_output,
   input [CARRY-1:0]  clb0_cout,
