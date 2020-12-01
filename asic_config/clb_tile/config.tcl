@@ -46,7 +46,7 @@ set cb_e_gds $cb_e_runs/runs/$cb_e_run/results/magic/baked_connection_block_east
 
 # baked_clb_switch_box
 set sb_runs $design_root/250/asic_config/baked_clb_switch_box 
-set sb_run {debug_noarc}
+set sb_run {debug}
 set sb_lef $sb_runs/runs/$sb_run/results/magic/baked_clb_switch_box.lef
 set sb_gds $sb_runs/runs/$sb_run/results/magic/baked_clb_switch_box.gds
 
@@ -76,19 +76,19 @@ set ::env(CLOCK_PERIOD) 30
 set ::env(CLOCK_PORT) "clk"
 set ::env(CLOCK_TREE_SYNTH) 1
 
-set ::env(DIODE_INSERTION_STRATEGY) 0
-
-set ::env(FP_SIZING) absolute
-set ::env(DIE_AREA) "0 0 1000 1000"
+#set ::env(DIODE_INSERTION_STRATEGY) 0
+#
+#set ::env(FP_SIZING) absolute
+#set ::env(DIE_AREA) "0 0 1000 1000"
 #set ::env(SYNTH_STRATEGY) 1
 set ::env(SYNTH_READ_BLACKBOX_LIB) 1
 #set ::set(SYNTH_FLAT_TOP) 1
 
-set ::env(FP_CORE_UTIL) 90
-set ::env(FP_PDN_VOFFSET) 0
-set ::env(FP_PDN_VPITCH) 30
+set ::env(FP_CORE_UTIL) 30
+#set ::env(FP_PDN_VOFFSET) 0
+#set ::env(FP_PDN_VPITCH) 30
 
-set ::env(PL_TARGET_DENSITY) 0.01
+set ::env(PL_TARGET_DENSITY) 0.35
 
 # These were set to attempt to skip global placement, which we don't seem to be
 # able to satisfy with only 4 cells to move around.
@@ -99,6 +99,7 @@ set ::env(PL_TARGET_DENSITY) 0.01
 #set ::env(PL_OPENPHYSYN_OPTIMIZATIONS) 0
 
 #set ::env(GLB_RT_ADJUSTMENT) 0
+set ::env(GLB_RT_MAXLAYER) 5
 
 set ::env(ROUTING_CORES) 10
 
