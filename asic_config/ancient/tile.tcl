@@ -1,5 +1,3 @@
-# NOTE(aryap): This doesn't work. Use config.tcl-driven macro placement.
-
 package require openlane
 set script_dir [file dirname [file normalize [info script]]]
 set design_name fpga_250
@@ -21,7 +19,7 @@ init_floorplan
 place_io
 global_placement_or
 
-add_macro_placement my_mac 10 10
+add_macro_placement my_mac 5 5
 manual_macro_placement
 detailed_placement
 
