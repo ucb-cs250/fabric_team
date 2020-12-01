@@ -71,7 +71,7 @@ baked_connection_block #(
   .set_in(set_in),
   .shift_in(shift_in),
   .shift_out(shift_out),
-  .single0gTingle0),
+  .single0(single0),
   .single1(single1),
   .double0(double0),
   .double1(double1),
