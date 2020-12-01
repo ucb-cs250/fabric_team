@@ -1,8 +1,6 @@
 module baked_disjoint_switch_box #(
   // The number of fabric wires out each side.
   parameter IX_IN_OUT_W = 194,
-  // There are 6 switches in each of the switch_box_element_ones.
-  parameter DSB_CONF_WIDTH = 6*IX_IN_OUT_W
 )(
   // Common.
   input wire clk,
@@ -27,6 +25,7 @@ module baked_disjoint_switch_box #(
   inout [IX_IN_OUT_W-1:0]   north, east, south, west
 );
 
+// There are 6 switches in each of the switch_box_element_ones.
 localparam DSB_CONF_WIDTH = 6*IX_IN_OUT_W;
 
 wire [DSB_CONF_WIDTH-1:0] dsb_conf_bus;

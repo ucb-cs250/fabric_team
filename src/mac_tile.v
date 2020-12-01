@@ -47,46 +47,23 @@ localparam DSB_CONF_WIDTH = 6*IX_IN_OUT_W;
 
 localparam IX_CONF_WIDTH = DCB_CONF_WIDTH + DSB_CONF_WIDTH;
 
-// Concatenates DCB, DSB and CCB configuration (in that order).
-wire [IX_CONF_WIDTH-1:0] ix_conf_bus;
-wire ix_cset;
+// Shifts input data
+// shift_in -> DCB -> DSB -> mac_cluster -> shift_out
+//          shift[0]^      ^shift[1]
+//          csets[0]^      ^csets[1]
+//
+// mac_cluster uses the 'mem' section of the config_tile;
+// DCB and DSB use the 'comb' section of the config_tile.
+//
+// cset -> DCB
+//      |    \ cset_out
+//      |     DSB
+//      -> mac_cluster
+wire [1:0] shifts;
+wire [1:0] csets;
 
-wire [DCB_CONF_WIDTH-1:0] dcb_conf_bus;
-wire [DSB_CONF_WIDTH-1:0] dsb_conf_bus;
-
-wire [TOTAL_MAC_CONF_WIDTH-1:0] mac_conf_bus;
-wire mac_cset;
-
-wire config_shift_soft;
 wire config_set_soft;
-
-assign {dcb_conf_bus, dsb_conf_bus} = ix_conf_bus;
-assign cset_out = ix_cset;
-
-// According to the diagram, this shifts into "combinatorial config bits"
-// before shifting into "memory state config bits".
-config_tile #(
-  .COMB_N(IX_CONF_WIDTH),
-  .MEM_N(TOTAL_MAC_CONF_WIDTH)
-) configuroni (
-  .clk(clk),
-  .rst(rst),
-
-  .shift_enable(cen),
-  .shift_in_soft(config_shift_soft),
-  .shift_in_hard(shift_in),
-  .shift_out(shift_out),
-
-  .set_soft(config_set_soft),
-  .set_hard(cset),
-
-  .comb_config(ix_conf_bus),
-  // TODO(aryap): Pass this to adjacent tile(s) receiving shift_out to avoid higher-level routing.
-  .comb_set(ix_cset),
-
-  .mem_config(mac_conf_bus),
-  .mem_set(mac_cset)
-);
+wire config_shift_soft;
 
 wire [DCB_NS_W-1:0] dcb_north;
 wire [DCB_NS_W-1:0] dcb_south;
@@ -112,17 +89,25 @@ assign {mac_a3, mac_b3, mac_a2, mac_b2, mac_a1, mac_b1, mac_a0, mac_b0} = mac_in
 
 assign mac_output = {mac_out3, mac_out2, mac_out1, mac_out0};
 
-data_connection_block #(
-  .W(DCB_NS_W),
-  .WW(MAC_MIN_WIDTH),     // 8 for argument's sake.
-  .DATAIN(DCB_DATAIN),    // Fixed structurally by MAC.
-  .DATAOUT(DCB_DATAOUT),  // Same.
-  .CONF_WIDTH(DCB_CONF_WIDTH)
+baked_data_connection_block #(
+  .DCB_NS_W(DCB_NS_W),
+  .WORD_WIDTH(MAC_MIN_WIDTH),     // 8 for argument's sake.
+  .IX_IN_OUT_W(IX_IN_OUT_W),
+  .DCB_DATAIN(DCB_DATAIN),    // Fixed structurally by MAC.
+  .DCB_DATAOUT(DCB_DATAOUT),  // Same.
 ) dataroni (
   .clk(clk),
   .rst(rst),
-  .cset(ix_cset),
-  .c(dcb_conf_bus),
+  .cen(cen),
+
+  .cset(cset),
+  .shift_in(shift_in),
+
+  .set_soft(config_set_soft),
+  .shift_in_soft(config_shift_soft),
+
+  .shift_out(shifts[0]),
+  .cset_out(csets[0]),
 
   .north(dcb_north),
   .south(dcb_south),
@@ -130,7 +115,29 @@ data_connection_block #(
   .data_output(mac_output)
 );
 
-mac_cluster #(
+baked_disjoint_switch_box #(
+  .IX_IN_OUT_W(IX_IN_OUT_W),
+) djaroni (
+  .clk(clk),
+  .rst(rst),
+  .cen(cen),
+
+  .cset(csets[0]),
+  .shift_in(shifts[0]),
+
+  .set_soft(1'b0),
+  .cset_out(),
+
+  .shift_in_soft(1'b0),
+  .shift_out(shifts[1]),
+
+  .north(north),
+  .south({dcb_north, config_shift_soft, config_set_soft}),
+  .east(east),
+  .west(west)
+);
+
+baked_mac_cluster #(
   .MAC_CONF_WIDTH(MAC_CONF_WIDTH),
   .MAC_MIN_WIDTH(MAC_MIN_WIDTH),
   .MAC_MULT_WIDTH(MAC_MULT_WIDTH),
@@ -141,8 +148,14 @@ mac_cluster #(
   .rst(rst),
   .en(en),
 
-  .cfg(mac_conf_bus),
-  .cset(mac_cset),
+  .cset(cset),
+  .shift_in(shifts[1]),
+
+  .set_soft(1'b0),
+  .cset_out(cset_out),
+
+  .shift_in_soft(1'b0),
+  .shift_out(shift_out),
 
   .A0(mac_a0),
   .B0(mac_b0),
@@ -157,21 +170,6 @@ mac_cluster #(
   .out1(mac_out1),
   .out2(mac_out2),
   .out3(mac_out3)
-);
-
-disjoint_switch_box #(
-  .W(IX_IN_OUT_W),
-  .CONF_WIDTH(DSB_CONF_WIDTH)
-) djaroni (
-  .clk(clk),
-  .rst(rst),
-  .cset(ix_cset),
-  .c(dsb_conf_bus),
-
-  .north(north),
-  .south({dcb_north, config_shift_soft, config_set_soft}),
-  .east(east),
-  .west(west)
 );
 
 // TODO(aryap): Use control_connection_block to wire mac/mul control bit of
