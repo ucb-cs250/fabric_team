@@ -9,8 +9,8 @@ module clb_tile #(
   parameter CLBIN_EACH_SIDE = 10,
   parameter CLBOUT = 5,
   parameter CLBOUT_EACH_SIDE = 5,
-  parameter CLBOS = 2,
-  parameter CLBOD = 2,
+  parameter CLBOS = 4,
+  parameter CLBOD = 4,
   parameter CLBX = 1
 
   // Not sure what else is needed here...
@@ -38,27 +38,21 @@ module clb_tile #(
   input shift_in_from_north, set_in_from_north,
   output shift_out_to_south, set_out_to_south,
 
+  input carry_in,
+  output carry_out
   // We need some more wiring for the adjacent tiles CLBs...
 );
 
-// This should go to a connection block...
-wire [1:0] conf_bus_output;
-assign cong_bus_output = {shift_out_to_south, set_out_to_south};
-
-// This should come from a connection block...
-wire [1:0] conf_bus_soft_input;
-wire set_in_soft, shift_in_soft;
-
-assign set_in_soft = conf_bus_soft_input[0];
-assign shift_in_soft = conf_bus_soft_input[1];
-
 // Intermediate shifter signals
+// SHIFT_IN -> SLICEL -> CB_NORTH -> SB -> CB_EAST
 wire slice_so, cb_north_so, sb_so, cb_east_so;
 assign shift_out_to_south = cb_east_so;
 
 // Config set output
 wire set;
 assign set_out_to_south = set;
+
+wire set_in_soft, shift_in_soft;
 
 wire [WS-1:0] sb_west_single, sb_south_single;
 wire [WD-1:0] sb_west_double, sb_south_double;
@@ -104,6 +98,9 @@ baked_slicel #(
   .set_out(set),
   .shift_out(slice_so),
 
+  .carry_in(carry_in),
+  .carry_out(carry_out),
+
   .higher_order_address(slicel_e_in[9:8]),
   .reg_we(slicel_s_in[8]),
 
@@ -143,10 +140,15 @@ baked_connection_block_north #(
 
   //.global(global_horizontal),  /* manually disabled since WG = 0 for hardening *
 
+  .clb0_cout(),
+  .clb1_cout(),
+  .clb0_cin(),
+  .clb1_cin(),
+
   .clb0_output(slicel_n_out),
   .clb1_output(north_clb_out),
   .clb0_input(slicel_n_in),
-  .clb1_input(north_clb_in),
+  .clb1_input(north_clb_in)
 );
 
 baked_connection_block_east #(
@@ -179,10 +181,15 @@ baked_connection_block_east #(
 
   //.global(global_vertical),  /* manually disabled since WG = 0 for hardening *
 
+  .clb0_cout(),
+  .clb1_cout(),
+  .clb0_cin(),
+  .clb1_cin(),
+
   .clb0_output(slicel_e_out),
   .clb1_output(east_clb_out),
   .clb0_input(slicel_e_in),
-  .clb1_input(east_clb_in),
+  .clb1_input(east_clb_in)
 );
 
 baked_clb_switch_box #(

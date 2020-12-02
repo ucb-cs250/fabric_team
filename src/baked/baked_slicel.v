@@ -1,8 +1,8 @@
 module baked_slicel #(
   parameter S_XX_BASE = 4,
   parameter NUM_LUTS = 4,
-  //parameter MUX_LVLS = $clog2(NUM_LUTS)
-  parameter MUX_LVLS = 2
+  parameter MUX_LVLS = $clog2(NUM_LUTS)
+  //parameter MUX_LVLS = 2
 )(
   // Common
   input wire clk,
@@ -24,14 +24,7 @@ module baked_slicel #(
   // Soft shifter input (from fabric)
   input wire shift_in_soft,
 
-  // Output to the shift registers in the CBs and SBs in this tile
-  output wire shift_out_to_tile_bodge,
-  // Input from the end of the shift registers in the CBs and SBs in this tile
-  input wire shift_in_from_tile_bodge,
-
-  // cset output to the southward tile (duplicates comb_set)
   output wire set_out,
-  // Output shifter to the hard input of the southward tile (duplicates shift_in_from_tile_bodge)
   output wire shift_out,
 
 
@@ -55,7 +48,7 @@ module baked_slicel #(
   output wire carry_out
 );
 
-localparam MUX_LVLS = $clog2(NUM_LUTS);
+//localparam MUX_LVLS = $clog2(NUM_LUTS);
 localparam LUT_CONF_WIDTH = 2*(2**S_XX_BASE) + 1;
 
 // N luts + Muxing + carry enable
@@ -69,12 +62,11 @@ wire mem_set;
 wire [TOTAL_COMB_CONF_WIDTH-1:0] slicel_comb_conf_bus;
 wire [TOTAL_MEM_CONF_WIDTH-1:0] slicel_mem_conf_bus; 
 
-assign shift_out = shift_in_from_tile_bodge;
 assign set_out = comb_set;
 
 slicel #(
   .S_XX_BASE(S_XX_BASE),
-  .NUM_LUTS(NUM_LUTS),
+  .NUM_LUTS(NUM_LUTS)
 ) sliceluroni (
   .clk(clk),
   .comb_set(comb_set),
@@ -107,7 +99,7 @@ config_tile #(
   .shift_enable(cen),
   .shift_in_hard(shift_in),
   .shift_in_soft(shift_in_soft),
-  .shift_out(shift_out_to_tile_bodge),
+  .shift_out(shift_out),
 
   .set_hard(set_in),
   .set_soft(set_in_soft),

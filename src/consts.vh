@@ -15,8 +15,8 @@
 //
 
 // Array dimension
-`define NUM_ROWS 4
-`define NUM_COLS 4
+`define NUM_ROWS 16
+`define NUM_COLS 16
 
 // LUT parameters
 `define S_XX_BASE 4
@@ -36,10 +36,10 @@
 `define MUX_LVLS      $clog2(`NUM_LUTS)
 
 // 1x S44 LUT inputs, Inter-LUT MUX inputs, reg_ce
-`define NUM_CLB_INS  (2 * `S_XX_BASE + `MUX_LVLS + 1)
+`define NUM_CLB_INS  10 // (2 * `S_XX_BASE + `MUX_LVLS + 1)
 
 // 2x Comb. outputs, Sync. outputs
-`define NUM_CLB_OUTS (2 * 2)
+`define NUM_CLB_OUTS 5 // (2 * 2)
 
 `define SWITCH_PER_IN  (`WS + `WD + `WG + `CLBX * `NUM_CLB_OUTS)
 `define SWITCH_PER_OUT (`CLBOS + `CLBOD)
