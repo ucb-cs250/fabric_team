@@ -21,37 +21,11 @@ set ::env(VERILOG_FILES) [concat \
 ]
 puts $::env(VERILOG_FILES)
 
-# Overwrite parameters for this version.
-set ::env(CLOCK_PERIOD) 10
-set ::env(CLOCK_PORT) "clk"
-set ::env(CLOCK_NET) $::env(CLOCK_PORT)
-
-#set ::env(MACRO_PLACEMENT_CFG) $::env(DESIGN_DIR)/macro_placement.cfg
-
-# Synthesis config
-set ::env(SYNTH_STRATEGY) 1;# 1 fails
-
-# set ::env(FP_SIZING) absolute
-# I think this goes LL_X LL_Y UR_X UR_Y, where LL=lower left, UR=upper right
-# Units probably microns
-# set ::env(DIE_AREA) [list 0 0 700 700]
-
 # Floorplan config
 set ::env(FP_CORE_UTIL) 40
 # Placement config
 set ::env(PL_TARGET_DENSITY) [ expr ($::env(FP_CORE_UTIL)+5) / 100.0 ]
 
-# CTS config
-# Routing config
-#set ::env(ROUTING_STRATEGY) 14 ;# run TritonRoute14
-#set ::env(GLB_RT_ADJUSTMENT) 0
-# Flow control config
-#
-# TODO(aryap): Enable this once the format is clear
-# set ::env(FP_PIN_ORDER_CFG) $fabric_src/pin_order.cfg
-
-# # threads for supporting tools
-set ::env(ROUTING_CORES) 10
-
+# Pin config
 set ::env(PDN_CFG) $::env(DESIGN_DIR)/pdn.tcl
 set ::env(FP_PIN_ORDER_CFG) $::env(DESIGN_DIR)/pin_order.cfg
