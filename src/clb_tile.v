@@ -9,8 +9,8 @@ module clb_tile #(
   parameter CLBIN_EACH_SIDE = 10,
   parameter CLBOUT = 5,
   parameter CLBOUT_EACH_SIDE = 5,
-  parameter CLBOS = 4,
-  parameter CLBOD = 4,
+  parameter CLBOS = 2,
+  parameter CLBOD = 2,
   parameter CLBX = 1
 
   // Not sure what else is needed here...
