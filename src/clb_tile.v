@@ -104,9 +104,9 @@ baked_slicel #(
   .higher_order_address(slicel_e_in[9:8]),
   .reg_we(slicel_s_in[8]),
 
-  .luts_input({slicel_w_in[7:0], slicel_s_in[7:0], slicel_e_in[7:0], slicel_n_in[7:0]}),
-  .lut_output({west_lut_out, south_lut_out, east_lut_out, north_lut_out}),
-  .lut_output_registered({west_lut_out_r, south_lut_out_r, east_lut_out_r, north_lut_out_r})
+  .luts_input({slicel_n_in[7:0], slicel_w_in[7:0], slicel_s_in[7:0], slicel_e_in[7:0]}),
+  .lut_output({north_lut_out, west_lut_out, south_lut_out, east_lut_out}),
+  .lut_output_registered({north_lut_out_r, west_lut_out_r, south_lut_out_r, east_lut_out_r})
 );
 
 // carry connection and track rotation (of single and double) should be done somewhere outside of cb
