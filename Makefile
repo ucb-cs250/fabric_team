@@ -31,10 +31,17 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        $(IX_YUKIO_PATH)/src/transmission_gate.v \
        $(IX_YUKIO_PATH)/src/transmission_gate_oneway.v \
        $(IX_YUKIO_PATH)/src/connection_block.v \
-       $(SRAM_PATH)/src/behavioral/unit_sram.v \
-       $(SRAM_PATH)/src/behavioral/unit_sram_reduced.v \
-       src/consts.vh \
-       src/fpga_clb_tiles.v 
+       $(IX_YUKIO_PATH)/src/transmission_gate_cell.v \
+       src/baked/baked_slicel.v \
+       src/baked/baked_clb_switch_box.v \
+       src/baked/baked_connection_block.v \
+       src/baked/baked_connection_block_east.v \
+       src/baked/baked_connection_block_north.v \
+       src/clb_tile.v
+#       $(SRAM_PATH)/src/behavioral/unit_sram.v \
+#       $(SRAM_PATH)/src/behavioral/unit_sram_reduced.v \
+#       src/consts.vh \
+#       src/fpga_clb_tiles.v 
 #       $(MAC_PATH)/src/multiply.v \
 #       $(MAC_PATH)/src/accumulate.v \
 #       $(MAC_PATH)/src/mac_mul_block_0.v \
