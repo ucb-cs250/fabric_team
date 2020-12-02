@@ -123,12 +123,14 @@ module clb_tile_tb();
           SOFTMUX_S44_1_CFG, LUT0_S44_1_CFG, LUT1_S44_1_CFG,
           SOFTMUX_S44_0_CFG, LUT0_S44_0_CFG, LUT1_S44_0_CFG};
 
+  reg X0, X1, X2, X3, RET_AND, RET_OR;
+
   initial begin
     #1;
 
     MEM_CFG_BITS = 8'b11110011;
 
-    USE_CC_CFG_BIT = 1'b1;
+    USE_CC_CFG_BIT = 1'b0;
     IXMUX_CFG_BITS = 2'b0;
 
     LUT0_S44_0_CFG    = 16'h8000; // X3 & X2 & X1 & X0 --> luts_out[1]
@@ -147,6 +149,7 @@ module clb_tile_tb();
     CB_EAST_CFG_BITS  = $random;
     CB_NORTH_CFG_BITS = $random;
     SB_CFG_BITS       = $random;
+
   end
 
   // MSB< [SLICEL] [CB_NORTH] [SB] [CB_EAST] >LSB
@@ -297,6 +300,47 @@ module clb_tile_tb();
       $display("PASSED!");
     else
       $display("FAILED!");
+
+    X0 = $random;
+    X1 = $random;
+    X2 = $random;
+    X3 = $random;
+
+    RET_AND = X0 & X1 & X2 & X3;
+    RET_OR  = X0 | X1 | X2 | X3;
+
+    $display("X3=%b, X2=%b, X1=%b, X0=%b, RET_AND=%b, RET_OR=%b", X3, X2, X1, X0,
+             RET_AND, RET_OR);
+
+
+    // Drive input to the South LUTs (LUT3, LUT2)
+    south_clb_in = {X3, X2, X1, X0, X3, X2, X1, X0};
+    // Drive input to the West LUTs (LUT5, LUT4)
+    west_clb_in  = {X3, X2, X1, X0, X3, X2, X1, X0};
+
+    @(negedge clk);
+
+    $display("CLB Comb. outputs %b", CLB_TILE.slice.sliceluroni.out);
+    $display("TEST CLB Outputs (Comb)");
+    if (CLB_TILE.slice.sliceluroni.out[2] === RET_AND)
+      $display("[1] PASSED");
+    else
+      $display("[1] FAILED");
+
+    if (CLB_TILE.slice.sliceluroni.out[3] === RET_AND)
+      $display("[2] PASSED");
+    else
+      $display("[2] FAILED");
+
+    if (CLB_TILE.slice.sliceluroni.out[4] === RET_OR)
+      $display("[3] PASSED");
+    else
+      $display("[3] FAILED");
+
+    if (CLB_TILE.slice.sliceluroni.out[5] === RET_AND)
+      $display("[4] PASSED");
+    else
+      $display("[4] FAILED");
 
     #100;
     $display("Done");
