@@ -50,10 +50,4 @@ set ::env(MACRO_PLACEMENT_CFG) $::env(DESIGN_DIR)/macro_placement.cfg
 
 set ::env(SYNTH_STRATEGY) 1;# 1 fails
 
-set ::env(FP_CORE_UTIL) 40
-set ::env(PL_TARGET_DENSITY) [ expr ($::env(FP_CORE_UTIL)+5) / 100.0 ]
-
 set ::env(ROUTING_CORES) 10
-
-set ::env(PDN_CFG) $::env(DESIGN_DIR)/pdn.tcl
-set ::env(FP_PIN_ORDER_CFG) $::env(DESIGN_DIR)/pin_order.cfg
