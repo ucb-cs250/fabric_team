@@ -105,8 +105,8 @@ wire col_shift[MY  :0][MX-1:0];
 genvar x;
 genvar y;
 generate
-  for (x = 0; x < MX; x = x + 1) begin
-    for (y = 0; y < MY; y = y + 1) begin
+  for (x = 0; x < MX; x = x + 1) begin:X
+    for (y = 0; y < MY; y = y + 1) begin:Y
       clb_tile #(
         .S_XX_BASE(S_XX_BASE),
         .NUM_LUTS(NUM_LUTS),
@@ -135,17 +135,18 @@ generate
         .south_double(ix_double_ns[  y][  x]),
         .west_double( ix_double_ew[  y][  x]),
 
-        .north_clb_in( dc_ns[y+1][  x]),
+        // The names are made up and the points don't matter!
+        .north_clb_out(dc_ns[y+1][  x]),
         .south_clb_out(dc_ns[  y][  x]),
 
         .south_clb_in( dc_sn[  y][  x]),
-        .north_clb_out(dc_sn[y+1][  x]),
+        .north_clb_in( dc_sn[y+1][  x]),
 
-        .west_clb_in(  dc_we[  y][x+1]),
+        .west_clb_out(  dc_we[  y][x+1]),
         .east_clb_out( dc_we[  y][  x]),
 
         .east_clb_in(  dc_ew[  y][  x]),
-        .west_clb_out( dc_ew[  y][x+1]),
+        .west_clb_in( dc_ew[  y][x+1]),
 
         .shift_in_from_north(col_shift[  y][  x]),
         .set_in_from_north(  col_set  [  y][  x]),

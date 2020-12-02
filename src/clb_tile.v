@@ -22,6 +22,7 @@ module clb_tile #(
   inout [WS-1:0] north_single, east_single, south_single, west_single,
   inout [WD-1:0] north_double, east_double, south_double, west_double,
 
+  // FIXME(anyone): PLEASE NAME THESE SO THEY MAKE SENSE.
   // Connections from the CLBs in the N/E tiles to the N/E CBs in this tile
   output [CLBIN_EACH_SIDE-1:0] north_clb_in, east_clb_in,
   input [CLBOUT_EACH_SIDE-1:0] north_clb_out, east_clb_out,
