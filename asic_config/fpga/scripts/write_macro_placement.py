@@ -13,8 +13,8 @@ PLACEMENTS = []
 for x in range(MX):
     for y in range(MY):
         name = INST_NAME.format(x=x, y=y)
-        lx = LX_LY[0] + x * CLB_DIMENSIONS[0] + BUFFER[0]
-        ly = LX_LY[1] + y * CLB_DIMENSIONS[1] + BUFFER[1]
+        lx = LX_LY[0] + x * (CLB_DIMENSIONS[0] + BUFFER[0])
+        ly = LX_LY[1] + y * (CLB_DIMENSIONS[1] + BUFFER[1])
         PLACEMENTS.append('{} {} {} N'.format(name, lx, ly))
 
 with open(FILE_NAME, 'w') as f:
