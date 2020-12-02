@@ -9,9 +9,9 @@ module baked_connection_block_north #(
   parameter CLBOUT0 = 5,
   parameter CLBOUT1 = 5,
   parameter CARRY = 1,
-  parameter CLBOS = 2,
+  parameter CLBOS = 4,
   parameter CLBOS_BIAS = 0,
-  parameter CLBOD = 2,
+  parameter CLBOD = 4,
   parameter CLBOD_BIAS = 0,
   parameter CLBX = 1
 )(
