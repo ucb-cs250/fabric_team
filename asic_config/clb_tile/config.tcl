@@ -84,7 +84,7 @@ set ::env(CLOCK_TREE_SYNTH) 1
 set ::env(SYNTH_READ_BLACKBOX_LIB) 1
 #set ::set(SYNTH_FLAT_TOP) 1
 
-set ::env(FP_CORE_UTIL) 30
+set ::env(FP_CORE_UTIL) 50
 #set ::env(FP_PDN_VOFFSET) 0
 #set ::env(FP_PDN_VPITCH) 30
 
