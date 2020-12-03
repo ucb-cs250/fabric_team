@@ -90,7 +90,7 @@ wire [WS-1:0] ix_single_ew[MY-1:0][MX  :0];
 wire [WD-1:0] ix_double_ns[MY  :0][MX-1:0];
 wire [WD-1:0] ix_double_ew[MY-1:0][MX  :0];
 
-// Direct conneciton wires go between connection boxes and CLBs.
+// Direct connection wires go between connection boxes and CLBs.
 wire [CLBIN_EACH_SIDE-1:0] dc_ns[MY-1:0][MX  :0];
 wire [CLBIN_EACH_SIDE-1:0] dc_sn[MY-1:0][MX  :0];
 wire [CLBIN_EACH_SIDE-1:0] dc_ew[MY  :0][MX-1:0];
