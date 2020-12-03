@@ -148,8 +148,8 @@ generate
         .east_clb_in(  dc_ew[  y][  x]),
         .west_clb_in( dc_ew[  y][x+1]),
 
-        .shift_in_from_north(col_shift[  y][  x]),
-        .set_in_from_north(  col_set  [  y][  x]),
+        .shift_in_hard(col_shift[  y][  x]),
+        .set_in_hard(  col_set  [  y][  x]),
 
         .shift_out_to_south( col_shift[y+1][  x]),
         .set_out_to_south(   col_set  [y+1][  x])
