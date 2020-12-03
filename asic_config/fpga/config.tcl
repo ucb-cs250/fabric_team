@@ -20,19 +20,35 @@ set our_root $src_root/asic_config/fpga
 set fabric_src $src_root/src
 set blackbox_src $fabric_src/blackbox
 
-# sram_tile
+set use_debug_products false
 
-# mac_tile
-set mac_runs $design_root/250/asic_config/mac_tile
-set mac_run {baked_interactive}
-set mac_lef $mac_runs/runs/$mac_run/results/magic/mac_tile.lef
-set mac_gds $mac_runs/runs/$mac_run/results/magic/mac_tile.gds
+if {$use_debug_products} {
+  # sram_tile
 
-# clb_tile
-set clb_runs $design_root/250/asic_config/clb_tile
-set clb_run {works_sometimes}
-set clb_lef $clb_runs/runs/$clb_run/results/magic/clb_tile.lef
-set clb_gds $clb_runs/runs/$clb_run/results/magic/clb_tile.gds
+  # mac_tile
+  set mac_runs $design_root/250/asic_config/mac_tile
+  set mac_run {baked_interactive}
+  set mac_lef $mac_runs/runs/$mac_run/results/magic/mac_tile.lef
+  set mac_gds $mac_runs/runs/$mac_run/results/magic/mac_tile.gds
+
+  # clb_tile
+  set clb_runs $design_root/250/asic_config/clb_tile
+  set clb_run {works_sometimes}
+  set clb_lef $clb_runs/runs/$clb_run/results/magic/clb_tile.lef
+  set clb_gds $clb_runs/runs/$clb_run/results/magic/clb_tile.gds
+} else {
+  set gds_root $src_root/gds
+
+  # sram_tile
+
+  # mac_tile
+  set mac_lef $gds_root/mac_tile/mac_tile.lef
+  set mac_gds $gds_root/mac_tile/mac_tile.gds
+
+  # clb_tile
+  set clb_lef $gds_root/clb_tile/clb_tile.lef
+  set clb_gds $gds_root/clb_tile/clb_tile.gds
+}
 
 # Verilog files for top level RTL connections. Do not include black boxes!
 set ::env(VERILOG_FILES) [concat \
@@ -59,9 +75,8 @@ set ::env(CLOCK_TREE_SYNTH) 1
 
 #set ::env(DIODE_INSERTION_STRATEGY) 0
 
-# This kills openLANE for now.
 set ::env(FP_SIZING) absolute
-set ::env(DIE_AREA) "0 0 4000 4000"
+set ::env(DIE_AREA) "0 0 3100 3800"   ;# This is the limit handed down by efabless.
 #set ::env(SYNTH_STRATEGY) 1
 set ::env(SYNTH_READ_BLACKBOX_LIB) 1
 #set ::set(SYNTH_FLAT_TOP) 1

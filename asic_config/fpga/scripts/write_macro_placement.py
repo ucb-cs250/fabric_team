@@ -2,7 +2,7 @@
 
 FILE_NAME = 'macro_placement.cfg'
 
-MX=4
+MX=3
 MY=4
 LX_LY=(100, 100)
 CLB_DIMENSIONS=(800, 800)
