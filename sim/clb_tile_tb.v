@@ -123,7 +123,36 @@ module clb_tile_tb();
           SOFTMUX_S44_1_CFG, LUT0_S44_1_CFG, LUT1_S44_1_CFG,
           SOFTMUX_S44_0_CFG, LUT0_S44_0_CFG, LUT1_S44_0_CFG};
 
-  reg X0, X1, X2, X3, RET_AND, RET_OR;
+  initial CB_EAST_CFG_BITS  = 0;
+  initial CB_NORTH_CFG_BITS = 0;
+  initial SB_CFG_BITS       = 0;
+
+  reg [7:0] INPUTS;
+  reg [7:0] RESULTS;
+
+  task lut4_functions;
+    input  [7:0] INPUTS;
+    output [7:0] RESULTS;
+    begin
+      RESULTS[0] = INPUTS[0] & INPUTS[1] & INPUTS[2] & INPUTS[3];     // 16'h8000
+      RESULTS[1] = INPUTS[4] | INPUTS[5] | INPUTS[6] | INPUTS[7];     // 16'hFFFE
+      RESULTS[2] = INPUTS[0] & INPUTS[1] & INPUTS[2] & INPUTS[3];     // 16'h8000
+      RESULTS[3] = INPUTS[4] | INPUTS[5] | INPUTS[6] | INPUTS[7];     // 16'hFFFE
+      RESULTS[4] = INPUTS[0] & INPUTS[1] & INPUTS[2] & INPUTS[3];     // 16'h8000
+      RESULTS[5] = INPUTS[4] | INPUTS[5] | INPUTS[6] | INPUTS[7];     // 16'hFFFE
+      RESULTS[6] = INPUTS[0] & INPUTS[1] & INPUTS[2] & INPUTS[3];     // 16'h8000
+      RESULTS[7] = INPUTS[4] | INPUTS[5] | INPUTS[6] | INPUTS[7];     // 16'hFFFE
+    end
+  endtask
+
+  // LUT order: MSB< LUT6, LUT7, LUT4, LUT5, LUT2, LUT3, LUT0, LUT1 >LSB
+
+  // Driving data into the SB from the North pins
+  // This will be routed to the inputs of LUT6 (North)
+  assign north_single[3:0] = INPUTS[7:4];
+  // Driving data into the SB from the East pins
+  // This will be routed to the inputs of LUT0 (East)
+  assign east_single[3:0] = INPUTS[7:4];
 
   initial begin
     #1;
@@ -133,23 +162,66 @@ module clb_tile_tb();
     USE_CC_CFG_BIT = 1'b0;
     IXMUX_CFG_BITS = 2'b0;
 
-    LUT0_S44_0_CFG    = 16'h8000; // X3 & X2 & X1 & X0 --> luts_out[1]
-    LUT1_S44_0_CFG    = 16'h8000; // X3 & X2 & X1 & X0 --> luts_out[0]
+    LUT0_S44_0_CFG    = 16'hFFFE; // func1 --> luts_out[1]
+    LUT1_S44_0_CFG    = 16'h8000; // func0 --> luts_out[0]
     SOFTMUX_S44_0_CFG = 1'b1;     // CLB_input[3]      --> luts_in[3]  (LUT1_S44_0 in3)
-    LUT0_S44_1_CFG    = 16'h8000; // X3 & X2 & X1 & X0 --> luts_out[3]
-    LUT1_S44_1_CFG    = 16'h8000; // X3 & X2 & X1 & X0 --> luts_out[2]
+    LUT0_S44_1_CFG    = 16'hFFFE; // func3 --> luts_out[3]
+    LUT1_S44_1_CFG    = 16'h8000; // func2 --> luts_out[2]
     SOFTMUX_S44_1_CFG = 1'b1;     // CLB_input[11]     --> luts_in[11] (LUT1_S44_1 in3)
-    LUT0_S44_2_CFG    = 16'h8000; // X3 & X2 & X1 & X0 --> luts_out[5]
-    LUT1_S44_2_CFG    = 16'hFFFE; // X3 | X2 | X1 | X0 --> luts_out[4]
+    LUT0_S44_2_CFG    = 16'hFFFE; // func5 --> luts_out[5]
+    LUT1_S44_2_CFG    = 16'h8000; // func4 --> luts_out[4]
     SOFTMUX_S44_2_CFG = 1'b1;     // CLB_input[19]     --> luts_in[19] (LUT1_S44_2 in3)
-    LUT0_S44_3_CFG    = 16'hFFFE; // X3 | X2 | X1 | X0 --> luts_out[7]
-    LUT1_S44_3_CFG    = 16'hFFFE; // X3 | X2 | X1 | X0 --> luts_out[6]
+    LUT0_S44_3_CFG    = 16'hFFFE; // func7 --> luts_out[7]
+    LUT1_S44_3_CFG    = 16'h8000; // func6 --> luts_out[6]
     SOFTMUX_S44_3_CFG = 1'b1;     // CLB_input[27]     --> luts_in[27] (LUT1_S44_3 in3)
 
-    CB_EAST_CFG_BITS  = $random;
-    CB_NORTH_CFG_BITS = $random;
-    SB_CFG_BITS       = $random;
+    //CB_EAST_CFG_BITS  = $random;
+    //CB_NORTH_CFG_BITS = $random;
+    //SB_CFG_BITS       = $random;
 
+    // East SB -> South SB -> CB_East -> LUT0 (from the East side of the CLB)
+    SB_CFG_BITS[`SINGLE_S0E1(0)] = 1'b1; // single_east[0] <-> single_south[1]
+    SB_CFG_BITS[`SINGLE_S1E0(0)] = 1'b1; // single_east[1] <-> single_south[0]
+    SB_CFG_BITS[`SINGLE_S0E1(1)] = 1'b1; // single_east[2] <-> single_south[3]
+    SB_CFG_BITS[`SINGLE_S1E0(1)] = 1'b1; // single_east[3] <-> single_south[2]
+
+    CB_EAST_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(1, 4)]  = 1'b1; // cb_east_single0[1] -> lut0_in0
+    CB_EAST_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(0, 5)]  = 1'b1; // cb_east_single0[0] -> lut0_in1
+    CB_EAST_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(3, 6)]  = 1'b1; // cb_east_single0[3] -> lut0_in2
+    CB_EAST_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(2, 7)]  = 1'b1; // cb_east_single0[2] -> lut0_in3
+
+    // North SB -> West SB -> CB_North -> LUT6 (from the North side of the CLB)
+    SB_CFG_BITS[`SINGLE_N0W1(0)] = 1'b1; // single_north[0] <-> single_west[1]
+    SB_CFG_BITS[`SINGLE_N1W0(0)] = 1'b1; // single_north[1] <-> single_west[0]
+    SB_CFG_BITS[`SINGLE_N0W1(1)] = 1'b1; // single_north[2] <-> single_west[3]
+    SB_CFG_BITS[`SINGLE_N1W0(1)] = 1'b1; // single_north[3] <-> single_west[2]
+
+    CB_NORTH_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(1, 4)]  = 1'b1; // cb_north_single0[1] -> lut6_in0
+    CB_NORTH_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(0, 5)]  = 1'b1; // cb_north_single0[0] -> lut6_in1
+    CB_NORTH_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(3, 6)]  = 1'b1; // cb_north_single0[3] -> lut6_in2
+    CB_NORTH_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(2, 7)]  = 1'b1; // cb_north_single0[2] -> lut6_in3
+
+    // Eastward CLB output -> CB_East -> LUT1 (from the East side of the CLB)
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(0, 0)] = 1'b1; // east_clb_out[0] -> cb_east_double0[0]
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(1, 1)] = 1'b1; // east_clb_out[1] -> cb_east_double0[1]
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(2, 2)] = 1'b1; // east_clb_out[2] -> cb_east_double0[2]
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(3, 3)] = 1'b1; // east_clb_out[3] -> cb_east_double0[3]
+
+    CB_EAST_CFG_BITS[`CB_DOUBLE0_TO_CLB0_IN(0, 0)]  = 1'b1; // cb_east_double0[0] -> lut1_in0
+    CB_EAST_CFG_BITS[`CB_DOUBLE0_TO_CLB0_IN(1, 1)]  = 1'b1; // cb_east_double0[1] -> lut1_in1
+    CB_EAST_CFG_BITS[`CB_DOUBLE0_TO_CLB0_IN(2, 2)]  = 1'b1; // cb_east_double0[2] -> lut1_in2
+    CB_EAST_CFG_BITS[`CB_DOUBLE0_TO_CLB0_IN(3, 3)]  = 1'b1; // cb_east_double0[3] -> lut1_in3
+
+    // Northward CLB output -> CB_North -> LUT7 (from the North side of the CLB)
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(0, 0)] = 1'b1; // north_clb_out[0] -> cb_north_double0[0]
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(1, 1)] = 1'b1; // north_clb_out[1] -> cb_north_double0[1]
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(2, 2)] = 1'b1; // north_clb_out[2] -> cb_north_double0[2]
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(3, 3)] = 1'b1; // north_clb_out[3] -> cb_north_double0[3]
+
+    CB_NORTH_CFG_BITS[`CB_DOUBLE0_TO_CLB0_IN(0, 0)]  = 1'b1; // cb_north_double0[0] -> lut7_in0
+    CB_NORTH_CFG_BITS[`CB_DOUBLE0_TO_CLB0_IN(1, 1)]  = 1'b1; // cb_north_double0[1] -> lut7_in1
+    CB_NORTH_CFG_BITS[`CB_DOUBLE0_TO_CLB0_IN(2, 2)]  = 1'b1; // cb_north_double0[2] -> lut7_in2
+    CB_NORTH_CFG_BITS[`CB_DOUBLE0_TO_CLB0_IN(3, 3)]  = 1'b1; // cb_north_double0[3] -> lut7_in3
   end
 
   // MSB< [SLICEL] [CB_NORTH] [SB] [CB_EAST] >LSB
@@ -301,46 +373,46 @@ module clb_tile_tb();
     else
       $display("FAILED!");
 
-    X0 = $random;
-    X1 = $random;
-    X2 = $random;
-    X3 = $random;
+    INPUTS = $random;
+    #1;
+    lut4_functions(INPUTS, RESULTS);
 
-    RET_AND = X0 & X1 & X2 & X3;
-    RET_OR  = X0 | X1 | X2 | X3;
+    $display("INPUTS=%b, RESULTS=%b", INPUTS, RESULTS);
 
-    $display("X3=%b, X2=%b, X1=%b, X0=%b, RET_AND=%b, RET_OR=%b", X3, X2, X1, X0,
-             RET_AND, RET_OR);
+    // Drive input to the East LUTs [3:0] (LUT1) through clb1_output of CB_East
+    east_clb_out[3:0]  = INPUTS[3:0];
+    // Drive input to the North LUTs [3:0] (LUT7) through clb1_output of CB_North
+    north_clb_out[3:0] = INPUTS[3:0];
 
-
-    // Drive input to the South LUTs (LUT3, LUT2)
-    south_clb_in = {X3, X2, X1, X0, X3, X2, X1, X0};
-    // Drive input to the West LUTs (LUT5, LUT4)
-    west_clb_in  = {X3, X2, X1, X0, X3, X2, X1, X0};
+    // Drive input to the South LUTs (LUT3, LUT2) directly
+    south_clb_in = INPUTS[7:0];
+    // Drive input to the West LUTs (LUT5, LUT4) directly
+    west_clb_in  = INPUTS[7:0];
 
     @(negedge clk);
 
+    $display("CLB LUT inputs %b", CLB_TILE.slice.luts_input);
+
+    $display("CB_EAST single0 %b, double0 %b, clb1_output %b",
+      CLB_TILE.cb_east.single0,
+      CLB_TILE.cb_east.double0,
+      CLB_TILE.cb_east.clb1_output);
+    $display("CB_NORTH single0 %b, double0 %b, clb1_output %b",
+      CLB_TILE.cb_north.single0,
+      CLB_TILE.cb_north.double0,
+      CLB_TILE.cb_north.clb1_output);
+
     $display("CLB Comb. outputs %b", CLB_TILE.slice.sliceluroni.out);
+    $display("CLB slicel_w_out  {sync[1:0], comb[1:0]} %b", CLB_TILE.slicel_w_out);
+    $display("CLB slicel_s_out  {sync[1:0], comb[1:0]} %b", CLB_TILE.slicel_s_out);
+    $display("CLB slicel_e_out  {sync[1:0], comb[1:0]} %b", CLB_TILE.slicel_e_out);
+    $display("CLB slicel_n_out  {sync[1:0], comb[1:0]} %b", CLB_TILE.slicel_n_out);
+
     $display("TEST CLB Outputs (Comb)");
-    if (CLB_TILE.slice.sliceluroni.out[2] === RET_AND)
-      $display("[1] PASSED");
+    if (CLB_TILE.slice.sliceluroni.out === RESULTS)
+      $display("PASSED");
     else
-      $display("[1] FAILED");
-
-    if (CLB_TILE.slice.sliceluroni.out[3] === RET_AND)
-      $display("[2] PASSED");
-    else
-      $display("[2] FAILED");
-
-    if (CLB_TILE.slice.sliceluroni.out[4] === RET_OR)
-      $display("[3] PASSED");
-    else
-      $display("[3] FAILED");
-
-    if (CLB_TILE.slice.sliceluroni.out[5] === RET_AND)
-      $display("[4] PASSED");
-    else
-      $display("[4] FAILED");
+      $display("FAILED");
 
     #100;
     $display("Done");
