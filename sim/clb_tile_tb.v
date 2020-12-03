@@ -25,8 +25,8 @@ module clb_tile_tb();
   wire [WS-1:0] north_single, east_single, south_single, west_single;
   wire [WD-1:0] north_double, east_double, south_double, west_double;
   reg cen;
-  reg shift_in_from_north, set_in_from_north;
-  wire shift_out_to_south, set_out_to_south;
+  reg shift_in_hard, set_in_hard;
+  wire shift_out_hard, set_out_hard;
 
   wire [CLBIN_EACH_SIDE-1:0]  north_clb_in, east_clb_in;
   reg [CLBOUT_EACH_SIDE-1:0]  north_clb_out, east_clb_out;
@@ -74,10 +74,10 @@ module clb_tile_tb();
     .south_clb_out(south_clb_out),   // output
     .west_clb_out(west_clb_out),     // output
 
-    .shift_in_from_north(shift_in_from_north),
-    .set_in_from_north(set_in_from_north),
-    .shift_out_to_south(shift_out_to_south),
-    .set_out_to_south(set_out_to_south)
+    .shift_in_hard(shift_in_hard),
+    .set_in_hard(set_in_hard),
+    .shift_out_hard(shift_out_hard),
+    .set_out_hard(set_out_hard)
   );
 
   wire [`LUT_CFG_SIZE*`NUM_LUTS-1:0] LUTS_CFG_BITS;
@@ -173,7 +173,7 @@ module clb_tile_tb();
 
   localparam CLB_TILE_CFG_SIZE = CFG_USE_CC_END_BIT + 1 + 2;
 
-  reg [CLB_TILE_CFG_SIZE-1:0] clb_tile_bitstream;
+  wire [CLB_TILE_CFG_SIZE-1:0] clb_tile_bitstream;
 
   assign clb_tile_bitstream[CFG_CB_EAST_END_BIT : CFG_CB_EAST_START_BIT]       = CB_EAST_CFG_BITS;
   assign clb_tile_bitstream[CFG_CB_EAST_END_BIT + 2 : CFG_CB_EAST_END_BIT + 1] = 2'b00;
@@ -206,8 +206,8 @@ module clb_tile_tb();
     cen = 1'b0;
     rst = 1'b1;
 
-    shift_in_from_north = 1'b0;
-    set_in_from_north   = 1'b0;
+    shift_in_hard = 1'b0;
+    set_in_hard   = 1'b0;
 
     north_clb_out = 0;
     east_clb_out  = 0;
@@ -227,14 +227,14 @@ module clb_tile_tb();
 
     // Shifting the bitstream from LSB to MSB
     for (k = 0; k < CLB_TILE_CFG_SIZE; k = k + 1) begin
-      shift_in_from_north = clb_tile_bitstream[k];
+      shift_in_hard = clb_tile_bitstream[k];
       @(negedge clk);
     end
 
     cen = 1'b0;
-    set_in_from_north = 1'b1;
+    set_in_hard = 1'b1;
     @(negedge clk);
-    set_in_from_north = 1'b0;
+    set_in_hard = 1'b0;
 
     @(negedge clk);
     debug = 1'b0;

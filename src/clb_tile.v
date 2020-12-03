@@ -35,8 +35,8 @@ module clb_tile #(
   // Not sure if I got the globals right...
   //inout [WG-1:0] global_vertical, global_horizontal,
 
-  input shift_in_from_north, set_in_from_north,
-  output shift_out_to_south, set_out_to_south,
+  input shift_in_hard, set_in_hard,
+  output shift_out_hard, set_out_hard,
 
   input carry_in,
   output carry_out
@@ -46,11 +46,11 @@ module clb_tile #(
 // Intermediate shifter signals
 // SHIFT_IN -> SLICEL -> CB_NORTH -> SB -> CB_EAST
 wire slice_so, cb_north_so, sb_so, cb_east_so;
-assign shift_out_to_south = cb_east_so;
+assign shift_out_hard = cb_east_so;
 
 // Config set output
 wire set;
-assign set_out_to_south = set;
+assign set_out_hard = set;
 
 wire set_in_soft, shift_in_soft;
 
@@ -89,8 +89,8 @@ baked_slicel #(
   .rst(rst),
   .cen(cen),
 
-  .set_in(set_in_from_north),
-  .shift_in(shift_in_from_north),
+  .set_in(set_in_hard),
+  .shift_in(shift_in_hard),
 
   .set_in_soft(set_in_soft),
   .shift_in_soft(shift_in_soft),

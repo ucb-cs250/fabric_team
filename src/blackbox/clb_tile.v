@@ -23,7 +23,7 @@ module clb_tile #(
   input [CLBOUT_EACH_SIDE-1:0] north_clb_out, east_clb_out,
   input [CLBIN_EACH_SIDE-1:0] south_clb_in, west_clb_in,
   output [CLBOUT_EACH_SIDE-1:0] south_clb_out, west_clb_out,
-  input shift_in_from_north, set_in_from_north,
-  output shift_out_to_south, set_out_to_south,
+  input shift_in_hard, set_in_hard,
+  output shift_out_hard, set_out_hard,
 );
 endmodule
