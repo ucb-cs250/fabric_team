@@ -1,5 +1,4 @@
 module fpga #(
-  // This tile
   parameter MX = 3,
   parameter MY = 4,
   // There are 38 IO pins in Caravel, so we distribute them around the chip.

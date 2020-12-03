@@ -75,17 +75,17 @@ set ::env(CLOCK_TREE_SYNTH) 1
 
 #set ::env(DIODE_INSERTION_STRATEGY) 0
 
-set ::env(FP_SIZING) absolute
-set ::env(DIE_AREA) "0 0 3100 3800"   ;# This is the limit handed down by efabless.
+#set ::env(FP_SIZING) absolute
+#set ::env(DIE_AREA) "0 0 3100 3800"   ;# This is the limit handed down by efabless.
 #set ::env(SYNTH_STRATEGY) 1
 set ::env(SYNTH_READ_BLACKBOX_LIB) 1
 #set ::set(SYNTH_FLAT_TOP) 1
 
-#set ::env(FP_CORE_UTIL) 50
+set ::env(FP_CORE_UTIL) 50
 #set ::env(FP_PDN_VOFFSET) 0
 #set ::env(FP_PDN_VPITCH) 30
 
-set ::env(PL_TARGET_DENSITY) 0.006
+set ::env(PL_TARGET_DENSITY) 0.55
 
 set ::env(PL_BASIC_PLACEMENT) 0
 set ::env(PL_SKIP_INITIAL_PLACEMENT) 1
