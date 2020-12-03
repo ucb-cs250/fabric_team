@@ -28,10 +28,10 @@ module clb_tile_tb();
   reg shift_in_hard, set_in_hard;
   wire shift_out_hard, set_out_hard;
 
-  wire [CLBIN_EACH_SIDE-1:0]  north_clb_in, east_clb_in;
-  reg [CLBOUT_EACH_SIDE-1:0]  north_clb_out, east_clb_out;
-  reg [CLBIN_EACH_SIDE-1:0]   south_clb_in, west_clb_in;
-  wire [CLBOUT_EACH_SIDE-1:0] south_clb_out, west_clb_out;
+  wire [CLBIN_EACH_SIDE-1:0]  cb_north_out, cb_east_out;
+  reg [CLBOUT_EACH_SIDE-1:0]  cb_north_in, cb_east_in;
+  reg [CLBIN_EACH_SIDE-1:0]   clb_south_in, clb_west_in;
+  wire [CLBOUT_EACH_SIDE-1:0] clb_south_out, clb_west_out;
 
   reg carry_in;
   wire carry_out;
@@ -65,14 +65,14 @@ module clb_tile_tb();
     .carry_in(carry_in),
     .carry_out(carry_out),
 
-    .north_clb_in(north_clb_in),     // output
-    .east_clb_in(east_clb_in),       // output
-    .north_clb_out(north_clb_out),   // input
-    .east_clb_out(east_clb_out),     // input
-    .south_clb_in(south_clb_in),     // input
-    .west_clb_in(west_clb_in),       // input
-    .south_clb_out(south_clb_out),   // output
-    .west_clb_out(west_clb_out),     // output
+    .cb_north_out(cb_north_out),     // output
+    .cb_east_out(cb_east_out),       // output
+    .cb_north_in(cb_north_in),       // input
+    .cb_east_in(cb_east_in),         // input
+    .clb_south_in(clb_south_in),     // input
+    .clb_west_in(clb_west_in),       // input
+    .clb_south_out(clb_south_out),   // output
+    .clb_west_out(clb_west_out),     // output
 
     .shift_in_hard(shift_in_hard),
     .set_in_hard(set_in_hard),
@@ -346,10 +346,10 @@ module clb_tile_tb();
     CB_NORTH_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(2, 7)]  = 1'b1; // cb_north_single0[2] -> lut6_in3
 
     // Eastward CLB output -> CB_East -> LUT1 (from the East side of the CLB)
-    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(0, 0)] = 1'b1; // east_clb_out[0] -> cb_east_double0[0]
-    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(1, 1)] = 1'b1; // east_clb_out[1] -> cb_east_double0[1]
-    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(2, 2)] = 1'b1; // east_clb_out[2] -> cb_east_double0[2]
-    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(3, 3)] = 1'b1; // east_clb_out[3] -> cb_east_double0[3]
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(0, 0)] = 1'b1; // cb_east_in[0] -> cb_east_double0[0]
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(1, 1)] = 1'b1; // cb_east_in[1] -> cb_east_double0[1]
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(2, 2)] = 1'b1; // cb_east_in[2] -> cb_east_double0[2]
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(3, 3)] = 1'b1; // cb_east_in[3] -> cb_east_double0[3]
 
     CB_EAST_CFG_BITS[`CB_DOUBLE0_TO_CLB0_IN(0, 0)]  = 1'b1; // cb_east_double0[0] -> lut1_in0
     CB_EAST_CFG_BITS[`CB_DOUBLE0_TO_CLB0_IN(1, 1)]  = 1'b1; // cb_east_double0[1] -> lut1_in1
@@ -357,10 +357,10 @@ module clb_tile_tb();
     CB_EAST_CFG_BITS[`CB_DOUBLE0_TO_CLB0_IN(3, 3)]  = 1'b1; // cb_east_double0[3] -> lut1_in3
 
     // Northward CLB output -> CB_North -> LUT7 (from the North side of the CLB)
-    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(0, 0)] = 1'b1; // north_clb_out[0] -> cb_north_double0[0]
-    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(1, 1)] = 1'b1; // north_clb_out[1] -> cb_north_double0[1]
-    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(2, 2)] = 1'b1; // north_clb_out[2] -> cb_north_double0[2]
-    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(3, 3)] = 1'b1; // north_clb_out[3] -> cb_north_double0[3]
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(0, 0)] = 1'b1; // cb_north_in[0] -> cb_north_double0[0]
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(1, 1)] = 1'b1; // cb_north_in[1] -> cb_north_double0[1]
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(2, 2)] = 1'b1; // cb_north_in[2] -> cb_north_double0[2]
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_DOUBLE0(3, 3)] = 1'b1; // cb_north_in[3] -> cb_north_double0[3]
 
     CB_NORTH_CFG_BITS[`CB_DOUBLE0_TO_CLB0_IN(0, 0)]  = 1'b1; // cb_north_double0[0] -> lut7_in0
     CB_NORTH_CFG_BITS[`CB_DOUBLE0_TO_CLB0_IN(1, 1)]  = 1'b1; // cb_north_double0[1] -> lut7_in1
@@ -407,10 +407,10 @@ module clb_tile_tb();
     SOFTMUX_S44_3_CFG = 1'b1; // direct input from CLB
 
     // Eastward CLB output {1'b0, 1'b0, B[0], A[0]}-> CB_East -> LUT1 (from the East side of the CLB)
-    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(0, 0)] = 1'b1; // east_clb_out[0] -> cb_east_single0[0]
-    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(1, 1)] = 1'b1; // east_clb_out[1] -> cb_east_single0[1]
-    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(2, 2)] = 1'b1; // east_clb_out[2] -> cb_east_single0[2]
-    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(3, 3)] = 1'b1; // east_clb_out[3] -> cb_east_single0[3]
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(0, 0)] = 1'b1; // cb_east_in[0] -> cb_east_single0[0]
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(1, 1)] = 1'b1; // cb_east_in[1] -> cb_east_single0[1]
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(2, 2)] = 1'b1; // cb_east_in[2] -> cb_east_single0[2]
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(3, 3)] = 1'b1; // cb_east_in[3] -> cb_east_single0[3]
 
     CB_EAST_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(0, 0)]  = 1'b1; // cb_east_single0[0] -> lut1_in0
     CB_EAST_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(1, 1)]  = 1'b1; // cb_east_single0[1] -> lut1_in1
@@ -422,10 +422,10 @@ module clb_tile_tb();
     CB_EAST_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(3, 7)]  = 1'b1; // cb_east_single0[3] -> lut0_in3
 
     // Northward CLB output {1'b0, 1'b0, B[3], A[3]} -> CB_North -> LUT7, LUT6 (from the North side of the CLB)
-    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(0, 0)] = 1'b1; // north_clb_out[0] -> cb_north_single0[0]
-    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(1, 1)] = 1'b1; // north_clb_out[1] -> cb_north_single0[1]
-    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(2, 2)] = 1'b1; // north_clb_out[2] -> cb_north_single0[2]
-    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(3, 3)] = 1'b1; // north_clb_out[3] -> cb_north_single0[3]
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(0, 0)] = 1'b1; // cb_north_in[0] -> cb_north_single0[0]
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(1, 1)] = 1'b1; // cb_north_in[1] -> cb_north_single0[1]
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(2, 2)] = 1'b1; // cb_north_in[2] -> cb_north_single0[2]
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(3, 3)] = 1'b1; // cb_north_in[3] -> cb_north_single0[3]
 
     CB_NORTH_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(0, 0)]  = 1'b1; // cb_north_single0[0] -> lut7_in0
     CB_NORTH_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(1, 1)]  = 1'b1; // cb_north_single0[1] -> lut7_in1
@@ -517,10 +517,10 @@ module clb_tile_tb();
     shift_in_hard = 1'b0;
     set_in_hard   = 1'b0;
 
-    north_clb_out = 0;
-    east_clb_out  = 0;
-    south_clb_in  = 0;
-    west_clb_in   = 0;
+    cb_north_in = 0;
+    cb_east_in  = 0;
+    clb_south_in  = 0;
+    clb_west_in   = 0;
 
     carry_in = 0;
 
@@ -617,17 +617,17 @@ module clb_tile_tb();
     $display("INPUTS=%b, RESULTS=%b", INPUTS, RESULTS);
 
     // Drive input to the East LUTs [3:0] (LUT1) through clb1_output of CB_East
-    east_clb_out[3:0]  = INPUTS[3:0];
+    cb_east_in[3:0]  = INPUTS[3:0];
     // Drive input to the North LUTs [3:0] (LUT7) through clb1_output of CB_North
-    north_clb_out[3:0] = INPUTS[3:0];
+    cb_north_in[3:0] = INPUTS[3:0];
 
     // Drive input to the South LUTs (LUT3, LUT2) directly
-    south_clb_in = INPUTS[7:0];
+    clb_south_in = INPUTS[7:0];
     // Drive input to the West LUTs (LUT5, LUT4) directly
-    west_clb_in  = INPUTS[7:0];
+    clb_west_in  = INPUTS[7:0];
 
     // REGISTER ENABLE
-    south_clb_in[8] = 1'b1;
+    clb_south_in[8] = 1'b1;
 
     @(negedge clk);
 
@@ -668,12 +668,12 @@ module clb_tile_tb();
 
     // REGISTER DISABLE
     @(negedge clk);
-    south_clb_in[8] = 1'b0;
+    clb_south_in[8] = 1'b0;
 
-    north_clb_out = 0;
-    east_clb_out  = 0;
-    south_clb_in  = 0;
-    west_clb_in   = 0;
+    cb_north_in = 0;
+    cb_east_in  = 0;
+    clb_south_in  = 0;
+    clb_west_in   = 0;
 
     run_test1 = 1'b0;
 
@@ -754,13 +754,13 @@ module clb_tile_tb();
       test_fails = test_fails + 1;
     end
 
-    north_clb_out[3:0] = {1'b0, 1'b0, B[3], A[3]};
-    east_clb_out[3:0]  = {1'b0, 1'b0, B[0], A[0]};
-    south_clb_in[7:0]  = {1'b0, 1'b0, B[1], A[1], 1'b0, 1'b0, B[1], A[1]};
-    west_clb_in[7:0]   = {1'b0, 1'b0, B[2], A[2], 1'b0, 1'b0, B[2], A[2]};
+    cb_north_in[3:0] = {1'b0, 1'b0, B[3], A[3]};
+    cb_east_in[3:0]  = {1'b0, 1'b0, B[0], A[0]};
+    clb_south_in[7:0]  = {1'b0, 1'b0, B[1], A[1], 1'b0, 1'b0, B[1], A[1]};
+    clb_west_in[7:0]   = {1'b0, 1'b0, B[2], A[2], 1'b0, 1'b0, B[2], A[2]};
 
     // REGISTER ENABLE
-    south_clb_in[8] = 1'b1;
+    clb_south_in[8] = 1'b1;
 
     carry_in = 1;
 
