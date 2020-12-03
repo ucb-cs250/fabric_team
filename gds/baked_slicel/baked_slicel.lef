@@ -6,61 +6,61 @@ MACRO baked_slicel
   CLASS BLOCK ;
   FOREIGN baked_slicel ;
   ORIGIN 0.000 0.000 ;
-  SIZE 225.990 BY 236.710 ;
+  SIZE 225.960 BY 236.680 ;
   PIN carry_in
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 221.990 213.560 225.990 214.160 ;
+        RECT 0.000 196.560 4.000 197.160 ;
     END
   END carry_in
   PIN carry_out
     DIRECTION OUTPUT TRISTATE ;
     PORT
       LAYER met3 ;
-        RECT 221.990 228.520 225.990 229.120 ;
+        RECT 0.000 212.200 4.000 212.800 ;
     END
   END carry_out
   PIN cen
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 221.990 6.840 225.990 7.440 ;
+        RECT 221.960 8.200 225.960 8.800 ;
     END
   END cen
   PIN clk
     DIRECTION INPUT ;
     PORT
-      LAYER met2 ;
-        RECT 204.330 0.000 204.610 4.000 ;
+      LAYER met3 ;
+        RECT 0.000 227.840 4.000 228.440 ;
     END
   END clk
   PIN higher_order_address[0]
     DIRECTION INPUT ;
     PORT
       LAYER met2 ;
-        RECT 6.530 232.710 6.810 236.710 ;
+        RECT 6.530 232.680 6.810 236.680 ;
     END
   END higher_order_address[0]
   PIN higher_order_address[1]
     DIRECTION INPUT ;
     PORT
       LAYER met2 ;
-        RECT 19.410 232.710 19.690 236.710 ;
+        RECT 19.410 232.680 19.690 236.680 ;
     END
   END higher_order_address[1]
   PIN lut_output[0]
     DIRECTION OUTPUT TRISTATE ;
     PORT
       LAYER met2 ;
-        RECT 139.010 232.710 139.290 236.710 ;
+        RECT 139.010 232.680 139.290 236.680 ;
     END
   END lut_output[0]
   PIN lut_output[1]
     DIRECTION OUTPUT TRISTATE ;
     PORT
       LAYER met2 ;
-        RECT 152.350 232.710 152.630 236.710 ;
+        RECT 152.350 232.680 152.630 236.680 ;
     END
   END lut_output[1]
   PIN lut_output[2]
@@ -81,42 +81,42 @@ MACRO baked_slicel
     DIRECTION OUTPUT TRISTATE ;
     PORT
       LAYER met3 ;
-        RECT 221.990 154.400 225.990 155.000 ;
+        RECT 221.960 159.840 225.960 160.440 ;
     END
   END lut_output[4]
   PIN lut_output[5]
     DIRECTION OUTPUT TRISTATE ;
     PORT
       LAYER met3 ;
-        RECT 221.990 169.360 225.990 169.960 ;
+        RECT 221.960 176.840 225.960 177.440 ;
     END
   END lut_output[5]
   PIN lut_output[6]
     DIRECTION OUTPUT TRISTATE ;
     PORT
       LAYER met3 ;
-        RECT 0.000 165.280 4.000 165.880 ;
+        RECT 0.000 133.320 4.000 133.920 ;
     END
   END lut_output[6]
   PIN lut_output[7]
     DIRECTION OUTPUT TRISTATE ;
     PORT
       LAYER met3 ;
-        RECT 0.000 180.920 4.000 181.520 ;
+        RECT 0.000 148.960 4.000 149.560 ;
     END
   END lut_output[7]
   PIN lut_output_registered[0]
     DIRECTION OUTPUT TRISTATE ;
     PORT
       LAYER met2 ;
-        RECT 165.690 232.710 165.970 236.710 ;
+        RECT 165.690 232.680 165.970 236.680 ;
     END
   END lut_output_registered[0]
   PIN lut_output_registered[1]
     DIRECTION OUTPUT TRISTATE ;
     PORT
       LAYER met2 ;
-        RECT 179.030 232.710 179.310 236.710 ;
+        RECT 179.030 232.680 179.310 236.680 ;
     END
   END lut_output_registered[1]
   PIN lut_output_registered[2]
@@ -137,35 +137,35 @@ MACRO baked_slicel
     DIRECTION OUTPUT TRISTATE ;
     PORT
       LAYER met3 ;
-        RECT 221.990 184.320 225.990 184.920 ;
+        RECT 221.960 193.840 225.960 194.440 ;
     END
   END lut_output_registered[4]
   PIN lut_output_registered[5]
     DIRECTION OUTPUT TRISTATE ;
     PORT
       LAYER met3 ;
-        RECT 221.990 198.600 225.990 199.200 ;
+        RECT 221.960 210.840 225.960 211.440 ;
     END
   END lut_output_registered[5]
   PIN lut_output_registered[6]
     DIRECTION OUTPUT TRISTATE ;
     PORT
       LAYER met3 ;
-        RECT 0.000 196.560 4.000 197.160 ;
+        RECT 0.000 165.280 4.000 165.880 ;
     END
   END lut_output_registered[6]
   PIN lut_output_registered[7]
     DIRECTION OUTPUT TRISTATE ;
     PORT
       LAYER met3 ;
-        RECT 0.000 212.200 4.000 212.800 ;
+        RECT 0.000 180.920 4.000 181.520 ;
     END
   END lut_output_registered[7]
   PIN luts_input[0]
     DIRECTION INPUT ;
     PORT
       LAYER met2 ;
-        RECT 32.750 232.710 33.030 236.710 ;
+        RECT 32.750 232.680 33.030 236.680 ;
     END
   END luts_input[0]
   PIN luts_input[10]
@@ -214,161 +214,161 @@ MACRO baked_slicel
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 221.990 36.080 225.990 36.680 ;
+        RECT 221.960 24.520 225.960 25.120 ;
     END
   END luts_input[16]
   PIN luts_input[17]
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 221.990 51.040 225.990 51.640 ;
+        RECT 221.960 41.520 225.960 42.120 ;
     END
   END luts_input[17]
   PIN luts_input[18]
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 221.990 66.000 225.990 66.600 ;
+        RECT 221.960 58.520 225.960 59.120 ;
     END
   END luts_input[18]
   PIN luts_input[19]
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 221.990 80.280 225.990 80.880 ;
+        RECT 221.960 75.520 225.960 76.120 ;
     END
   END luts_input[19]
   PIN luts_input[1]
     DIRECTION INPUT ;
     PORT
       LAYER met2 ;
-        RECT 46.090 232.710 46.370 236.710 ;
+        RECT 46.090 232.680 46.370 236.680 ;
     END
   END luts_input[1]
   PIN luts_input[20]
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 221.990 95.240 225.990 95.840 ;
+        RECT 221.960 92.520 225.960 93.120 ;
     END
   END luts_input[20]
   PIN luts_input[21]
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 221.990 110.200 225.990 110.800 ;
+        RECT 221.960 109.520 225.960 110.120 ;
     END
   END luts_input[21]
   PIN luts_input[22]
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 221.990 125.160 225.990 125.760 ;
+        RECT 221.960 126.520 225.960 127.120 ;
     END
   END luts_input[22]
   PIN luts_input[23]
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 221.990 139.440 225.990 140.040 ;
+        RECT 221.960 142.840 225.960 143.440 ;
     END
   END luts_input[23]
   PIN luts_input[24]
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 0.000 38.800 4.000 39.400 ;
+        RECT 0.000 7.520 4.000 8.120 ;
     END
   END luts_input[24]
   PIN luts_input[25]
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 0.000 54.440 4.000 55.040 ;
+        RECT 0.000 23.160 4.000 23.760 ;
     END
   END luts_input[25]
   PIN luts_input[26]
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 0.000 70.080 4.000 70.680 ;
+        RECT 0.000 38.800 4.000 39.400 ;
     END
   END luts_input[26]
   PIN luts_input[27]
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 0.000 86.400 4.000 87.000 ;
+        RECT 0.000 54.440 4.000 55.040 ;
     END
   END luts_input[27]
   PIN luts_input[28]
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 0.000 102.040 4.000 102.640 ;
+        RECT 0.000 70.080 4.000 70.680 ;
     END
   END luts_input[28]
   PIN luts_input[29]
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 0.000 117.680 4.000 118.280 ;
+        RECT 0.000 86.400 4.000 87.000 ;
     END
   END luts_input[29]
   PIN luts_input[2]
     DIRECTION INPUT ;
     PORT
       LAYER met2 ;
-        RECT 59.430 232.710 59.710 236.710 ;
+        RECT 59.430 232.680 59.710 236.680 ;
     END
   END luts_input[2]
   PIN luts_input[30]
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 0.000 133.320 4.000 133.920 ;
+        RECT 0.000 102.040 4.000 102.640 ;
     END
   END luts_input[30]
   PIN luts_input[31]
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 0.000 148.960 4.000 149.560 ;
+        RECT 0.000 117.680 4.000 118.280 ;
     END
   END luts_input[31]
   PIN luts_input[3]
     DIRECTION INPUT ;
     PORT
       LAYER met2 ;
-        RECT 72.770 232.710 73.050 236.710 ;
+        RECT 72.770 232.680 73.050 236.680 ;
     END
   END luts_input[3]
   PIN luts_input[4]
     DIRECTION INPUT ;
     PORT
       LAYER met2 ;
-        RECT 86.110 232.710 86.390 236.710 ;
+        RECT 86.110 232.680 86.390 236.680 ;
     END
   END luts_input[4]
   PIN luts_input[5]
     DIRECTION INPUT ;
     PORT
       LAYER met2 ;
-        RECT 99.450 232.710 99.730 236.710 ;
+        RECT 99.450 232.680 99.730 236.680 ;
     END
   END luts_input[5]
   PIN luts_input[6]
     DIRECTION INPUT ;
     PORT
       LAYER met2 ;
-        RECT 112.790 232.710 113.070 236.710 ;
+        RECT 112.790 232.680 113.070 236.680 ;
     END
   END luts_input[6]
   PIN luts_input[7]
     DIRECTION INPUT ;
     PORT
       LAYER met2 ;
-        RECT 125.670 232.710 125.950 236.710 ;
+        RECT 125.670 232.680 125.950 236.680 ;
     END
   END luts_input[7]
   PIN luts_input[8]
@@ -389,72 +389,58 @@ MACRO baked_slicel
     DIRECTION INPUT ;
     PORT
       LAYER met2 ;
-        RECT 218.590 0.000 218.870 4.000 ;
+        RECT 219.050 232.680 219.330 236.680 ;
     END
   END reg_we
   PIN rst
     DIRECTION INPUT ;
     PORT
       LAYER met3 ;
-        RECT 0.000 227.840 4.000 228.440 ;
+        RECT 221.960 227.840 225.960 228.440 ;
     END
   END rst
   PIN set_in
     DIRECTION INPUT ;
     PORT
       LAYER met2 ;
-        RECT 219.050 232.710 219.330 236.710 ;
+        RECT 204.330 0.000 204.610 4.000 ;
     END
   END set_in
   PIN set_in_soft
     DIRECTION INPUT ;
     PORT
-      LAYER met3 ;
-        RECT 0.000 23.160 4.000 23.760 ;
+      LAYER met2 ;
+        RECT 218.590 0.000 218.870 4.000 ;
     END
   END set_in_soft
   PIN set_out
     DIRECTION OUTPUT TRISTATE ;
     PORT
       LAYER met2 ;
-        RECT 176.270 0.000 176.550 4.000 ;
+        RECT 205.710 232.680 205.990 236.680 ;
     END
   END set_out
   PIN shift_in
     DIRECTION INPUT ;
     PORT
       LAYER met2 ;
-        RECT 205.710 232.710 205.990 236.710 ;
+        RECT 176.270 0.000 176.550 4.000 ;
     END
   END shift_in
-  PIN shift_in_from_tile_bodge
-    DIRECTION INPUT ;
-    PORT
-      LAYER met3 ;
-        RECT 221.990 21.120 225.990 21.720 ;
-    END
-  END shift_in_from_tile_bodge
   PIN shift_in_soft
     DIRECTION INPUT ;
     PORT
-      LAYER met3 ;
-        RECT 0.000 7.520 4.000 8.120 ;
+      LAYER met2 ;
+        RECT 190.070 0.000 190.350 4.000 ;
     END
   END shift_in_soft
   PIN shift_out
     DIRECTION OUTPUT TRISTATE ;
     PORT
       LAYER met2 ;
-        RECT 190.070 0.000 190.350 4.000 ;
+        RECT 192.370 232.680 192.650 236.680 ;
     END
   END shift_out
-  PIN shift_out_to_tile_bodge
-    DIRECTION OUTPUT TRISTATE ;
-    PORT
-      LAYER met2 ;
-        RECT 192.370 232.710 192.650 236.710 ;
-    END
-  END shift_out_to_tile_bodge
   PIN VPWR
     DIRECTION INPUT ;
     USE POWER ;
@@ -475,27 +461,26 @@ MACRO baked_slicel
       LAYER li1 ;
         RECT 5.520 10.795 220.340 225.845 ;
       LAYER met1 ;
-        RECT 5.520 10.240 220.340 232.520 ;
+        RECT 5.520 9.900 220.340 226.000 ;
       LAYER met2 ;
-        RECT 5.610 232.430 6.250 232.710 ;
-        RECT 7.090 232.430 19.130 232.710 ;
-        RECT 19.970 232.430 32.470 232.710 ;
-        RECT 33.310 232.430 45.810 232.710 ;
-        RECT 46.650 232.430 59.150 232.710 ;
-        RECT 59.990 232.430 72.490 232.710 ;
-        RECT 73.330 232.430 85.830 232.710 ;
-        RECT 86.670 232.430 99.170 232.710 ;
-        RECT 100.010 232.430 112.510 232.710 ;
-        RECT 113.350 232.430 125.390 232.710 ;
-        RECT 126.230 232.430 138.730 232.710 ;
-        RECT 139.570 232.430 152.070 232.710 ;
-        RECT 152.910 232.430 165.410 232.710 ;
-        RECT 166.250 232.430 178.750 232.710 ;
-        RECT 179.590 232.430 192.090 232.710 ;
-        RECT 192.930 232.430 205.430 232.710 ;
-        RECT 206.270 232.430 218.770 232.710 ;
-        RECT 5.610 4.280 219.320 232.430 ;
-        RECT 5.610 4.000 6.710 4.280 ;
+        RECT 7.090 232.400 19.130 232.680 ;
+        RECT 19.970 232.400 32.470 232.680 ;
+        RECT 33.310 232.400 45.810 232.680 ;
+        RECT 46.650 232.400 59.150 232.680 ;
+        RECT 59.990 232.400 72.490 232.680 ;
+        RECT 73.330 232.400 85.830 232.680 ;
+        RECT 86.670 232.400 99.170 232.680 ;
+        RECT 100.010 232.400 112.510 232.680 ;
+        RECT 113.350 232.400 125.390 232.680 ;
+        RECT 126.230 232.400 138.730 232.680 ;
+        RECT 139.570 232.400 152.070 232.680 ;
+        RECT 152.910 232.400 165.410 232.680 ;
+        RECT 166.250 232.400 178.750 232.680 ;
+        RECT 179.590 232.400 192.090 232.680 ;
+        RECT 192.930 232.400 205.430 232.680 ;
+        RECT 206.270 232.400 218.770 232.680 ;
+        RECT 6.540 4.280 219.320 232.400 ;
+        RECT 6.540 4.000 6.710 4.280 ;
         RECT 7.550 4.000 20.510 4.280 ;
         RECT 21.350 4.000 34.770 4.280 ;
         RECT 35.610 4.000 49.030 4.280 ;
@@ -513,69 +498,64 @@ MACRO baked_slicel
         RECT 204.890 4.000 218.310 4.280 ;
         RECT 219.150 4.000 219.320 4.280 ;
       LAYER met3 ;
-        RECT 4.000 228.840 221.590 228.985 ;
-        RECT 4.400 228.120 221.590 228.840 ;
-        RECT 4.400 227.440 221.990 228.120 ;
-        RECT 4.000 214.560 221.990 227.440 ;
-        RECT 4.000 213.200 221.590 214.560 ;
-        RECT 4.400 213.160 221.590 213.200 ;
-        RECT 4.400 211.800 221.990 213.160 ;
-        RECT 4.000 199.600 221.990 211.800 ;
-        RECT 4.000 198.200 221.590 199.600 ;
-        RECT 4.000 197.560 221.990 198.200 ;
-        RECT 4.400 196.160 221.990 197.560 ;
-        RECT 4.000 185.320 221.990 196.160 ;
-        RECT 4.000 183.920 221.590 185.320 ;
-        RECT 4.000 181.920 221.990 183.920 ;
-        RECT 4.400 180.520 221.990 181.920 ;
-        RECT 4.000 170.360 221.990 180.520 ;
-        RECT 4.000 168.960 221.590 170.360 ;
-        RECT 4.000 166.280 221.990 168.960 ;
-        RECT 4.400 164.880 221.990 166.280 ;
-        RECT 4.000 155.400 221.990 164.880 ;
-        RECT 4.000 154.000 221.590 155.400 ;
-        RECT 4.000 149.960 221.990 154.000 ;
-        RECT 4.400 148.560 221.990 149.960 ;
-        RECT 4.000 140.440 221.990 148.560 ;
-        RECT 4.000 139.040 221.590 140.440 ;
-        RECT 4.000 134.320 221.990 139.040 ;
-        RECT 4.400 132.920 221.990 134.320 ;
-        RECT 4.000 126.160 221.990 132.920 ;
-        RECT 4.000 124.760 221.590 126.160 ;
-        RECT 4.000 118.680 221.990 124.760 ;
-        RECT 4.400 117.280 221.990 118.680 ;
-        RECT 4.000 111.200 221.990 117.280 ;
-        RECT 4.000 109.800 221.590 111.200 ;
-        RECT 4.000 103.040 221.990 109.800 ;
-        RECT 4.400 101.640 221.990 103.040 ;
-        RECT 4.000 96.240 221.990 101.640 ;
-        RECT 4.000 94.840 221.590 96.240 ;
-        RECT 4.000 87.400 221.990 94.840 ;
-        RECT 4.400 86.000 221.990 87.400 ;
-        RECT 4.000 81.280 221.990 86.000 ;
-        RECT 4.000 79.880 221.590 81.280 ;
-        RECT 4.000 71.080 221.990 79.880 ;
-        RECT 4.400 69.680 221.990 71.080 ;
-        RECT 4.000 67.000 221.990 69.680 ;
-        RECT 4.000 65.600 221.590 67.000 ;
-        RECT 4.000 55.440 221.990 65.600 ;
-        RECT 4.400 54.040 221.990 55.440 ;
-        RECT 4.000 52.040 221.990 54.040 ;
-        RECT 4.000 50.640 221.590 52.040 ;
-        RECT 4.000 39.800 221.990 50.640 ;
-        RECT 4.400 38.400 221.990 39.800 ;
-        RECT 4.000 37.080 221.990 38.400 ;
-        RECT 4.000 35.680 221.590 37.080 ;
-        RECT 4.000 24.160 221.990 35.680 ;
-        RECT 4.400 22.760 221.990 24.160 ;
-        RECT 4.000 22.120 221.990 22.760 ;
-        RECT 4.000 20.720 221.590 22.120 ;
-        RECT 4.000 8.520 221.990 20.720 ;
-        RECT 4.400 7.840 221.990 8.520 ;
-        RECT 4.400 7.120 221.590 7.840 ;
-        RECT 4.000 6.975 221.590 7.120 ;
+        RECT 4.400 227.440 221.560 228.305 ;
+        RECT 4.000 213.200 221.960 227.440 ;
+        RECT 4.400 211.840 221.960 213.200 ;
+        RECT 4.400 211.800 221.560 211.840 ;
+        RECT 4.000 210.440 221.560 211.800 ;
+        RECT 4.000 197.560 221.960 210.440 ;
+        RECT 4.400 196.160 221.960 197.560 ;
+        RECT 4.000 194.840 221.960 196.160 ;
+        RECT 4.000 193.440 221.560 194.840 ;
+        RECT 4.000 181.920 221.960 193.440 ;
+        RECT 4.400 180.520 221.960 181.920 ;
+        RECT 4.000 177.840 221.960 180.520 ;
+        RECT 4.000 176.440 221.560 177.840 ;
+        RECT 4.000 166.280 221.960 176.440 ;
+        RECT 4.400 164.880 221.960 166.280 ;
+        RECT 4.000 160.840 221.960 164.880 ;
+        RECT 4.000 159.440 221.560 160.840 ;
+        RECT 4.000 149.960 221.960 159.440 ;
+        RECT 4.400 148.560 221.960 149.960 ;
+        RECT 4.000 143.840 221.960 148.560 ;
+        RECT 4.000 142.440 221.560 143.840 ;
+        RECT 4.000 134.320 221.960 142.440 ;
+        RECT 4.400 132.920 221.960 134.320 ;
+        RECT 4.000 127.520 221.960 132.920 ;
+        RECT 4.000 126.120 221.560 127.520 ;
+        RECT 4.000 118.680 221.960 126.120 ;
+        RECT 4.400 117.280 221.960 118.680 ;
+        RECT 4.000 110.520 221.960 117.280 ;
+        RECT 4.000 109.120 221.560 110.520 ;
+        RECT 4.000 103.040 221.960 109.120 ;
+        RECT 4.400 101.640 221.960 103.040 ;
+        RECT 4.000 93.520 221.960 101.640 ;
+        RECT 4.000 92.120 221.560 93.520 ;
+        RECT 4.000 87.400 221.960 92.120 ;
+        RECT 4.400 86.000 221.960 87.400 ;
+        RECT 4.000 76.520 221.960 86.000 ;
+        RECT 4.000 75.120 221.560 76.520 ;
+        RECT 4.000 71.080 221.960 75.120 ;
+        RECT 4.400 69.680 221.960 71.080 ;
+        RECT 4.000 59.520 221.960 69.680 ;
+        RECT 4.000 58.120 221.560 59.520 ;
+        RECT 4.000 55.440 221.960 58.120 ;
+        RECT 4.400 54.040 221.960 55.440 ;
+        RECT 4.000 42.520 221.960 54.040 ;
+        RECT 4.000 41.120 221.560 42.520 ;
+        RECT 4.000 39.800 221.960 41.120 ;
+        RECT 4.400 38.400 221.960 39.800 ;
+        RECT 4.000 25.520 221.960 38.400 ;
+        RECT 4.000 24.160 221.560 25.520 ;
+        RECT 4.400 24.120 221.560 24.160 ;
+        RECT 4.400 22.760 221.960 24.120 ;
+        RECT 4.000 9.200 221.960 22.760 ;
+        RECT 4.000 8.520 221.560 9.200 ;
+        RECT 4.400 7.800 221.560 8.520 ;
+        RECT 4.400 7.120 221.960 7.800 ;
+        RECT 4.000 4.255 221.960 7.120 ;
       LAYER met4 ;
-        RECT 174.640 10.640 176.240 226.000 ;
+        RECT 107.935 10.640 176.240 226.000 ;
   END
 END baked_slicel
 END LIBRARY

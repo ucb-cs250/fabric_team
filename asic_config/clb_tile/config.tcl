@@ -100,7 +100,7 @@ set ::env(FP_CORE_UTIL) 50
 set ::env(FP_PDN_VOFFSET) 0
 set ::env(FP_PDN_VPITCH) 30
 
-set ::env(PL_TARGET_DENSITY) [expr ($::env(FP_CORE_UTIL) + 5)/100.0]
+set ::env(PL_TARGET_DENSITY) 0.005; #[expr ($::env(FP_CORE_UTIL) + 5)/100.0]
 
 # These were set to attempt to skip global placement, which we don't seem to be
 # able to satisfy with only 4 cells to move around.

@@ -2,7 +2,6 @@ module baked_slicel #(
   parameter S_XX_BASE = 4,
   parameter NUM_LUTS = 4,
   parameter MUX_LVLS = $clog2(NUM_LUTS)
-  //parameter MUX_LVLS = 2
 )(
   // Common
   input wire clk,
@@ -38,9 +37,9 @@ module baked_slicel #(
   input wire reg_we,
 
   // Output from LUTs (to fabric)
-  output wire [2*NUM_LUTS-1:0] lut_output,
+  output wire [2*NUM_LUTS-1:0] comb_output,
   // Output from LUTs (registered to fabric)
-  output wire [2*NUM_LUTS-1:0] lut_output_registered,
+  output wire [2*NUM_LUTS-1:0] sync_output,
 
   // Carry in input (from fabric)
   input wire carry_in,
@@ -76,8 +75,8 @@ slicel #(
   .higher_order_addr(higher_order_address),
   .reg_ce(reg_we),
 
-  .out(lut_output),
-  .sync_out(lut_output_registered),
+  .out(comb_output),
+  .sync_out(sync_output),
 
   .Ci(carry_in),
   .Co(carry_out),
