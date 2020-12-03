@@ -85,12 +85,11 @@ set ::env(SYNTH_READ_BLACKBOX_LIB) 1
 #set ::env(FP_PDN_VOFFSET) 0
 #set ::env(FP_PDN_VPITCH) 30
 
-# This was the finest I could tune the parameter, but it still failed.
 set ::env(PL_TARGET_DENSITY) 0.006
 
 set ::env(PL_BASIC_PLACEMENT) 0
 set ::env(PL_SKIP_INITIAL_PLACEMENT) 1
-#set ::env(PL_RANDOM_GLB_PLACEMENT) 0
+set ::env(PL_RANDOM_GLB_PLACEMENT) 0
 
 #set ::env(PL_OPENPHYSYN_OPTIMIZATIONS) 0
 
