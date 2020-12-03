@@ -130,18 +130,147 @@ module clb_tile_tb();
   reg [7:0] INPUTS;
   reg [7:0] RESULTS;
 
+  // Some random 4-input boolean functions
+  task func0;
+    input X3, X2, X1, X0;
+    output O;
+     begin
+       O = X0 & X1 & X2 & X3;
+     end
+  endtask
+
+  task func1;
+    input X3, X2, X1, X0;
+    output O;
+     begin
+       O = X0 | X1 | X2 | X3;
+     end
+  endtask
+
+  task func2;
+    input X3, X2, X1, X0;
+    output O;
+     begin
+       O = ~X0 & ~X1 & ~X2 & ~X3;
+     end
+  endtask
+
+  task func3;
+    input X3, X2, X1, X0;
+    output O;
+     begin
+       O = ~X0 | ~X1 | ~X2 | ~X3;
+     end
+  endtask
+
+  task func4;
+    input X3, X2, X1, X0;
+    output O;
+     begin
+       O = X0 | X1 & X2 | X3;
+     end
+  endtask
+
+  task func5;
+    input X3, X2, X1, X0;
+    output O;
+     begin
+       O = X0 & X1 | X2 & X3;
+     end
+  endtask
+
+  task func6;
+    input X3, X2, X1, X0;
+    output O;
+     begin
+       O = X0 & X1 & X2 | X3;
+     end
+  endtask
+
+  task func7;
+    input X3, X2, X1, X0;
+    output O;
+     begin
+       O = X0 | X1 & X2 & X3;
+     end
+  endtask
+
+  task func8;
+    input X3, X2, X1, X0;
+    output O;
+    begin
+      O = X0 ^ X1;
+    end
+  endtask
+
+  task func9;
+    input X3, X2, X1, X0;
+    output O;
+    begin
+      O = X0 & X1;
+    end
+  endtask
+
+  integer i;
+
+  task lut_gen_test1;
+    output [15:0] OUT0;
+    output [15:0] OUT1;
+    output [15:0] OUT2;
+    output [15:0] OUT3;
+    output [15:0] OUT4;
+    output [15:0] OUT5;
+    output [15:0] OUT6;
+    output [15:0] OUT7;
+    begin
+      for (i = 0; i < 16; i = i + 1) begin
+        func0(i[3], i[2], i[1], i[0], OUT0[i]);
+        func1(i[3], i[2], i[1], i[0], OUT1[i]);
+        func2(i[3], i[2], i[1], i[0], OUT2[i]);
+        func3(i[3], i[2], i[1], i[0], OUT3[i]);
+        func4(i[3], i[2], i[1], i[0], OUT4[i]);
+        func5(i[3], i[2], i[1], i[0], OUT5[i]);
+        func6(i[3], i[2], i[1], i[0], OUT6[i]);
+        func7(i[3], i[2], i[1], i[0], OUT7[i]);
+      end
+    end
+  endtask
+
+  task lut_gen_test2;
+    output [15:0] OUT0;
+    output [15:0] OUT1;
+    output [15:0] OUT2;
+    output [15:0] OUT3;
+    output [15:0] OUT4;
+    output [15:0] OUT5;
+    output [15:0] OUT6;
+    output [15:0] OUT7;
+    begin
+      for (i = 0; i < 16; i = i + 1) begin
+        func8(i[3], i[2], i[1], i[0], OUT0[i]);
+        func9(i[3], i[2], i[1], i[0], OUT1[i]);
+        func8(i[3], i[2], i[1], i[0], OUT2[i]);
+        func9(i[3], i[2], i[1], i[0], OUT3[i]);
+        func8(i[3], i[2], i[1], i[0], OUT4[i]);
+        func9(i[3], i[2], i[1], i[0], OUT5[i]);
+        func8(i[3], i[2], i[1], i[0], OUT6[i]);
+        func9(i[3], i[2], i[1], i[0], OUT7[i]);
+      end
+    end
+  endtask
+
   task lut4_functions;
     input  [7:0] INPUTS;
     output [7:0] RESULTS;
     begin
-      RESULTS[0] = INPUTS[0] & INPUTS[1] & INPUTS[2] & INPUTS[3];     // 16'h8000
-      RESULTS[1] = INPUTS[4] | INPUTS[5] | INPUTS[6] | INPUTS[7];     // 16'hFFFE
-      RESULTS[2] = INPUTS[0] & INPUTS[1] & INPUTS[2] & INPUTS[3];     // 16'h8000
-      RESULTS[3] = INPUTS[4] | INPUTS[5] | INPUTS[6] | INPUTS[7];     // 16'hFFFE
-      RESULTS[4] = INPUTS[0] & INPUTS[1] & INPUTS[2] & INPUTS[3];     // 16'h8000
-      RESULTS[5] = INPUTS[4] | INPUTS[5] | INPUTS[6] | INPUTS[7];     // 16'hFFFE
-      RESULTS[6] = INPUTS[0] & INPUTS[1] & INPUTS[2] & INPUTS[3];     // 16'h8000
-      RESULTS[7] = INPUTS[4] | INPUTS[5] | INPUTS[6] | INPUTS[7];     // 16'hFFFE
+      func0(INPUTS[3], INPUTS[2], INPUTS[1], INPUTS[0], RESULTS[0]);
+      func1(INPUTS[7], INPUTS[6], INPUTS[5], INPUTS[4], RESULTS[1]);
+      func2(INPUTS[3], INPUTS[2], INPUTS[1], INPUTS[0], RESULTS[2]);
+      func3(INPUTS[7], INPUTS[6], INPUTS[5], INPUTS[4], RESULTS[3]);
+      func4(INPUTS[3], INPUTS[2], INPUTS[1], INPUTS[0], RESULTS[4]);
+      func5(INPUTS[7], INPUTS[6], INPUTS[5], INPUTS[4], RESULTS[5]);
+      func6(INPUTS[3], INPUTS[2], INPUTS[1], INPUTS[0], RESULTS[6]);
+      func7(INPUTS[7], INPUTS[6], INPUTS[5], INPUTS[4], RESULTS[7]);
     end
   endtask
 
@@ -154,7 +283,19 @@ module clb_tile_tb();
   // This will be routed to the inputs of LUT0 (East)
   assign east_single[3:0] = INPUTS[7:4];
 
+  reg run_test1, run_test2;
+
+  // TEST1: Random 4-input LUT test
   initial begin
+    #1;
+    while (run_test1 === 1'b0) begin
+      @(negedge clk);
+    end
+
+    CB_EAST_CFG_BITS = 0;
+    CB_NORTH_CFG_BITS = 0;
+    SB_CFG_BITS = 0;
+
     #1;
 
     MEM_CFG_BITS = 8'b11110011;
@@ -162,18 +303,21 @@ module clb_tile_tb();
     USE_CC_CFG_BIT = 1'b0;
     IXMUX_CFG_BITS = 2'b0;
 
-    LUT0_S44_0_CFG    = 16'hFFFE; // func1 --> luts_out[1]
-    LUT1_S44_0_CFG    = 16'h8000; // func0 --> luts_out[0]
-    SOFTMUX_S44_0_CFG = 1'b1;     // CLB_input[3]      --> luts_in[3]  (LUT1_S44_0 in3)
-    LUT0_S44_1_CFG    = 16'hFFFE; // func3 --> luts_out[3]
-    LUT1_S44_1_CFG    = 16'h8000; // func2 --> luts_out[2]
-    SOFTMUX_S44_1_CFG = 1'b1;     // CLB_input[11]     --> luts_in[11] (LUT1_S44_1 in3)
-    LUT0_S44_2_CFG    = 16'hFFFE; // func5 --> luts_out[5]
-    LUT1_S44_2_CFG    = 16'h8000; // func4 --> luts_out[4]
-    SOFTMUX_S44_2_CFG = 1'b1;     // CLB_input[19]     --> luts_in[19] (LUT1_S44_2 in3)
-    LUT0_S44_3_CFG    = 16'hFFFE; // func7 --> luts_out[7]
-    LUT1_S44_3_CFG    = 16'h8000; // func6 --> luts_out[6]
-    SOFTMUX_S44_3_CFG = 1'b1;     // CLB_input[27]     --> luts_in[27] (LUT1_S44_3 in3)
+    lut_gen_test1(
+      LUT1_S44_0_CFG, // func0 --> luts_out[0]
+      LUT0_S44_0_CFG, // func1 --> luts_out[1]
+      LUT1_S44_1_CFG, // func2 --> luts_out[2]
+      LUT0_S44_1_CFG, // func3 --> luts_out[3]
+      LUT1_S44_2_CFG, // func4 --> luts_out[4]
+      LUT0_S44_2_CFG, // func5 --> luts_out[5]
+      LUT1_S44_3_CFG, // func6 --> luts_out[6]
+      LUT0_S44_3_CFG  // func7 --> luts_out[7]
+    );
+
+    SOFTMUX_S44_0_CFG = 1'b1; // direct input from CLB
+    SOFTMUX_S44_1_CFG = 1'b1; // direct input from CLB
+    SOFTMUX_S44_2_CFG = 1'b1; // direct input from CLB
+    SOFTMUX_S44_3_CFG = 1'b1; // direct input from CLB
 
     //CB_EAST_CFG_BITS  = $random;
     //CB_NORTH_CFG_BITS = $random;
@@ -224,6 +368,75 @@ module clb_tile_tb();
     CB_NORTH_CFG_BITS[`CB_DOUBLE0_TO_CLB0_IN(3, 3)]  = 1'b1; // cb_north_double0[3] -> lut7_in3
   end
 
+
+  // TEST2: CARRY4 test
+  wire [3:0] A = 4'b1010;
+  wire [3:0] B = 4'b1011;
+  wire [4:0] ADD = A + B + carry_in;
+  initial begin
+    #1;
+    while (run_test2 === 1'b0) begin
+      @(negedge clk);
+    end
+
+    CB_EAST_CFG_BITS = 0;
+    CB_NORTH_CFG_BITS = 0;
+    SB_CFG_BITS = 0;
+
+    #1;
+
+    MEM_CFG_BITS = 8'b00001111;
+
+    USE_CC_CFG_BIT = 1'b1;
+    IXMUX_CFG_BITS = 2'b0;
+
+    lut_gen_test2(
+      LUT1_S44_0_CFG, // func8 --> luts_out[0]
+      LUT0_S44_0_CFG, // func9 --> luts_out[1]
+      LUT1_S44_1_CFG, // func8 --> luts_out[2]
+      LUT0_S44_1_CFG, // func9 --> luts_out[3]
+      LUT1_S44_2_CFG, // func8 --> luts_out[4]
+      LUT0_S44_2_CFG, // func9 --> luts_out[5]
+      LUT1_S44_3_CFG, // func8 --> luts_out[6]
+      LUT0_S44_3_CFG  // func9 --> luts_out[7]
+    );
+
+    SOFTMUX_S44_0_CFG = 1'b1; // direct input from CLB
+    SOFTMUX_S44_1_CFG = 1'b1; // direct input from CLB
+    SOFTMUX_S44_2_CFG = 1'b1; // direct input from CLB
+    SOFTMUX_S44_3_CFG = 1'b1; // direct input from CLB
+
+    // Eastward CLB output {1'b0, 1'b0, B[0], A[0]}-> CB_East -> LUT1 (from the East side of the CLB)
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(0, 0)] = 1'b1; // east_clb_out[0] -> cb_east_single0[0]
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(1, 1)] = 1'b1; // east_clb_out[1] -> cb_east_single0[1]
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(2, 2)] = 1'b1; // east_clb_out[2] -> cb_east_single0[2]
+    CB_EAST_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(3, 3)] = 1'b1; // east_clb_out[3] -> cb_east_single0[3]
+
+    CB_EAST_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(0, 0)]  = 1'b1; // cb_east_single0[0] -> lut1_in0
+    CB_EAST_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(1, 1)]  = 1'b1; // cb_east_single0[1] -> lut1_in1
+    CB_EAST_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(2, 2)]  = 1'b1; // cb_east_single0[2] -> lut1_in2
+    CB_EAST_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(3, 3)]  = 1'b1; // cb_east_single0[3] -> lut1_in3
+    CB_EAST_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(0, 4)]  = 1'b1; // cb_east_single0[0] -> lut0_in0
+    CB_EAST_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(1, 5)]  = 1'b1; // cb_east_single0[1] -> lut0_in1
+    CB_EAST_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(2, 6)]  = 1'b1; // cb_east_single0[2] -> lut0_in2
+    CB_EAST_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(3, 7)]  = 1'b1; // cb_east_single0[3] -> lut0_in3
+
+    // Northward CLB output {1'b0, 1'b0, B[3], A[3]} -> CB_North -> LUT7, LUT6 (from the North side of the CLB)
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(0, 0)] = 1'b1; // north_clb_out[0] -> cb_north_single0[0]
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(1, 1)] = 1'b1; // north_clb_out[1] -> cb_north_single0[1]
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(2, 2)] = 1'b1; // north_clb_out[2] -> cb_north_single0[2]
+    CB_NORTH_CFG_BITS[`CLB1_OUT_TO_CB_SINGLE0(3, 3)] = 1'b1; // north_clb_out[3] -> cb_north_single0[3]
+
+    CB_NORTH_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(0, 0)]  = 1'b1; // cb_north_single0[0] -> lut7_in0
+    CB_NORTH_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(1, 1)]  = 1'b1; // cb_north_single0[1] -> lut7_in1
+    CB_NORTH_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(2, 2)]  = 1'b1; // cb_north_single0[2] -> lut7_in2
+    CB_NORTH_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(3, 3)]  = 1'b1; // cb_north_single0[3] -> lut7_in3
+    CB_NORTH_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(0, 4)]  = 1'b1; // cb_north_single0[0] -> lut6_in0
+    CB_NORTH_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(1, 5)]  = 1'b1; // cb_north_single0[1] -> lut6_in1
+    CB_NORTH_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(2, 6)]  = 1'b1; // cb_north_single0[2] -> lut6_in2
+    CB_NORTH_CFG_BITS[`CB_SINGLE0_TO_CLB0_IN(3, 7)]  = 1'b1; // cb_north_single0[3] -> lut6_in3
+  end
+
   // MSB< [SLICEL] [CB_NORTH] [SB] [CB_EAST] >LSB
   localparam CFG_CB_EAST_START_BIT  = 0;
   localparam CFG_CB_EAST_END_BIT    = CFG_CB_EAST_START_BIT + `CB_CFG_SIZE - 1;
@@ -270,10 +483,33 @@ module clb_tile_tb();
 
   integer k;
 
+  reg [31:0] test_fails = 0;
+
+  task load_bitstream;
+    begin
+      @(negedge clk);
+      cen = 1'b1;
+
+      // Shifting the bitstream from LSB to MSB
+      for (k = 0; k < CLB_TILE_CFG_SIZE; k = k + 1) begin
+        shift_in_hard = clb_tile_bitstream[k];
+        @(negedge clk);
+      end
+
+      cen = 1'b0;
+      set_in_hard = 1'b1;
+      @(negedge clk);
+      set_in_hard = 1'b0;
+    end
+  endtask
+
   initial begin
     //$dumpfile("clb_tile_tb.vcd");
     //$dumpvars;
     debug = 1'b0;
+
+    run_test1 = 1'b0;
+    run_test2 = 1'b0;
 
     cen = 1'b0;
     rst = 1'b1;
@@ -291,22 +527,13 @@ module clb_tile_tb();
     repeat (10) @(posedge clk);
 
     @(negedge clk);
+    run_test1 = 1'b1;
+
+    @(negedge clk);
     rst = 1'b0;
     debug = 1'b1;
 
-    @(negedge clk);
-    cen = 1'b1;
-
-    // Shifting the bitstream from LSB to MSB
-    for (k = 0; k < CLB_TILE_CFG_SIZE; k = k + 1) begin
-      shift_in_hard = clb_tile_bitstream[k];
-      @(negedge clk);
-    end
-
-    cen = 1'b0;
-    set_in_hard = 1'b1;
-    @(negedge clk);
-    set_in_hard = 1'b0;
+    load_bitstream();
 
     @(negedge clk);
     debug = 1'b0;
@@ -323,7 +550,8 @@ module clb_tile_tb();
     $display("SB: %d %d",       CFG_SB_END_BIT,       CFG_SB_START_BIT);
     $display("MEM: %d %d",      CFG_MEM_END_BIT,      CFG_MEM_START_BIT);
 
-    $display("clb_luts_config = %b",
+    $display("----------------------------------------------------------------");
+    $display("clb_luts_config = %h",
       CLB_TILE.slice.sliceluroni.luts_config_in);
     $display("clb_inter_lut_mux_config = %b",
       CLB_TILE.slice.sliceluroni.inter_lut_mux_config);
@@ -341,40 +569,49 @@ module clb_tile_tb();
     $display("sb_config_bits = %h",
       CLB_TILE.sb.switcharoni.c);
 
-    $display("TEST LOADING CFG BITS TO CB_EAST");
+    $display("TEST1 LOADING CFG BITS TO CB_EAST");
     if (CLB_TILE.cb_east.inst.connectaroni.c === CB_EAST_CFG_BITS)
       $display("PASSED!");
-    else
+    else begin
       $display("FAILED!");
+      test_fails = test_fails + 1;
+    end
 
-    $display("TEST LOADING CFG BITS TO CB_NORTH");
+    $display("TEST1 LOADING CFG BITS TO CB_NORTH");
     if (CLB_TILE.cb_north.inst.connectaroni.c === CB_NORTH_CFG_BITS)
       $display("PASSED!");
-    else
+    else begin
       $display("FAILED!");
+      test_fails = test_fails + 1;
+    end
 
-    $display("TEST LOADING CFG BITS TO SB");
+    $display("TEST1 LOADING CFG BITS TO SB");
     if (CLB_TILE.sb.switcharoni.c === SB_CFG_BITS)
       $display("PASSED!");
-    else
+    else begin
       $display("FAILED!");
+      test_fails = test_fails + 1;
+    end
 
-    $display("TEST LOADING CFG BITS TO LUTS+MUXES+CC");
+    $display("TEST1 LOADING CFG BITS TO LUTS+MUXES+CC");
     if ({CLB_TILE.slice.sliceluroni.use_cc,
          CLB_TILE.slice.sliceluroni.inter_lut_mux_config,
          CLB_TILE.slice.sliceluroni.luts_config_in} === {USE_CC_CFG_BIT, IXMUX_CFG_BITS, LUTS_CFG_BITS})
       $display("PASSED!");
-    else
+    else begin
       $display("FAILED!");
+      test_fails = test_fails + 1;
+    end
 
-    $display("TEST LOADING CFG BITS TO REGS");
+    $display("TEST1 LOADING CFG BITS TO REGS");
     if (CLB_TILE.slice.sliceluroni.sync_out === MEM_CFG_BITS)
       $display("PASSED!");
-    else
+    else begin
       $display("FAILED!");
+      test_fails = test_fails + 1;
+    end
 
     INPUTS = $random;
-    #1;
     lut4_functions(INPUTS, RESULTS);
 
     $display("INPUTS=%b, RESULTS=%b", INPUTS, RESULTS);
@@ -388,6 +625,9 @@ module clb_tile_tb();
     south_clb_in = INPUTS[7:0];
     // Drive input to the West LUTs (LUT5, LUT4) directly
     west_clb_in  = INPUTS[7:0];
+
+    // REGISTER ENABLE
+    south_clb_in[8] = 1'b1;
 
     @(negedge clk);
 
@@ -403,19 +643,182 @@ module clb_tile_tb();
       CLB_TILE.cb_north.clb1_output);
 
     $display("CLB Comb. outputs %b", CLB_TILE.slice.sliceluroni.out);
-    $display("CLB slicel_w_out  {sync[1:0], comb[1:0]} %b", CLB_TILE.slicel_w_out);
-    $display("CLB slicel_s_out  {sync[1:0], comb[1:0]} %b", CLB_TILE.slicel_s_out);
+    $display("CLB Sync. outputs %b", CLB_TILE.slice.sliceluroni.sync_out);
+
     $display("CLB slicel_e_out  {sync[1:0], comb[1:0]} %b", CLB_TILE.slicel_e_out);
+    $display("CLB slicel_s_out  {sync[1:0], comb[1:0]} %b", CLB_TILE.slicel_s_out);
+    $display("CLB slicel_w_out  {sync[1:0], comb[1:0]} %b", CLB_TILE.slicel_w_out);
     $display("CLB slicel_n_out  {sync[1:0], comb[1:0]} %b", CLB_TILE.slicel_n_out);
 
-    $display("TEST CLB Outputs (Comb)");
+    $display("TEST1 CLB Outputs (Comb)");
     if (CLB_TILE.slice.sliceluroni.out === RESULTS)
       $display("PASSED");
-    else
+    else begin
       $display("FAILED");
+      test_fails = test_fails + 1;
+    end
+
+    $display("TEST1 CLB Outputs (Sync)");
+    if (CLB_TILE.slice.sliceluroni.sync_out === RESULTS)
+      $display("PASSED");
+    else begin
+      $display("FAILED");
+      test_fails = test_fails + 1;
+    end
+
+    // REGISTER DISABLE
+    @(negedge clk);
+    south_clb_in[8] = 1'b0;
+
+    north_clb_out = 0;
+    east_clb_out  = 0;
+    south_clb_in  = 0;
+    west_clb_in   = 0;
+
+    run_test1 = 1'b0;
+
+    // TEST2
+    @(negedge clk);
+    rst = 1'b1;
+
+    repeat (10) @(posedge clk);
+
+    @(negedge clk);
+    run_test2 = 1'b1;
+
+    @(negedge clk);
+    rst = 1'b0;
+ 
+    load_bitstream();
+ 
+    // Wait for some time ...
+    repeat (100) @(posedge clk);
+
+    @(negedge clk);
+    $display("----------------------------------------------------------------");
+    $display("clb_luts_config = %h",
+      CLB_TILE.slice.sliceluroni.luts_config_in);
+    $display("clb_inter_lut_mux_config = %b",
+      CLB_TILE.slice.sliceluroni.inter_lut_mux_config);
+    $display("clb_config_use_cc = %b",
+      CLB_TILE.slice.sliceluroni.use_cc);
+    $display("clb_regs_config_in = %b",
+      CLB_TILE.slice.sliceluroni.sync_out);
+
+    $display("cb_east_config_bits = %h",
+      CLB_TILE.cb_east.inst.connectaroni.c);
+
+    $display("cb_north_config_bits = %h",
+      CLB_TILE.cb_north.inst.connectaroni.c);
+
+    $display("sb_config_bits = %h",
+      CLB_TILE.sb.switcharoni.c);
+
+    $display("TEST2 LOADING CFG BITS TO CB_EAST");
+    if (CLB_TILE.cb_east.inst.connectaroni.c === CB_EAST_CFG_BITS)
+      $display("PASSED!");
+    else begin
+      $display("FAILED!");
+      test_fails = test_fails + 1;
+    end
+
+    $display("TEST2 LOADING CFG BITS TO CB_NORTH");
+    if (CLB_TILE.cb_north.inst.connectaroni.c === CB_NORTH_CFG_BITS)
+      $display("PASSED!");
+    else begin
+      $display("FAILED!");
+      test_fails = test_fails + 1;
+    end
+
+    $display("TEST2 LOADING CFG BITS TO SB");
+    if (CLB_TILE.sb.switcharoni.c === SB_CFG_BITS)
+      $display("PASSED!");
+    else begin
+      $display("FAILED!");
+      test_fails = test_fails + 1;
+    end
+
+    $display("TEST2 LOADING CFG BITS TO LUTS+MUXES+CC");
+    if ({CLB_TILE.slice.sliceluroni.use_cc,
+         CLB_TILE.slice.sliceluroni.inter_lut_mux_config,
+         CLB_TILE.slice.sliceluroni.luts_config_in} === {USE_CC_CFG_BIT, IXMUX_CFG_BITS, LUTS_CFG_BITS})
+      $display("PASSED!");
+    else
+      $display("FAILED!");
+
+    $display("TEST2 LOADING CFG BITS TO REGS");
+    if (CLB_TILE.slice.sliceluroni.sync_out === MEM_CFG_BITS)
+      $display("PASSED!");
+    else begin
+      $display("FAILED!");
+      test_fails = test_fails + 1;
+    end
+
+    north_clb_out[3:0] = {1'b0, 1'b0, B[3], A[3]};
+    east_clb_out[3:0]  = {1'b0, 1'b0, B[0], A[0]};
+    south_clb_in[7:0]  = {1'b0, 1'b0, B[1], A[1], 1'b0, 1'b0, B[1], A[1]};
+    west_clb_in[7:0]   = {1'b0, 1'b0, B[2], A[2], 1'b0, 1'b0, B[2], A[2]};
+
+    // REGISTER ENABLE
+    south_clb_in[8] = 1'b1;
+
+    carry_in = 1;
+
+    @(negedge clk);
+
+    $display("CLB LUT inputs %b", CLB_TILE.slice.luts_input);
+
+    $display("CB_EAST single0 %b, double0 %b, clb1_output %b",
+      CLB_TILE.cb_east.single0,
+      CLB_TILE.cb_east.double0,
+      CLB_TILE.cb_east.clb1_output);
+    $display("CB_NORTH single0 %b, double0 %b, clb1_output %b",
+      CLB_TILE.cb_north.single0,
+      CLB_TILE.cb_north.double0,
+      CLB_TILE.cb_north.clb1_output);
+
+    $display("CLB Comb. outputs %b", CLB_TILE.slice.sliceluroni.out);
+    $display("CLB Carry output  %b", CLB_TILE.carry_out);
+    $display("CLB Sync. outputs %b", CLB_TILE.slice.sliceluroni.sync_out);
+
+    $display("CLB slicel_e_out  {sync[1:0], comb[1:0]} %b", CLB_TILE.slicel_e_out);
+    $display("CLB slicel_s_out  {sync[1:0], comb[1:0]} %b", CLB_TILE.slicel_s_out);
+    $display("CLB slicel_w_out  {sync[1:0], comb[1:0]} %b", CLB_TILE.slicel_w_out);
+    $display("CLB slicel_n_out  {sync[1:0], comb[1:0]} %b", CLB_TILE.slicel_n_out);
+
+    $display("A=%b, B=%b, ADD=%b", A, B, ADD);
+
+    $display("TEST2 CLB Outputs (Comb)");
+    if ({CLB_TILE.slice.sliceluroni.out[6],
+         CLB_TILE.slice.sliceluroni.out[4], 
+         CLB_TILE.slice.sliceluroni.out[2],
+         CLB_TILE.slice.sliceluroni.out[0]} === ADD[3:0])
+      $display("PASSED");
+    else begin
+      $display("FAILED");
+      test_fails = test_fails + 1;
+    end
+
+    $display("TEST2 CLB Carry Output");
+    if (CLB_TILE.carry_out === ADD[4])
+      $display("PASSED");
+    else begin
+      $display("FAILED");
+      test_fails = test_fails + 1;
+    end
+
+    $display("TEST2 CLB Outputs (Sync)");
+    if (CLB_TILE.slice.sliceluroni.sync_out === CLB_TILE.slice.sliceluroni.out)
+      $display("PASSED");
+    else begin
+      $display("FAILED");
+      test_fails = test_fails + 1;
+    end
+
+    run_test2 = 1'b0;
 
     #100;
-    $display("Done");
+    $display("Done! Num. tests failed: %d", test_fails);
     $finish;
   end
 
