@@ -136,17 +136,17 @@ generate
         .west_double( ix_double_ew[  y][  x]),
 
         // The names are made up and the points don't matter!
-        .north_clb_out(dc_ns[y+1][  x]),
-        .south_clb_out(dc_ns[  y][  x]),
+        .cb_north_out(dc_ns[y+1][  x]),
+        .clb_south_out(dc_ns[  y][  x]),
 
-        .south_clb_in( dc_sn[  y][  x]),
-        .north_clb_in( dc_sn[y+1][  x]),
+        .clb_south_in( dc_sn[  y][  x]),
+        .cb_north_in( dc_sn[y+1][  x]),
 
-        .west_clb_out(  dc_we[  y][x+1]),
-        .east_clb_out( dc_we[  y][  x]),
+        .clb_west_out(  dc_we[  y][x+1]),
+        .cb_east_out( dc_we[  y][  x]),
 
-        .east_clb_in(  dc_ew[  y][  x]),
-        .west_clb_in( dc_ew[  y][x+1]),
+        .cb_east_in(  dc_ew[  y][  x]),
+        .clb_west_in( dc_ew[  y][x+1]),
 
         .shift_in_hard(col_shift[  y][  x]),
         .set_in_hard(  col_set  [  y][  x]),
