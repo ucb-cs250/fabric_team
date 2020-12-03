@@ -19,8 +19,8 @@ module baked_slicel #(
   input wire [2*S_XX_BASE*NUM_LUTS-1:0] luts_input,
   input wire [MUX_LVLS-1:0] higher_order_address,
   input wire reg_we,
-  output wire [2*NUM_LUTS-1:0] lut_output,
-  output wire [2*NUM_LUTS-1:0] lut_output_registered,
+  output wire [2*NUM_LUTS-1:0] comb_output,
+  output wire [2*NUM_LUTS-1:0] sync_output,
   input wire carry_in,
   output wire carry_out
 );
