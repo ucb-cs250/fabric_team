@@ -46,17 +46,20 @@ if { [file exists $filename] == 1} {
 set ::env(MACRO_PLACEMENT_CFG) $::env(DESIGN_DIR)/macro_placement.cfg
 
 # Synthesis config
-set ::env(SYNTH_STRATEGY) 2  ;# 1 fails
+set ::env(SYNTH_STRATEGY) 1
+set ::env(SYNTH_MAX_FANOUT) 5
 
-set ::env(FP_SIZING) absolute
+#set ::env(FP_SIZING) absolute
 # I think this goes LL_X LL_Y UR_X UR_Y, where LL=lower left, UR=upper right
 # Units probably microns
-set ::env(DIE_AREA) [list 0 0 700 700]
+#set ::env(DIE_AREA) [list 0 0 700 700]
 
 # Floorplan config
-#set ::env(FP_CORE_UTIL) 5
+set ::env(FP_CORE_UTIL) 40
 # Placement config
-set ::env(PL_TARGET_DENSITY) 0.4
+set ::env(PL_TARGET_DENSITY) [ expr ($::env(FP_CORE_UTIL)+5) / 100.0 ]
+
+set ::env(USE_ARC_ANTENNA_CHECK) 0
 
 # CTS config
 # Routing config

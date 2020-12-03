@@ -37,17 +37,17 @@ if { [file exists $filename] == 1} {
 }
 
 # Synthesis config
-set ::env(SYNTH_STRATEGY) 1  ;# 1 fails, try 2
+set ::env(SYNTH_STRATEGY) 1;# 1 fails, try 2
 
-set ::env(FP_SIZING) absolute
+# set ::env(FP_SIZING) absolute
 # I think this goes LL_X LL_Y UR_X UR_Y, where LL=lower left, UR=upper right
 # Units probably microns
-set ::env(DIE_AREA) [list 0 0 1200 1200]
+# set ::env(DIE_AREA) [list 0 0 1200 1200]
 
 # Floorplan config
-#set ::env(FP_CORE_UTIL) 5
+set ::env(FP_CORE_UTIL) 40
 # Placement config
-set ::env(PL_TARGET_DENSITY) 0.5
+set ::env(PL_TARGET_DENSITY) [ expr ($::env(FP_CORE_UTIL)+5) / 100.0 ]
 
 # CTS config
 # Routing config
