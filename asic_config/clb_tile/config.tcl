@@ -68,6 +68,9 @@ if {$use_debug_products} {
   set sb_gds $gds_root/baked_clb_switch_box/baked_clb_switch_box.gds
 }
 
+# Experimental Tristates
+set ::env(TRISTATE_BUFFER_MAP) $src_root/src/tbuf_map.v
+set ::env(SYNTH_MUX_MAP) $src_root/src/mux_map.v
 
 # Verilog files for top level RTL connections. Do not include black boxes!
 set ::env(VERILOG_FILES) [concat \
