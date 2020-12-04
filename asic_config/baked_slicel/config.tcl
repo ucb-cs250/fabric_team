@@ -40,7 +40,6 @@ set ::env(MACRO_PLACEMENT_CFG) $::env(DESIGN_DIR)/macro_placement.cfg
 
 # Synthesis config
 set ::env(SYNTH_STRATEGY) 1;
-set ::env(SYNTH_LATCH_MAP) 1
 
 # set ::env(FP_SIZING) absolute
 # I think this goes LL_X LL_Y UR_X UR_Y, where LL=lower left, UR=upper right
