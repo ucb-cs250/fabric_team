@@ -21,8 +21,9 @@ set fabric_src $src_root/src
 set config_src $src_root/config_team/src/behavioral
 set ix_src $src_root/ix_yukio/src
 set baked_bb_src $fabric_src/blackbox
+set baked_src $fabric_src/baked
 
-#set nate_src $src_root/ix_nate
+set nate_src $src_root/ix_nate
 #set nate_lef $nate_src/transmission_gate/from_inv/transmission_gate_cell.lef
 #set nate_gds $nate_src/transmission_gate/from_inv/transmission_gate_cell.gds
 
@@ -75,10 +76,17 @@ set ::env(SYNTH_MUX_MAP) $src_root/src/mux_map.v
 # Verilog files for top level RTL connections. Do not include black boxes!
 set ::env(VERILOG_FILES) [concat \
   $fabric_src/clb_tile.v \
-  $baked_bb_src/baked_connection_block_north.v \
-  $baked_bb_src/baked_connection_block_east.v \
+  $baked_src/baked_connection_block_north.v \
+  $baked_src/baked_connection_block_east.v \
+  $baked_src/baked_connection_block.v \
   $baked_bb_src/baked_clb_switch_box.v \
   $baked_bb_src/baked_slicel.v \
+  $ix_src/connection_block.v \
+  $ix_src/transmission_gate_oneway.v \
+  $ix_src/transmission_gate.v \
+  $ix_src/switch_box_element_two.v \
+  $ix_src/universal_switch_box.v \
+  [glob $config_src/*.v] \
 ]
 
 set ::env(TRISTATE_BUFFER_MAP) $src_root/src/tbuf_map.v
@@ -93,17 +101,22 @@ if { [file exists $filename] == 1} {
 
 set ::env(MACRO_PLACEMENT_CFG) $our_root/macro_placement.cfg
 
-set ::env(CLOCK_PERIOD) 30
+set ::env(CLOCK_PERIOD) 20
 set ::env(CLOCK_PORT) "clk"
 set ::env(CLOCK_TREE_SYNTH) 1
 
 set ::env(SYNTH_READ_BLACKBOX_LIB) 1
 
-set ::env(FP_CORE_UTIL) 50
-set ::env(FP_PDN_VOFFSET) 0
-set ::env(FP_PDN_VPITCH) 30
+set ::env(FP_SIZING) "absolute"
+set ::env(DIE_AREA) [list 0.0 0.0 590.0 590.0]
+# Halo around the Macros
+set ::env(FP_HORIZONTAL_HALO) 25
+set ::env(FP_VERTICAL_HALO) 20
+#set ::env(FP_CORE_UTIL) 30
+#set ::env(FP_PDN_VOFFSET) 0
+#set ::env(FP_PDN_VPITCH) 30
 
-set ::env(PL_TARGET_DENSITY) 0.005; #[expr ($::env(FP_CORE_UTIL) + 5)/100.0]
+set ::env(PL_TARGET_DENSITY) 0.4; #[expr ($::env(FP_CORE_UTIL) + 5)/100.0]
 
 # These were set to attempt to skip global placement, which we don't seem to be
 # able to satisfy with only 4 cells to move around.

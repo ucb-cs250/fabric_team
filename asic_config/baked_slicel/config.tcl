@@ -40,7 +40,10 @@ set ::env(MACRO_PLACEMENT_CFG) $::env(DESIGN_DIR)/macro_placement.cfg
 
 # Synthesis config
 set ::env(SYNTH_STRATEGY) 1;
-set ::env(SYNTH_LATCH_MAP) 1
+
+# Experimental Tristates
+set ::env(TRISTATE_BUFFER_MAP) $src_root/src/tbuf_map.v
+set ::env(SYNTH_MUX_MAP) $src_root/src/mux_map.v
 
 # set ::env(FP_SIZING) absolute
 # I think this goes LL_X LL_Y UR_X UR_Y, where LL=lower left, UR=upper right
@@ -48,7 +51,7 @@ set ::env(SYNTH_LATCH_MAP) 1
 # set ::env(DIE_AREA) [list 0 0 700 700]
 
 # Floorplan config
-set ::env(FP_CORE_UTIL) 46
+set ::env(FP_CORE_UTIL) 44
 # Placement config
 set ::env(PL_TARGET_DENSITY) [ expr ($::env(FP_CORE_UTIL)+5) / 100.0 ]
 
