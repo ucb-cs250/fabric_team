@@ -24,8 +24,8 @@ set baked_bb_src $fabric_src/blackbox
 set baked_src $fabric_src/baked
 
 set nate_src $src_root/ix_nate
-#set nate_lef $nate_src/transmission_gate/from_inv/transmission_gate_cell.lef
-#set nate_gds $nate_src/transmission_gate/from_inv/transmission_gate_cell.gds
+set nate_lef $nate_src/transmission_gate/from_inv/transmission_gate_cell.lef
+set nate_gds $nate_src/transmission_gate/from_inv/transmission_gate_cell.gds
 
 set use_debug_products false
 
@@ -79,20 +79,22 @@ set ::env(VERILOG_FILES) [concat \
   $baked_src/baked_connection_block_north.v \
   $baked_src/baked_connection_block_east.v \
   $baked_src/baked_connection_block.v \
-  $baked_bb_src/baked_clb_switch_box.v \
+  $baked_src/baked_clb_switch_box.v \
   $baked_bb_src/baked_slicel.v \
   $ix_src/connection_block.v \
+  $ix_src/clb_switch_box.v \
   $ix_src/transmission_gate_oneway.v \
   $ix_src/transmission_gate.v \
   $ix_src/switch_box_element_two.v \
   $ix_src/universal_switch_box.v \
+  $nate_src/transmission_gate/std/transmission_gate_cell.v \
   [glob $config_src/*.v] \
 ]
 
 set ::env(TRISTATE_BUFFER_MAP) $src_root/src/tbuf_map.v
 
-set ::env(EXTRA_LEFS) [list $slicel_lef $cb_n_lef $cb_e_lef $sb_lef]
-set ::env(EXTRA_GDS_FILES) [list $slicel_gds $cb_n_gds $cb_e_gds $sb_gds]
+set ::env(EXTRA_LEFS) [list $slicel_lef $nate_lef ]; #$cb_n_lef $cb_e_lef $sb_lef]
+set ::env(EXTRA_GDS_FILES) [list $slicel_gds $nate_gds ]; # $cb_n_gds $cb_e_gds $sb_gds]
 
 set filename $::env(OPENLANE_ROOT)/designs/250/$::env(PDK)_$::env(PDK_VARIANT)_config.tcl
 if { [file exists $filename] == 1} {
@@ -108,15 +110,15 @@ set ::env(CLOCK_TREE_SYNTH) 1
 set ::env(SYNTH_READ_BLACKBOX_LIB) 1
 
 set ::env(FP_SIZING) "absolute"
-set ::env(DIE_AREA) [list 0.0 0.0 700.0 700.0]
+set ::env(DIE_AREA) [list 0.0 0.0 580.0 640.0]
 # Halo around the Macros
 set ::env(FP_HORIZONTAL_HALO) 25
 set ::env(FP_VERTICAL_HALO) 25
-#set ::env(FP_CORE_UTIL) 30
+#set ::env(FP_CORE_UTIL) 35
 #set ::env(FP_PDN_VOFFSET) 0
 #set ::env(FP_PDN_VPITCH) 30
 
-set ::env(PL_TARGET_DENSITY) 0.4
+set ::env(PL_TARGET_DENSITY) 0.3
 
 # These were set to attempt to skip global placement, which we don't seem to be
 # able to satisfy with only 4 cells to move around.
@@ -134,3 +136,5 @@ set ::env(ROUTING_CORES) 10
 set ::env(FP_PIN_ORDER_CFG) $our_root/pin_order.cfg
 
 set ::env(PDN_CFG) $our_root/pdn.tcl
+
+set ::env(USE_ARC_ANTENNA_CHECK) 0
