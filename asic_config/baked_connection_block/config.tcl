@@ -22,6 +22,10 @@ set nate_src $src_root/ix_nate/transmission_gate/from_inv
 set nate_lef $nate_src/transmission_gate_cell.lef
 set nate_gds $nate_src/transmission_gate_cell.gds
 
+# Experimental Tristates
+set ::env(TRISTATE_BUFFER_MAP) $src_root/src/tbuf_map.v
+set ::env(SYNTH_MUX_MAP) $src_root/src/mux_map.v
+
 # Verilog files for top level RTL connections. Do not include black boxes!
 set ::env(VERILOG_FILES) [concat \
     $baked_src/baked_connection_block.v \
