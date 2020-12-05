@@ -27,38 +27,70 @@ class CB():
     def set_pip(self, cmd, m, n):
         # single wires
         if cmd == "CB_SINGLE0_TO_CLB0_IN":
-            self.config_bits[self.switch_per_in * n + m] = "1"
-            if self.debug:
-                print("CB bit %d has been set to 1" % (self.switch_per_in * n + m))
+            if self.config_bits[self.switch_per_in * n + m] == "1":
+                if self.debug:
+                    print("warning: this bit has already been set")
+            else:
+                self.config_bits[self.switch_per_in * n + m] = "1"
+                if self.debug:
+                    print("CB bit %d has been set to 1" % (self.switch_per_in * n + m))
         elif cmd == "CLB0_OUT_TO_CB_SINGLE0":
-            self.config_bits[self.cb_offset0 + self.switch_per_out * m + n] = "1"
-            if self.debug:
-                print("CB bit %d has been set to 1" % (self.cb_offset0 + self.switch_per_out * m + n))
+            if self.config_bits[self.cb_offset0 + self.switch_per_out * m + n] == "1":
+                if self.debug:
+                    print("warning: this bit has already been set")
+            else:            
+                self.config_bits[self.cb_offset0 + self.switch_per_out * m + n] = "1"
+                if self.debug:
+                    print("CB bit %d has been set to 1" % (self.cb_offset0 + self.switch_per_out * m + n))
         elif cmd == "CB_SINGLE0_TO_CLB1_IN":
-            self.config_bits[self.cb_offset1 + self.switch_per_in * n + m] = "1"
-            if self.debug:
-                print("CB bit %d has been set to 1" % (self.cb_offset1 + self.switch_per_in * n + m))   
+            if self.config_bits[self.cb_offset1 + self.switch_per_in * n + m] == "1":
+                if self.debug:
+                    print("warning: this bit has already been set")
+            else:            
+                self.config_bits[self.cb_offset1 + self.switch_per_in * n + m] = "1"
+                if self.debug:
+                    print("CB bit %d has been set to 1" % (self.cb_offset1 + self.switch_per_in * n + m))   
         elif cmd == "CLB1_OUT_TO_CB_SINGLE0":
-            self.config_bits[self.cb_offset2 + self.switch_per_out * m + n] = "1"
-            if self.debug:
-                print("CB bit %d has been set to 1" % (self.cb_offset2 + self.switch_per_out * m + n))  
+            if self.config_bits[self.cb_offset2 + self.switch_per_out * m + n] == "1":
+                if self.debug:
+                    print("warning: this bit has already been set")
+            else:              
+                self.config_bits[self.cb_offset2 + self.switch_per_out * m + n] = "1"
+                if self.debug:
+                    print("CB bit %d has been set to 1" % (self.cb_offset2 + self.switch_per_out * m + n))  
         # double wires
         elif cmd == "CB_DOUBLE0_TO_CLB0_IN":
-            self.config_bits[self.switch_per_in * n + self.WS + m] = "1"
-            if self.debug:
-                print("CB bit %d has been set to 1" % (self.switch_per_in * n + self.WS + m)) 
+            if self.config_bits[self.switch_per_in * n + self.WS + m] == "1":
+                if self.debug:
+                    print("warning: this bit has already been set")
+            else:            
+                self.config_bits[self.switch_per_in * n + self.WS + m] = "1"
+                if self.debug:
+                    print("CB bit %d has been set to 1" % (self.switch_per_in * n + self.WS + m)) 
         elif cmd == "CLB0_OUT_TO_CB_DOUBLE0":
-            self.config_bits[self.cb_offset0 + self.switch_per_out * m + self.CLBOS + n] = "1"
-            if self.debug:
-                print("CB bit %d has been set to 1" % (self.cb_offset0 + self.switch_per_out * m + self.CLBOS + n))         
+            if self.config_bits[self.cb_offset0 + self.switch_per_out * m + self.CLBOS + n] == "1":
+                if self.debug:
+                    print("warning: this bit has already been set")
+            else:  
+                self.config_bits[self.cb_offset0 + self.switch_per_out * m + self.CLBOS + n] = "1"
+                if self.debug:
+                    print("CB bit %d has been set to 1" % (self.cb_offset0 + self.switch_per_out * m + self.CLBOS + n))         
         elif cmd == "CB_DOUBLE0_TO_CLB1_IN":
-            self.config_bits[self.cb_offset1 + self.switch_per_in * n + self.WS + m] = "1"
-            if self.debug:
-                print("CB bit %d has been set to 1" % (self.cb_offset1 + self.switch_per_in * n + self.WS + m))         
+            if self.config_bits[self.cb_offset1 + self.switch_per_in * n + self.WS + m] == "1":
+                if self.debug:
+                    print("warning: this bit has already been set")
+            else:               
+                self.config_bits[self.cb_offset1 + self.switch_per_in * n + self.WS + m] = "1"
+                if self.debug:
+                    print("CB bit %d has been set to 1" % (self.cb_offset1 + self.switch_per_in * n + self.WS + m))         
         elif cmd == "CLB1_OUT_TO_CB_DOUBLE0":
-            self.config_bits[self.cb_offset2 + self.switch_per_out * m + self.CLBOS + n] = "1"
-            if self.debug:
-                print("CB bit %d has been set to 1" % (self.cb_offset2 + self.switch_per_out * m + self.CLBOS + n)) 
+            if self.config_bits[self.cb_offset2 + self.switch_per_out * m + self.CLBOS + n] == "1":
+                if self.debug:
+                    print("warning: this bit has already been set")
+            else:              
+                self.config_bits[self.cb_offset2 + self.switch_per_out * m + self.CLBOS + n] = "1"
+                if self.debug:
+                    print("CB bit %d has been set to 1" % (self.cb_offset2 + self.switch_per_out * m + self.CLBOS + n)) 
         else:
             if self.debug:
                 print("invalid cmd for CB")       
@@ -73,6 +105,7 @@ class CB():
 
 # a = CB("cb_east", debug=True)
 # print(a.output_bitstream())
+# a.set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 2)
 # a.set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 2)
 # print(a.output_bitstream())
 
