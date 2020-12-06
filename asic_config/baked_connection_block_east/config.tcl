@@ -22,7 +22,7 @@ set ::env(VERILOG_FILES) [concat \
 puts $::env(VERILOG_FILES)
 
 # Floorplan config
-set ::env(FP_CORE_UTIL) 40
+set ::env(FP_CORE_UTIL) 45
 # Placement config
 set ::env(PL_TARGET_DENSITY) [ expr ($::env(FP_CORE_UTIL)+5) / 100.0 ]
 
