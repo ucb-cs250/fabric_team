@@ -25,5 +25,7 @@ module clb_tile #(
   output [CLBOUT_EACH_SIDE-1:0] clb_south_out, clb_west_out,
   input shift_in_hard, set_in_hard,
   output shift_out_hard, set_out_hard,
+  input carry_in,
+  output carry_out
 );
 endmodule

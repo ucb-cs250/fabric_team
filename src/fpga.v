@@ -109,10 +109,8 @@ wire [CLBIN_EACH_SIDE-1:0]  dc_we[MY-1:0][MX:0];
 
 // Configuration enable signals, one per column.
 wire [MX-1:0] col_cen;
-//wire col_set  [MY  :0][MX-1:0];
-//wire col_shift[MY  :0][MX-1:0];
-wire [MX-1:0] col_set;
-wire [MX-1:0] col_shift;
+wire [MX-1:0] col_set[MY:0];
+wire [MX-1:0] col_shift[MY:0];
 
 wire [MY-1:0] carry_in;
 wire [MY-1:0] carry_out;
