@@ -35,28 +35,39 @@ module fpga #(
   parameter CLBOD = 4,
   parameter CLBX = 1
 )(
-  // TODO(aryap): These actually get connected to GPIO pins!
-  input clk,
-  input rst,
-  input en,
-
-  // Enable configuration to be shifted in.
-  input cen,
-
-  // Latch configuration.
-  input cset,
-
-  input shift_in,
-
-  output cset_out,
-  output shift_out,
-
   inout [IO_NORTH-1:0] gpio_north,
   inout [IO_SOUTH-1:0] gpio_south,
   inout [IO_WEST-1:0] gpio_west,
-  inout [IO_EAST-1:0] gpio_east
+  inout [IO_EAST-1:0] gpio_east,
+
+  // Global signals
+  input wb_clk_i,
+  input wb_rst_i,
+
+  // Wishbone signals
+  input wbs_stb_i,
+  input wbs_cyc_i,
+  input wbs_we_i,
+  // Write mask
+  input [3:0] wbs_sel_i,
+  input [31:0] wbs_data_i,
+  input [31:0] wbs_addr_i,
+  output reg wbs_ack_o,
+  output reg [31:0] wbs_data_o,
 );
 
+wire clk;
+wire rst;
+wire en;
+
+/* We take the wishbone clock to be our fabric clock, I guess.
+* rst is the first GPIO pin.
+* en is the second GPIO pin.
+*/
+
+assign clk = wb_clk_i;
+assign rst = gpio_north[9];
+assign en = gpio_north[8];
 
 /* This FPGA lays out tiles in the following fixed configuration (not to
 * scale).
@@ -98,8 +109,8 @@ wire [CLBIN_EACH_SIDE-1:0] dc_we[MY  :0][MX-1:0];
 
 // Configuration enable signals, one per column.
 wire [MX-1:0] col_cen;
-wire col_set  [MY  :0][MX-1:0];
-wire col_shift[MY  :0][MX-1:0];
+wire [MX-1:0] col_set  [MY  :0];
+wire [MX-1:0] col_shift[MY  :0];
 
 genvar x;
 genvar y;
@@ -174,9 +185,35 @@ endgenerate
 //  .west()
 //);
 
-assign gpio_north = ix_single_ns[MY][MX-1:0];
-assign gpio_south = ix_single_ns[ 0][MX-1:0];
-assign gpio_east  = ix_single_ew[MY-1:0][MX];
-assign gpio_west  = ix_single_ew[MY-1:0][ 0];
+assign gpio_north[7:0] = ix_single_ns[MY][MX-1:0];
+assign gpio_south      = ix_single_ns[ 0][MX-1:0];
+assign gpio_east       = ix_single_ew[MY-1:0][MX];
+assign gpio_west       = ix_single_ew[MY-1:0][ 0];
+
+wire [3:0] wb_set_out;
+wire [3:0] wb_shift_out;
+
+// wb_set_out[3] is disconnected.
+// wb_shift_out[3] is disconnected.
+assign col_set[0][MX-1:0] = wb_set_out[2:0];
+assign col_shift[0][MX-1:0] = wb_shift_out[2:0];
+
+wishbone_configuratorinator #(
+  .BASE_ADDR(32'h3000_0000)
+) wishbonatron (
+  .wb_clk_i(wb_clk_i),
+  .wb_rst_i(wb_rst_i),
+  .wbs_stb_i(wbs_stb_i),
+  .wbs_cyc_i(wbs_cyc_i),
+  .wbs_we_i(wbs_we_i),
+  .wbs_sel_i(wbs_sel_i),
+  .wbs_data_i(wbs_data_i),
+  .wbs_addr_i(wbs_addr_i),
+  .wbs_ack_o(wbs_ack_o),
+  .wbs_data_o(wbs_data_o),
+  .cen(cen),
+  .set_out(wb_set_out),
+  .shift_out(wb_shift_out)
+);
 
 endmodule
