@@ -36,6 +36,12 @@ if {$use_debug_products} {
   set clb_run {works_sometimes}
   set clb_lef $clb_runs/runs/$clb_run/results/magic/clb_tile.lef
   set clb_gds $clb_runs/runs/$clb_run/results/magic/clb_tile.gds
+
+  # wishbone client
+  set wb_runs $design_root/250/config_team/asic_config/wishbone_configuratorinator
+  set wb_run {debug}
+  set wb_lef $wb_runs/runs/$wb_run/results/magic/wishbone_configuratorinator.lef
+  set wb_gds $wb_runs/runs/$wb_run/results/magic/wishbone_configuratorinator.lef
 } else {
   set gds_root $src_root/gds
 
@@ -48,6 +54,10 @@ if {$use_debug_products} {
   # clb_tile
   set clb_lef $gds_root/clb_tile/clb_tile.lef
   set clb_gds $gds_root/clb_tile/clb_tile.gds
+
+  # wishbone client
+  set wb_lef $gds_root/wishbone_configuratorinator/wishbone_configuratorinator.lef
+  set wb_gds $gds_root/wishbone_configuratorinator/wishbone_configuratorinator.lef
 }
 
 # Verilog files for top level RTL connections. Do not include black boxes!
@@ -55,12 +65,13 @@ set ::env(VERILOG_FILES) [concat \
   $fabric_src/fpga.v \
   $blackbox_src/clb_tile.v \
   $blackbox_src/mac_tile.v \
+  $blackbox_src/wishbone_configuratorinator.v \
 ]
 
 set ::env(TRISTATE_BUFFER_MAP) $src_root/src/tbuf_map.v
 
-set ::env(EXTRA_LEFS) [list $mac_lef $clb_lef]
-set ::env(EXTRA_GDS_FILES) [list $mac_gds $clb_gds]
+set ::env(EXTRA_LEFS) [list $mac_lef $clb_lef $wb_lef]
+set ::env(EXTRA_GDS_FILES) [list $mac_gds $clb_gds $wb_gds]
 
 set filename $::env(OPENLANE_ROOT)/designs/250/$::env(PDK)_$::env(PDK_VARIANT)_config.tcl
 if { [file exists $filename] == 1} {
@@ -70,7 +81,7 @@ if { [file exists $filename] == 1} {
 set ::env(MACRO_PLACEMENT_CFG) $our_root/macro_placement.cfg
 
 set ::env(CLOCK_PERIOD) 30
-set ::env(CLOCK_PORT) "clk"
+set ::env(CLOCK_PORT) "wb_clk_i"
 set ::env(CLOCK_TREE_SYNTH) 1
 
 set use_absolute_sizing true

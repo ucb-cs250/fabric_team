@@ -48,6 +48,14 @@ pdngen::specify_grid macro {
   connect {{met4_PIN_ver met5}}
 }
 
+pdngen::specify_grid macro {
+  macro wishbone_configuratorinator
+  blockages "li1 met1 met2 met3 met4"
+  straps {
+  }
+  connect {{met4_PIN_ver met5}}
+}
+
 set ::halo 0
 
 # Metal layer for rails on every row

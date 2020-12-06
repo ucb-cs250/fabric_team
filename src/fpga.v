@@ -41,15 +41,15 @@ module fpga #(
   input en,
 
   // Enable configuration to be shifted in.
-  input cen,
+  input [MX-1:0] cen,
 
   // Latch configuration.
-  input cset,
+  input [MX-1:0] cset,
 
-  input shift_in,
+  input [MX-1:0] shift_in,
 
-  output cset_out,
-  output shift_out,
+  //output cset_out,
+  //output shift_out,
 
   inout [IO_NORTH-1:0] gpio_north,
   inout [IO_SOUTH-1:0] gpio_south,
@@ -91,15 +91,24 @@ wire [WD-1:0] ix_double_ns[MY  :0][MX-1:0];
 wire [WD-1:0] ix_double_ew[MY-1:0][MX  :0];
 
 // Direct connection wires go between connection boxes and CLBs.
-wire [CLBIN_EACH_SIDE-1:0] dc_ns[MY-1:0][MX  :0];
-wire [CLBIN_EACH_SIDE-1:0] dc_sn[MY-1:0][MX  :0];
-wire [CLBIN_EACH_SIDE-1:0] dc_ew[MY  :0][MX-1:0];
-wire [CLBIN_EACH_SIDE-1:0] dc_we[MY  :0][MX-1:0];
+wire [CLBOUT_EACH_SIDE-1:0] dc_ns[MY:0][MX-1:0];
+wire [CLBIN_EACH_SIDE-1:0]  dc_sn[MY:0][MX-1:0];
+wire [CLBOUT_EACH_SIDE-1:0] dc_ew[MY-1:0][MX:0];
+wire [CLBIN_EACH_SIDE-1:0]  dc_we[MY-1:0][MX:0];
 
 // Configuration enable signals, one per column.
 wire [MX-1:0] col_cen;
-wire col_set  [MY  :0][MX-1:0];
-wire col_shift[MY  :0][MX-1:0];
+//wire col_set  [MY  :0][MX-1:0];
+//wire col_shift[MY  :0][MX-1:0];
+wire [MX-1:0] col_set;
+wire [MX-1:0] col_shift;
+
+wire [MY-1:0] carry_in;
+wire [MY-1:0] carry_out;
+
+assign col_cen = cen;
+assign col_set = cset;
+assign col_shift = shift_in;
 
 genvar x;
 genvar y;
@@ -147,11 +156,21 @@ generate
         .cb_east_in(   dc_ew[  y][  x]),
         .clb_west_out( dc_ew[  y][x+1]),
 
-        .shift_in_hard(col_shift[  y][  x]),
-        .set_in_hard(  col_set  [  y][  x]),
+        .carry_in(carry_in[y]),
+        .carry_out(carry_out[y]),
 
-        .shift_out_hard( col_shift[y+1][  x]),
-        .set_out_hard(   col_set  [y+1][  x])
+//        .shift_in_hard(col_shift[  y][  x]),
+//        .set_in_hard(  col_set  [  y][  x]),
+//
+//        .shift_out_hard( col_shift[y+1][  x]),
+//        .set_out_hard(   col_set  [y+1][  x])
+
+        .shift_in_hard(col_shift[x]),
+        .set_in_hard(  col_set  [x]),
+
+        .shift_out_hard( col_shift[x]),
+        .set_out_hard(   col_set  [x])
+
       );
     end
   end
@@ -174,9 +193,23 @@ endgenerate
 //  .west()
 //);
 
-assign gpio_north = ix_single_ns[MY][MX-1:0];
-assign gpio_south = ix_single_ns[ 0][MX-1:0];
-assign gpio_east  = ix_single_ew[MY-1:0][MX];
-assign gpio_west  = ix_single_ew[MY-1:0][ 0];
+generate
+  for (y = 0; y < MY; y = y + 1) begin
+    if (y > 0) begin
+      assign carry_in[y] = carry_out[y-1];
+    end
+  end
+endgenerate
+
+generate
+  for (x = 0; x < MX; x = x + 1) begin
+    assign gpio_north[x] = ix_single_ns[MY][x][0];
+    assign gpio_south[x] = ix_single_ns[0][x][0];
+  end
+  for (y = 0; y < MY; y = y + 1) begin
+    assign gpio_east[y] = ix_single_ew[y][MX][0];
+    assign gpio_west[y] = ix_single_ew[y][ 0][0];
+  end
+endgenerate
 
 endmodule
