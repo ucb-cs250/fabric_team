@@ -135,13 +135,20 @@ class SB():
         return nodes, inverse_nodes, connections, config_width
 
     # set a connection
-    # specification rule: n -> s -> e -> w
+    # valid direction: N, E, W, S
     def set_pip(self, wire_type, start_direction, start_port_num, end_direction, end_port_num):
         single_dirs = ["w", "s", "e", "n"]
         double_dirs = ["dw", "ds", "de", "dn"]
 
-        sdl = start_direction.lower()
-        edl = end_direction.lower()
+        if wire_type == "SINGLE":
+            sdl = start_direction.lower()
+            edl = end_direction.lower()
+        elif wire_type == "DOUBLE":
+            sdl = "d" + start_direction.lower()
+            edl = "d" + end_direction.lower()
+        else:
+            print("invalid wire type")
+            return
 
         # error checking on wire type
         if wire_type == "SINGLE":
@@ -161,11 +168,33 @@ class SB():
                     except KeyError as e:
                         print("the connection you specified does not exist. exiting")
                         return
+
+                    # taking account of bidirection-ness
+                    case_1_flag = False
+                    case_2_flag = False
                     try:
-                        config_bit_loc = self.connections.index((start_idx, end_idx))
+                        config_bit_loc_1 = self.connections.index((start_idx, end_idx))
                     except:
-                        print("double check your query: pair not found")
+                        case_1_flag = True
+
+                    try:
+                        config_bit_loc_2 = self.connections.index((end_idx, start_idx))
+                    except:
+                        case_2_flag = True
                     
+                    if case_1_flag and case_2_flag:
+                        if debug:
+                            print("double check your query: pair not found")
+                            return
+                    elif (not case_1_flag) and case_2_flag:
+                        config_bit_loc = config_bit_loc_1
+                    elif (not case_2_flag) and case_1_flag:
+                        config_bit_loc = config_bit_loc_2
+                    else:
+                        # should not happen
+                        print("This should definitely not happen, two pairs cannot both exist")
+                        return
+
                     # bit already set scenario check
                     if self.config_bits[config_bit_loc] == "1":
                         if self.debug:
@@ -200,10 +229,32 @@ class SB():
                     except KeyError as e:
                         print("the connection you specified does not exist. exiting")
                         return
+
+                    # taking account of bidirection-ness
+                    case_1_flag = False
+                    case_2_flag = False
                     try:
-                        config_bit_loc = self.connections.index((start_idx, end_idx))
+                        config_bit_loc_1 = self.connections.index((start_idx, end_idx))
                     except:
-                        print("double check your query: pair not found")
+                        case_1_flag = True
+
+                    try:
+                        config_bit_loc_2 = self.connections.index((end_idx, start_idx))
+                    except:
+                        case_2_flag = True
+
+                    if case_1_flag and case_2_flag:
+                        if debug:
+                            print("double check your query: pair not found")
+                            return
+                    elif (not case_1_flag) and case_2_flag:
+                        config_bit_loc = config_bit_loc_1
+                    elif (not case_2_flag) and case_1_flag:
+                        config_bit_loc = config_bit_loc_2
+                    else:
+                        # should not happen
+                        print("This should definitely not happen, two pairs cannot both exist")
+                        return
 
                     # bit already set scenario check
                     if self.config_bits[config_bit_loc] == "1":
@@ -218,12 +269,18 @@ class SB():
                 print("invalid wire type")
 
 
-    # get all end locations from a location; specification rule: n -> s -> e -> w
+    # get all end locations from a location; valid direction: N, E, W, S
     def get_all_connections(self, wire_type, direction, port_num):
         single_dirs = ["w", "s", "e", "n"]
         double_dirs = ["dw", "ds", "de", "dn"]
 
-        dl = direction.lower()
+        if wire_type == "SINGLE":
+            dl = direction.lower()
+        elif wire_type == "DOUBLE":
+            dl = "d" + direction.lower()
+        else:
+            print("invalid wire type")
+            return
 
         # error checking on wire type
         if wire_type == "SINGLE":
@@ -294,10 +351,13 @@ class SB():
         return res
 
 # a = SB("sb1", 4, 8, True)
-# print(a.output_bitstream())
-# a.set_pip("DOUBLE", "dN", 0, "dE", 0)
+# # # print(a.output_bitstream())
+# a.set_pip("DOUBLE", "N", 0, "E", 0)
+# a.set_pip("DOUBLE", "e", 0, "n", 0)
 # a.set_pip("SINGLE", "n", 0, "w", 1)
-# # a.set_pip("DOUBLE", "dN", 6, "de", 0)
+# a.set_pip("SINGLE", "w", 1, "n", 0)
+# a.set_pip("DOUBLE", "dN", 6, "de", 0)
+# a.set_pip("DOUBLE", "de", 0, "dn", 6)
 # a.get_all_connections("SINGLE", "n", 0)
 # a.get_all_connections("DOUBLE", "dN", 0)
 # # print(a.output_bitstream())
