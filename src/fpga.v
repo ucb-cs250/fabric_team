@@ -59,6 +59,7 @@ module fpga #(
 wire clk;
 wire rst;
 wire en;
+wire cen;
 
 /* We take the wishbone clock to be our fabric clock, I guess.
 * rst is the first GPIO pin.
@@ -198,6 +199,13 @@ wire [3:0] wb_shift_out;
 // wb_shift_out[3] is disconnected.
 assign col_set[0][MX-1:0] = wb_set_out[2:0];
 assign col_shift[0][MX-1:0] = wb_shift_out[2:0];
+
+genvar i;
+generate
+  for (i = 0; i < MX; i = i + 1) begin
+    assign col_cen[i] = cen;
+  end
+endgenerate
 
 wishbone_configuratorinator #(
   .BASE_ADDR(32'h3000_0000)
