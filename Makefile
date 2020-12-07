@@ -14,6 +14,9 @@ IX_NATE_PATH  = ix_nate
 
 INCS = src+$(MAC_PATH)/src
 
+BITSTREAM_FILE=scripts/new_config/bitstream.txt
+GEN_SCRIPT=scripts/new_config/main.py
+
 SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        $(CLB_PATH)/src/behavioral/lut_sXX_softcode.v \
        $(CLB_PATH)/src/behavioral/carry_chain.v \
@@ -24,6 +27,7 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        $(CFG_PATH)/src/behavioral/config_latch.v \
        $(CFG_PATH)/src/behavioral/config_tile.v \
        $(CFG_PATH)/src/behavioral/shift_chain.v \
+       $(CFG_PATH)/src/behavioral/wishbone_configuratorinator.v \
        $(IX_YUKIO_PATH)/src/clb_switch_box.v \
        $(IX_YUKIO_PATH)/src/universal_switch_box.v \
        $(IX_YUKIO_PATH)/src/switch_box_element_one.v \
@@ -37,7 +41,8 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        src/baked/baked_connection_block.v \
        src/baked/baked_connection_block_east.v \
        src/baked/baked_connection_block_north.v \
-       src/clb_tile.v
+       src/clb_tile.v \
+       src/fpga.v \
 #       $(SRAM_PATH)/src/behavioral/unit_sram.v \
 #       $(SRAM_PATH)/src/behavioral/unit_sram_reduced.v \
 #       src/consts.vh \
@@ -67,17 +72,21 @@ OPTS = -notice \
        +rad \
        -quiet \
        -sverilog \
+       +error+100 \
        -timescale=1ns/1ps
 
 test = path_to_a_test_bench_file
 testname = $(basename $(notdir $(test)))
 SIMV = ./$(testname).simv
 
-$(SIMV): $(SRCS) $(test)
+$(SIMV): $(SRCS) $(SKY130_CELLS) $(test)
 	$(VCS) $(OPTS) +incdir+$(INCS) $^ -o $@
 
-sim: $(SIMV)
-	$(SIMV) -q +ntb_random_seed_automatic
+$(BITSTREAM_FILE): $(GEN_SCRIPT)
+	python $(GEN_SCRIPT) > $(BITSTREAM_FILE)
+
+sim: $(SIMV) $(BITSTREAM_FILE)
+	$(SIMV) -q +ntb_random_seed_automatic +load_config=$(BITSTREAM_FILE)
 
 clean:
 	rm -rf *simv* csrc ucli.key *.vcd

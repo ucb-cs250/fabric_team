@@ -53,7 +53,7 @@ module fpga #(
   input [31:0] wbs_data_i,
   input [31:0] wbs_addr_i,
   output reg wbs_ack_o,
-  output reg [31:0] wbs_data_o,
+  output reg [31:0] wbs_data_o
 );
 
 wire clk;

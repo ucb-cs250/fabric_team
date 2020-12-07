@@ -54,8 +54,9 @@ class Fabric():
         for col in range(0, self.num_cols):
             # MSB                    LSB
             # <CLBTILE rowN>         <CLBTILE row0>
-            for row in range(self.num_rows-1, -1, -1):
-                tile = self.clb_tile_array[row * self.num_rows + col]
+            #for row in range(self.num_rows-1, -1, -1):
+            for row in range(self.num_rows):
+                tile = self.clb_tile_array[row * self.num_cols + col]
                 # MSB                       LSB
                 # <cb_east> <sb> <cb_north> <slicel>
                 stream = tile.output_bitstream()

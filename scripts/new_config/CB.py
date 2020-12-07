@@ -3,8 +3,8 @@ class CB():
 
     # init
     def __init__(self, name, WS=4, WD=8, WG=0, CLBIN=10, 
-                 CLBOUT=5, CARRY=1, CLBOS=2, CLBOS_BIAS=0,
-                 CLBOD=2, CLBOD_BIAS=0, CLBX=1, debug=False):
+                 CLBOUT=5, CARRY=1, CLBOS=4, CLBOS_BIAS=0,
+                 CLBOD=4, CLBOD_BIAS=0, CLBX=1, debug=False):
         self.name = name
         self.debug = debug
         self.WS = WS
@@ -97,16 +97,16 @@ class CB():
 
     # generate bitstream for the entire fabric
     def output_bitstream(self):
-        res = ""
+        res = "00"
         for i in self.config_bits:
             res += i
         return res
 
 
-# a = CB("cb_east", debug=True)
-# print(a.output_bitstream())
-# a.set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 2)
-# a.set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 2)
-# print(a.output_bitstream())
+#a = CB("cb_east", debug=True)
+#print(a.output_bitstream())
+#a.set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 2)
+#a.set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 2)
+#print(a.output_bitstream())
 
     
