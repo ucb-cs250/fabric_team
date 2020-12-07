@@ -348,6 +348,7 @@ class SB():
         res = ""
         for i in self.config_bits:
             res += i
+        res += "00"
         return res
 
 # a = SB("sb1", 4, 8, True)
