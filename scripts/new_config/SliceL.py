@@ -17,6 +17,7 @@ class SliceL():
         self.S44_1 = S44("S44_1", self.S_XX_BASE, "LUT2", "LUT3", self.debug)
         self.S44_0 = S44("S44_0", self.S_XX_BASE, "LUT0", "LUT1", self.debug)
         self.reg_init_val = "0" * 8
+        self.reg_state = "0" * 8
 
     # set the input select bit
     def set_input_select_bit(self, config_in):
@@ -50,6 +51,7 @@ class SliceL():
     def set_reg_init_val(self, config_in):
         assert len(config_in) == 8
         self.reg_init_val = config_in
+        self.reg_state = config_in
         if self.debug:
             print("reg initial value bits config success")
 
@@ -114,6 +116,9 @@ class SliceL():
         else:
             if self.debug:
                 print("the lut you specified does not belong to this slicel")
+
+    def dump_reg_state(self):
+        return self.reg_state
 
     # generate bitstream for this slicel
     def output_bitstream(self):
