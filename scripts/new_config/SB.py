@@ -345,10 +345,9 @@ class SB():
 
     # generate bitstream for the entire fabric
     def output_bitstream(self):
-        res = ""
+        res = "00"
         for i in self.config_bits:
             res += i
-        res += "00"
         return res
 
 # a = SB("sb1", 4, 8, True)

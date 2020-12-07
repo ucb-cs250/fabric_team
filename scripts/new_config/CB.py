@@ -97,17 +97,16 @@ class CB():
 
     # generate bitstream for the entire fabric
     def output_bitstream(self):
-        res = ""
+        res = "00"
         for i in self.config_bits:
             res += i
-        res += "00"
         return res
 
 
-a = CB("cb_east", debug=True)
-print(a.output_bitstream())
-a.set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 2)
-a.set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 2)
-print(a.output_bitstream())
+#a = CB("cb_east", debug=True)
+#print(a.output_bitstream())
+#a.set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 2)
+#a.set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 2)
+#print(a.output_bitstream())
 
     

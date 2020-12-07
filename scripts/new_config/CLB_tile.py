@@ -23,8 +23,8 @@ class CLBTile():
 
     # generate bitstream for this clb tile
     def output_bitstream(self):
-        return self.cb_east.output_bitstream() + self.sb.output_bitstream() + \
-               self.cb_north.output_bitstream() + self.slicel.output_bitstream()
+        return self.slicel.output_bitstream() + self.cb_north.output_bitstream() +\
+               self.sb.output_bitstream() + self.cb_east.output_bitstream()
 
 # a = CLBTile(1,2,4,8,4,False)
 # print(a.output_bitstream())
