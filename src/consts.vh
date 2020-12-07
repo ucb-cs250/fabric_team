@@ -52,7 +52,7 @@
 `define CLB_TILE_COMB_CFG_SIZE (`CLB_COMB_CFG_SIZE + `SB_CFG_SIZE + `CB_CFG_SIZE * 2)
 `define CLB_TILE_MEM_CFG_SIZE  (`CLB_MEM_CFG_SIZE)
 
-`define CLB_TILE_BITSTREAM_SIZE (`CLB_TILE_COMB_CFG_SIZE + `CLB_TILE_MEM_CFG_SIZE + 2)
+`define CLB_TILE_BITSTREAM_SIZE (`CLB_TILE_COMB_CFG_SIZE + `CLB_TILE_MEM_CFG_SIZE + 2 + 2 + 2)
 
 // Define the sequence of configuration bits for a tile
 `define CFG_MEM_START_BIT      0

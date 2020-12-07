@@ -41,6 +41,18 @@ module fpga_test_harness();
   wire [IO_WEST-1:0]  gpio_west;
   wire [IO_EAST-1:0]  gpio_east;
 
+  // Wishbone signals
+  reg wbs_stb_i;
+  reg wbs_cyc_i;
+  reg wbs_we_i;
+
+  // Write mask
+  reg [3:0] wbs_sel_i;
+  reg [31:0] wbs_data_i;
+  reg [31:0] wbs_addr_i;
+  wire wbs_ack_o;
+  wire [31:0] wbs_data_o;
+
   fpga #(
     .MX(MX),
     .MY(MY),
@@ -55,15 +67,24 @@ module fpga_test_harness();
     .CLBOS(CLBOS),
     .CLBOD(CLBOD)
   ) FPGA (
-    .clk(clk),
-    .rst(rst),
-    .cen(cen),
-    .cset(cset),
-    .shift_in(shift_in),
     .gpio_north(gpio_north),
     .gpio_south(gpio_south),
     .gpio_east(gpio_east),
-    .gpio_west(gpio_west)
+    .gpio_west(gpio_west),
+
+    .wb_clk_i(clk),
+    .wb_rst_i(rst),
+
+    // Wishbone signals
+    .wbs_stb_i(wbs_stb_i),   // input
+    .wbs_cyc_i(wbs_cyc_i),   // input
+    .wbs_we_i(wbs_we_i),     // input
+    // Write mask
+    .wbs_sel_i(wbs_sel_i),   // input
+    .wbs_data_i(wbs_data_i), // input
+    .wbs_addr_i(wbs_addr_i), // input
+    .wbs_ack_o(wbs_ack_o),   // output
+    .wbs_data_o(wbs_data_o)  // output
   );
 
   // MSB<[bitstream(0,N-1), bitstream(1,N-1), ..., bitstream(N-1,N-1)],
@@ -73,7 +94,7 @@ module fpga_test_harness();
 
   localparam FPGA_BITSTREAM_COL_SIZE = `CLB_TILE_BITSTREAM_SIZE * MY;
   localparam FPGA_BITSTREAM_SIZE     = FPGA_BITSTREAM_COL_SIZE * MX;
-  reg [FPGA_BITSTREAM_SIZE-1:0] bitstream [1];
+  reg [FPGA_BITSTREAM_SIZE-1:0] bitstream[1];
   initial begin
     #1;
     $readmemb("sim/bitstream.txt", bitstream);
@@ -84,35 +105,13 @@ module fpga_test_harness();
     //$dumpfile("fpga_test_harness.vcd");
     //$dumpvars;
 
-    for (i = 0; i < MX; i = i + 1) begin
-      cen[i]      = 1'b0;
-      shift_in[i] = 1'b0;
-      cset[i]     = 1'b0;
-    end
     rst = 1'b1;
     repeat (10) @(posedge clk);
 
     @(negedge clk);
     rst = 1'b0;
 
-    @(negedge clk);
-    for (i = 0; i < MX; i = i + 1) begin
-      cen[i]  = 1'b1;
-    end
 
-    // Shifting the bitstream column-by-column from left to right and LSB to MSB
-    for (i = 0; i < MX; i = i + 1) begin
-      for (j = 0; j < FPGA_BITSTREAM_COL_SIZE; j = j + 1) begin
-        shift_in[i] = bitstream[0][FPGA_BITSTREAM_COL_SIZE * i + j];
-        @(negedge clk);
-      end
-      cen[i] = 1'b0;
-      cset[i] = 1'b1;
-      @(negedge clk);
-      cset[i] = 1'b0;
-    end
-
-    // Wait for some time ...
     repeat (100) @(posedge clk);
 
     #100;
