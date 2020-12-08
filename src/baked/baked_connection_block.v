@@ -60,7 +60,7 @@ wire [CB_CONF_WIDTH-1:0] cb_conf_bus;
 
 reg [CB_CONF_WIDTH-1:0] cb_conf_regs;
 
-always @(*) begin
+always @(clk) begin
   if (set_in) begin
     cb_conf_regs <= cb_conf_bus;
   end

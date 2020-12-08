@@ -1,6 +1,7 @@
 `timescale 1ns/1ns
 
 `include "consts.vh"
+//`define DEBUG_CONFIG
 
 module fpga_test_harness();
 
@@ -87,6 +88,7 @@ module fpga_test_harness();
   reg [31:0] write_data = 0;
   reg transact = 0;
   reg we = 0;
+  // FIXME: assume the fabric has 4 columns for now
   reg [3:0] select = 4'b1111;
 
   wire ack;
@@ -112,29 +114,146 @@ module fpga_test_harness();
   localparam COL_BITS  = `CLB_TILE_BITSTREAM_SIZE * MY;
   localparam FPGA_BITS = COL_BITS * MX;
   reg [FPGA_BITS-1:0] bitstream[1];
+  reg [8*MX*MY-1:0]   gold_reg_states[1];
+
   reg [1023:0] load_config = 0;
+  reg [1023:0] load_reg_states = 0;
   initial begin
-    $value$plusargs("load_config=%s", load_config);
+    $value$plusargs("load_config=%s",   load_config);
+    $value$plusargs("load_reg_states=%s", load_reg_states);
     #1 $readmemb(load_config, bitstream);
+    #1 $readmemb(load_reg_states, gold_reg_states);
   end
 
   wire [COL_BITS-1:0] col_bitstream [MX-1:0];
 
-  genvar k;
+  genvar k, x, y;
   generate
     for (k = 0; k < MX; k = k + 1) begin
       assign col_bitstream[MX-1-k] = bitstream[0][COL_BITS * (k + 1) - 1: COL_BITS * k];
     end
   endgenerate
 
-  reg debug = 0;
+  wire [8*MX*MY-1:0] fabric_reg_states;
 
-  genvar y, x;
+  // Extract the current registers' states from the Fabric
+  // They will be compared against the golden registers' states given by a test
   generate
-    for (x = 0; x < 1; x = x + 1) begin
+    for (x = 0; x < MX; x = x + 1) begin
+      for (y = 0; y < MY; y = y + 1) begin
+        assign fabric_reg_states[x * MY * 8 + y * 8 +: 8] = FPGA.X[MX-1-x].Y[MY-1-y].clb.slice.sync_output;
+      end
+    end
+  endgenerate
+
+  reg debug_config = 0;
+
+  localparam NUM_BYTES = COL_BITS / 8;
+  localparam REM_BITS  = COL_BITS - NUM_BYTES * 8;
+  integer i, j;
+  initial begin
+    $dumpfile("fpga_test_harness.vcd");
+    $dumpvars;
+
+    rst = 1'b1;
+    fabric_reset= 1'b1;
+    repeat (10) @(posedge clk);
+
+    @(negedge clk);
+    rst = 1'b0;
+    fabric_reset = 1'b0;
+
+    address <= 32'h3000_0001;
+    write_data <= {8'hFF, 8'hFF, 8'hFF, 8'hFF};
+    we <= 1;
+    transact <= 1;
+
+    @(posedge ack);
+    transact <= 0;
+    we <= 0;
+    @(negedge ack);
+
+    repeat(5) @(posedge clk);
+
+    for (i = 0; i < NUM_BYTES; i = i + 1) begin
+      // sending the bits
+      address <= 32'h3000_0002;
+      for (j = 0; j < MX; j = j + 1) begin  
+        write_data[j * 8 +: 8] <= col_bitstream[j][i * 8 +: 8];
+      end
+      we <= 1;
+      transact <= 1;
+
+      @(posedge ack);
+      transact <= 0;
+      we <= 0;
+      @(negedge ack);
+    end
+
+    // Send the remaining bits
+    address <= 32'h3000_0001;
+    write_data <= {8'hFF, 8'hFF, 8'hFF, 8'hFF};
+    for (i = 0; i < MX; i = i + 1) begin  
+      write_data[i * 8 +: 8] <= REM_BITS;
+    end
+
+    we <= 1;
+    transact <= 1;
+
+    @(posedge ack);
+    transact <= 0;
+    we <= 0;
+    @(negedge ack);
+
+    repeat(5) @(posedge clk);
+
+    // sending the bits
+    address <= 32'h3000_0002;
+    for (i = 0; i < MX; i = i + 1) begin  
+      write_data[i * 8 +: 8] <= col_bitstream[i][COL_BITS - 1 : NUM_BYTES * 8];
+    end
+    we <= 1;
+    transact <= 1;
+
+    @(posedge ack);
+    transact <= 0;
+    we <= 0;
+    @(negedge ack);        
+
+    $display("Configuration done!");
+
+    repeat (100) @(posedge clk);
+
+    $display("Number of bits per column: %d\n", COL_BITS);
+    $display("Bitstream size: %d\n", FPGA_BITS);
+
+`ifdef DEBUG_CONFIG
+    @(negedge clk);
+    debug_config = 1'b1;
+    @(negedge clk);
+    debug_config = 1'b0;
+`endif
+
+    $display("fabric_reg_states=%b", fabric_reg_states);
+    $display("gold_reg_states=%b",   gold_reg_states[0]);
+
+    if (fabric_reg_states === gold_reg_states[0])
+      $display("PASSED!");
+    else
+      $display("FAILED: reg_states mismatch!");
+
+    #100;
+    $display("Fabric test done!");
+    $finish;
+  end
+
+`ifdef DEBUG_CONFIG
+  // Print the config states of all the tiles for debuggging
+  generate
+    for (x = 0; x < MX; x = x + 1) begin
       for (y = 0; y < MY; y = y + 1) begin
         always @(posedge clk) begin
-          if (debug) begin
+          if (debug_config === 1'b1) begin
 
             $display("X[%d]Y[%d] S44_0 config: split=%b, LUT_1=%h, LUT_0=%h",
               x, y,
@@ -190,105 +309,6 @@ module fpga_test_harness();
       end
     end
   endgenerate
-
-  // Debug
-  localparam IDY = 1;
-  localparam IDX = 0;
-
-  localparam NUM_BYTES = COL_BITS / 8;
-  localparam REM_BITS  = COL_BITS - NUM_BYTES * 8;
-  integer i;
-  initial begin
-    $dumpfile("fpga_test_harness.vcd");
-    $dumpvars;
-
-    rst = 1'b1;
-    fabric_reset= 1'b1;
-    repeat (10) @(posedge clk);
-
-    @(negedge clk);
-    rst = 1'b0;
-    fabric_reset = 1'b0;
-
-    address <= 32'h3000_0001;
-    write_data <= {8'hFF, 8'hFF, 8'hFF, 8'hFF};
-    we <= 1;
-    transact <= 1;
-
-    @(posedge ack);
-    transact <= 0;
-    we <= 0;
-    @(negedge ack);
-
-    repeat(5) @(posedge clk);
-
-    for (i = 0; i < NUM_BYTES; i = i + 1) begin
-      // sending the bits
-      address <= 32'h3000_0002;
-      // FIXME: assume the fabric has 4 columns for now
-      write_data <= {8'b0, col_bitstream[2][i * 8 +: 8],
-                           col_bitstream[1][i * 8 +: 8],
-                           col_bitstream[0][i * 8 +: 8]};
-      we <= 1;
-      transact <= 1;
-
-      @(posedge ack);
-      transact <= 0;
-      we <= 0;
-      @(negedge ack);
-
-      repeat(5) @(posedge clk);
-    end
-
-    // Send the remaining bits
-    address <= 32'h3000_0001;
-    write_data[31:24] <= 8'hFF;
-    write_data[23:16] <= REM_BITS;
-    write_data[15:8]  <= REM_BITS;
-    write_data[7:0]   <= REM_BITS;
-
-    we <= 1;
-    transact <= 1;
-
-    @(posedge ack);
-    transact <= 0;
-    we <= 0;
-    @(negedge ack);
-
-    repeat(5) @(posedge clk);
-
-    // sending the bits
-    address <= 32'h3000_0002;
-    // FIXME: assume the fabric has 3 columns for now
-    write_data[31:24] <= 8'b0;
-    write_data[23:16] <= col_bitstream[2][COL_BITS - 1 : NUM_BYTES * 8];
-    write_data[15:8]  <= col_bitstream[1][COL_BITS - 1 : NUM_BYTES * 8];
-    write_data[7:0]   <= col_bitstream[0][COL_BITS - 1 : NUM_BYTES * 8];
-    we <= 1;
-    transact <= 1;
-
-    @(posedge ack);
-    transact <= 0;
-    we <= 0;
-    @(negedge ack);        
-
-    repeat(5) @(posedge clk);
-
-    $display("Configuration done!");
-
-    repeat (100) @(posedge clk);
-
-    $display("Number of bits per column: %d\n", COL_BITS);
-    $display("Bitstream size: %d\n", FPGA_BITS);
-
-    @(negedge clk);
-    debug = 1'b1;
-    @(negedge clk);
-    debug = 1'b0;
-
-    #100;
-    $display("Fabric test done!");
-    $finish;
-  end
+`endif
 
 endmodule

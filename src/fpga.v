@@ -156,11 +156,11 @@ generate
         .clb_south_in( dc_sn[  y][  x]),
         .cb_north_out( dc_sn[y+1][  x]),
 
-        .clb_west_in(  dc_we[  y][x+1]),
-        .cb_east_out(  dc_we[  y][  x]),
+        .clb_west_in(  dc_we[  y][x  ]),
+        .cb_east_out(  dc_we[  y][x+1]),
 
-        .cb_east_in(   dc_ew[  y][  x]),
-        .clb_west_out( dc_ew[  y][x+1]),
+        .cb_east_in(   dc_ew[  y][x+1]),
+        .clb_west_out( dc_ew[  y][x  ]),
 
         .carry_in(carry_in[y]),
         .carry_out(carry_out[y]),

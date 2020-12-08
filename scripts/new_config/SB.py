@@ -7,12 +7,12 @@ class SB():
         self.debug = debug
         self.WS = WS
         self.WD = WD  # WD must be multiple of 4
-        self.nodes, self.inverse_nodes, self.connections, self.config_width = self.configure()  
+        self.nodes, self.inverse_nodes, self.connections, self.config_width = self.configure()
 
         # config storage
         self.config_bits = [None] * self.config_width
         for i in range(0, self.config_width):
-            self.config_bits[i] = "0"  
+            self.config_bits[i] = "0"
 
     # note that the double line direct connections do not need to be configured
     def configure(self):
@@ -33,22 +33,22 @@ class SB():
             inverse_nodes[count] = "n"+str(i+1)
             count += 1
             nodes["s"+str(i)] = count
-            inverse_nodes[count] = "s"+str(i)                
+            inverse_nodes[count] = "s"+str(i)
             count += 1
-            nodes["s"+str(i+1)] = count 
-            inverse_nodes[count] = "s"+str(i+1)  
+            nodes["s"+str(i+1)] = count
+            inverse_nodes[count] = "s"+str(i+1)
             count += 1
-            nodes["e"+str(i)] = count  
-            inverse_nodes[count] = "e"+str(i)              
+            nodes["e"+str(i)] = count
+            inverse_nodes[count] = "e"+str(i)
             count += 1
-            nodes["e"+str(i+1)] = count 
+            nodes["e"+str(i+1)] = count
             inverse_nodes[count] = "e"+str(i+1)
             count += 1
-            nodes["w"+str(i)] = count 
-            inverse_nodes[count] = "w"+str(i)               
+            nodes["w"+str(i)] = count
+            inverse_nodes[count] = "w"+str(i)
             count += 1
             nodes["w"+str(i+1)] = count
-            inverse_nodes[count] = "w"+str(i+1) 
+            inverse_nodes[count] = "w"+str(i+1)
 
             # configure the connections
             connections.append((nodes["n"+str(i)], nodes["e"+str(i)]))
@@ -100,21 +100,21 @@ class SB():
             inverse_nodes[count] = "dn"+str(i+1)
             count += 1
             nodes["ds"+str(i)] = count
-            inverse_nodes[count] = "ds"+str(i)                
+            inverse_nodes[count] = "ds"+str(i)
             count += 1
             nodes["ds"+str(i+1)] = count
-            inverse_nodes[count] = "ds"+str(i+1)   
+            inverse_nodes[count] = "ds"+str(i+1)
             count += 1
-            nodes["de"+str(i)] = count  
-            inverse_nodes[count] = "de"+str(i)              
+            nodes["de"+str(i)] = count
+            inverse_nodes[count] = "de"+str(i)
             count += 1
-            nodes["de"+str(i+1)] = count 
+            nodes["de"+str(i+1)] = count
             inverse_nodes[count] = "de"+str(i+1)
             count += 1
-            nodes["dw"+str(i)] = count 
-            inverse_nodes[count] = "dw"+str(i)               
+            nodes["dw"+str(i)] = count
+            inverse_nodes[count] = "dw"+str(i)
             count += 1
-            nodes["dw"+str(i+1)] = count 
+            nodes["dw"+str(i+1)] = count
             inverse_nodes[count] = "dw"+str(i+1)
 
             # configure the connections
@@ -181,7 +181,7 @@ class SB():
                         config_bit_loc_2 = self.connections.index((end_idx, start_idx))
                     except:
                         case_2_flag = True
-                    
+
                     if case_1_flag and case_2_flag:
                         if debug:
                             print("double check your query: pair not found")
@@ -197,8 +197,7 @@ class SB():
 
                     # bit already set scenario check
                     if self.config_bits[config_bit_loc] == "1":
-                        if self.debug:
-                            print("warning: this bit has already been set")
+                        assert False, "warning: this bit has already been set"
                     else:
                         self.config_bits[config_bit_loc] = "1"
                         if self.debug:
@@ -258,12 +257,11 @@ class SB():
 
                     # bit already set scenario check
                     if self.config_bits[config_bit_loc] == "1":
-                        if self.debug:
-                            print("warning: this bit has already been set")
+                        assert False, "warning: this bit has already been set"
                     else:
                         self.config_bits[config_bit_loc] = "1"
                         if self.debug:
-                            print("this bit has been successfully set")            
+                            print("this bit has been successfully set")
         else:
             if self.debug:
                 print("invalid wire type")
@@ -292,12 +290,12 @@ class SB():
                     if self.debug:
                         print("invalid port number for the single wire type")
                 else:
-                    # does look up 
+                    # does look up
                     try:
-                        idx = self.nodes[dl + str(port_num)]  
+                        idx = self.nodes[dl + str(port_num)]
                     except KeyError as e:
                         print("the port you specified does not exist. exiting")
-                        return         
+                        return
 
                     # gather all tuples
                     match_list = []
@@ -308,24 +306,24 @@ class SB():
                     # inverse transmission
                     for index, i in enumerate(match_list):
                         start_node = self.inverse_nodes[i[0]]
-                        end_node = self.inverse_nodes[i[1]]  
+                        end_node = self.inverse_nodes[i[1]]
                         bit = self.config_bits[self.connections.index(i)]
-                        print("connection %s: %s -> %s, with bit set %s" % (index, start_node, end_node, bit))                
+                        print("connection %s: %s -> %s, with bit set %s" % (index, start_node, end_node, bit))
         elif wire_type == "DOUBLE":
             if dl not in double_dirs:
                 if self.debug:
                     print("invalid start or end location for the double wire type")
-            else:            
+            else:
                 if port_num >= self.WD:
                     if self.debug:
                         print("invalid port number for the double wire type")
                 else:
                     # does look up
                     try:
-                        idx = self.nodes[dl + str(port_num)]  
+                        idx = self.nodes[dl + str(port_num)]
                     except KeyError as e:
                         print("the port you specified does not exist. exiting")
-                        return 
+                        return
 
                     # gather all tuples
                     match_list = []
@@ -336,19 +334,19 @@ class SB():
                     # inverse transmission
                     for index, i in enumerate(match_list):
                         start_node = self.inverse_nodes[i[0]]
-                        end_node = self.inverse_nodes[i[1]]  
+                        end_node = self.inverse_nodes[i[1]]
                         bit = self.config_bits[self.connections.index(i)]
-                        print("connection %s: %s -> %s, with bit set %s" % (index, start_node, end_node, bit))                     
+                        print("connection %s: %s -> %s, with bit set %s" % (index, start_node, end_node, bit))
         else:
             if self.debug:
-                print("invalid wire type")            
+                print("invalid wire type")
 
     # generate bitstream for the entire fabric
     def output_bitstream(self):
-        res = "00"
+        res = ""
         for i in self.config_bits:
             res += i
-        return res
+        return "00" + res[::-1]
 
 # a = SB("sb1", 4, 8, True)
 # # # print(a.output_bitstream())
