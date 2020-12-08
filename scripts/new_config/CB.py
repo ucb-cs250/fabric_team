@@ -2,12 +2,13 @@
 class CB():
 
     # init
-    def __init__(self, name, WS=4, WD=8, WG=0, CLBIN=10, 
+    def __init__(self, name, WS=4, WD=8, WG=0, CLBIN=10,
                  CLBOUT=5, CARRY=1, CLBOS=4, CLBOS_BIAS=0,
                  CLBOD=4, CLBOD_BIAS=0, CLBX=1, debug=False):
         self.name = name
         self.debug = debug
         self.WS = WS
+        self.WD = WD
         self.CLBOS = CLBOS
         self.switch_per_in = WS + WD + WG + CLBX * CLBOUT
         self.switch_per_out = CLBOS + CLBOD
@@ -28,79 +29,86 @@ class CB():
         # single wires
         if cmd == "CB_SINGLE0_TO_CLB0_IN":
             if self.config_bits[self.switch_per_in * n + m] == "1":
-                if self.debug:
-                    print("warning: this bit has already been set")
+                assert False, "warning: this bit has already been set"
             else:
                 self.config_bits[self.switch_per_in * n + m] = "1"
                 if self.debug:
                     print("CB bit %d has been set to 1" % (self.switch_per_in * n + m))
         elif cmd == "CLB0_OUT_TO_CB_SINGLE0":
             if self.config_bits[self.cb_offset0 + self.switch_per_out * m + n] == "1":
-                if self.debug:
-                    print("warning: this bit has already been set")
-            else:            
+                assert False, "warning: this bit has already been set"
+            else:
                 self.config_bits[self.cb_offset0 + self.switch_per_out * m + n] = "1"
                 if self.debug:
                     print("CB bit %d has been set to 1" % (self.cb_offset0 + self.switch_per_out * m + n))
         elif cmd == "CB_SINGLE0_TO_CLB1_IN":
             if self.config_bits[self.cb_offset1 + self.switch_per_in * n + m] == "1":
-                if self.debug:
-                    print("warning: this bit has already been set")
-            else:            
+                assert False, "warning: this bit has already been set"
+            else:
                 self.config_bits[self.cb_offset1 + self.switch_per_in * n + m] = "1"
                 if self.debug:
-                    print("CB bit %d has been set to 1" % (self.cb_offset1 + self.switch_per_in * n + m))   
+                    print("CB bit %d has been set to 1" % (self.cb_offset1 + self.switch_per_in * n + m))
         elif cmd == "CLB1_OUT_TO_CB_SINGLE0":
             if self.config_bits[self.cb_offset2 + self.switch_per_out * m + n] == "1":
-                if self.debug:
-                    print("warning: this bit has already been set")
-            else:              
+                assert False, "warning: this bit has already been set"
+            else:
                 self.config_bits[self.cb_offset2 + self.switch_per_out * m + n] = "1"
                 if self.debug:
-                    print("CB bit %d has been set to 1" % (self.cb_offset2 + self.switch_per_out * m + n))  
+                    print("CB bit %d has been set to 1" % (self.cb_offset2 + self.switch_per_out * m + n))
         # double wires
         elif cmd == "CB_DOUBLE0_TO_CLB0_IN":
             if self.config_bits[self.switch_per_in * n + self.WS + m] == "1":
-                if self.debug:
-                    print("warning: this bit has already been set")
-            else:            
+                assert False, "warning: this bit has already been set"
+            else:
                 self.config_bits[self.switch_per_in * n + self.WS + m] = "1"
                 if self.debug:
-                    print("CB bit %d has been set to 1" % (self.switch_per_in * n + self.WS + m)) 
+                    print("CB bit %d has been set to 1" % (self.switch_per_in * n + self.WS + m))
         elif cmd == "CLB0_OUT_TO_CB_DOUBLE0":
+            assert n < int(self.WD / 2), "CLB output can only access to the first half of the double wires!"
             if self.config_bits[self.cb_offset0 + self.switch_per_out * m + self.CLBOS + n] == "1":
-                if self.debug:
-                    print("warning: this bit has already been set")
-            else:  
+                assert False, "warning: this bit has already been set"
+            else:
                 self.config_bits[self.cb_offset0 + self.switch_per_out * m + self.CLBOS + n] = "1"
                 if self.debug:
-                    print("CB bit %d has been set to 1" % (self.cb_offset0 + self.switch_per_out * m + self.CLBOS + n))         
+                    print("CB bit %d has been set to 1" % (self.cb_offset0 + self.switch_per_out * m + self.CLBOS + n))
         elif cmd == "CB_DOUBLE0_TO_CLB1_IN":
             if self.config_bits[self.cb_offset1 + self.switch_per_in * n + self.WS + m] == "1":
-                if self.debug:
-                    print("warning: this bit has already been set")
-            else:               
+                assert False, "warning: this bit has already been set"
+            else:
                 self.config_bits[self.cb_offset1 + self.switch_per_in * n + self.WS + m] = "1"
                 if self.debug:
-                    print("CB bit %d has been set to 1" % (self.cb_offset1 + self.switch_per_in * n + self.WS + m))         
+                    print("CB bit %d has been set to 1" % (self.cb_offset1 + self.switch_per_in * n + self.WS + m))
         elif cmd == "CLB1_OUT_TO_CB_DOUBLE0":
+            assert n < int(self.WD / 2), "CLB output can only access to the first half of the double wires!"
             if self.config_bits[self.cb_offset2 + self.switch_per_out * m + self.CLBOS + n] == "1":
-                if self.debug:
-                    print("warning: this bit has already been set")
-            else:              
+                assert False, "warning: this bit has already been set"
+            else:
                 self.config_bits[self.cb_offset2 + self.switch_per_out * m + self.CLBOS + n] = "1"
                 if self.debug:
-                    print("CB bit %d has been set to 1" % (self.cb_offset2 + self.switch_per_out * m + self.CLBOS + n)) 
+                    print("CB bit %d has been set to 1" % (self.cb_offset2 + self.switch_per_out * m + self.CLBOS + n))
+        elif cmd == "CLB1_OUT_TO_CLB0_IN":
+            if self.config_bits[self.switch_per_in * n + self.WS + self.WD + m] == "1":
+                assert False, "warning: this bit has already been set"
+            else:
+                self.config_bits[self.switch_per_in * n + self.WS + self.WD + m] = "1"
+                if self.debug:
+                    print("CB bit %d has been set to 1" % (self.switch_per_in * n + self.WS + self.WD + m))
+        elif cmd == "CLB0_OUT_TO_CLB1_IN":
+            if self.config_bits[self.cb_offset1 + self.switch_per_in * n + self.WS + self.WD + m] == "1":
+                assert False, "warning: this bit has already been set"
+            else:
+                self.config_bits[self.cb_offset1 + self.switch_per_in * n + self.WS + self.WD + m] = "1"
+                if self.debug:
+                    print("CB bit %d has been set to 1" % (self.cb_offset1 + self.switch_per_in * n + self.WS + self.WD + m))
         else:
-            if self.debug:
-                print("invalid cmd for CB")       
+            assert False, "invalid cmd for CB"
 
     # generate bitstream for the entire fabric
     def output_bitstream(self):
-        res = "00"
+        res = ""
         for i in self.config_bits:
             res += i
-        return res
+        return "00" + res[::-1]
 
 
 #a = CB("cb_east", debug=True)
@@ -108,5 +116,3 @@ class CB():
 #a.set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 2)
 #a.set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 2)
 #print(a.output_bitstream())
-
-    
