@@ -39,11 +39,11 @@ class Fabric():
         # return a particular CB in north direction
         return self.clb_tile_array[row * self.num_cols + col].cb_north  
 
-    def dump_reg_state(self):
+    def dump_reg_states(self):
         result = ""
         for col in range(self.num_cols):
             for row in range(self.num_rows):
-                result += self.clb_tile_array[row * self.num_cols + col].slicel.dump_reg_state()
+                result += self.clb_tile_array[row * self.num_cols + col].slicel.dump_reg_states()
         return result
 
     # generate bitstream for the entire fabric, from 00, 01, 02, ..., 0y, then 10, 11, ..., 1y, then, ..., x0, x1, ..., xy

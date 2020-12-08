@@ -14,8 +14,8 @@ IX_NATE_PATH  = ix_nate
 
 INCS = src+$(MAC_PATH)/src
 
-GOLD_REGSTATE=scripts/new_config/regstate.txt
-BITSTREAM_FILE=scripts/new_config/bitstream.txt
+REG_STATES_FILE=reg_states.txt
+BITSTREAM_FILE=bitstream.txt
 GEN_SCRIPT=scripts/new_config/main.py
 
 SRCS = $(CLB_PATH)/src/behavioral/lut.v \
@@ -87,7 +87,7 @@ $(BITSTREAM_FILE): $(GEN_SCRIPT)
 	python $(GEN_SCRIPT)
 
 sim: $(SIMV) $(BITSTREAM_FILE)
-	$(SIMV) -q +ntb_random_seed_automatic +load_config=$(BITSTREAM_FILE) +gold_regstate=$(GOLD_REGSTATE)
+	$(SIMV) -q +ntb_random_seed_automatic +load_config=$(BITSTREAM_FILE) +load_reg_states=$(REG_STATES_FILE)
 
 clean:
-	rm -rf *simv* csrc ucli.key *.vcd
+	rm -rf *simv* csrc ucli.key *.vcd $(BITSTREAM_FILE) $(REG_STATES_FILE)

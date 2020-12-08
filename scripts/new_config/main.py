@@ -163,16 +163,15 @@ def main():
 #    fpga250.get_cb_north(0, 0).set_pip("CB_DOUBLE0_TO_CLB0_IN", 3, 3)
 
     bitstream = fpga250.output_column_wise_bitstream()
-    regstate  = fpga250.dump_reg_state()
+    reg_states  = fpga250.dump_reg_states()
 
     bitstream_file = open("bitstream.txt", "a")
     bitstream_file.write(bitstream)
-    regstate_file = open("regstate.txt", "a")
-    regstate_file.write(regstate)
+    reg_states_file = open("reg_states.txt", "a")
+    reg_states_file.write(reg_states)
 
     bitstream_file.close()
-    regstate_file.close()
-
+    reg_states_file.close()
 
 if __name__ == '__main__':
 		main()

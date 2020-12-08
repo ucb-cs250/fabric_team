@@ -117,7 +117,7 @@ class SliceL():
             if self.debug:
                 print("the lut you specified does not belong to this slicel")
 
-    def dump_reg_state(self):
+    def dump_reg_states(self):
         return self.reg_state
 
     # generate bitstream for this slicel
