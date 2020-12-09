@@ -1,6 +1,6 @@
 
 ### Examples
-# make sim test=sim/clb_with_config_test.v
+# make sim test=testbench/clb_with_config_test.v
 # make sim test=ix_yukio/testbench/clb_switch_box_tb.v
 
 VCS = vcs
@@ -14,7 +14,8 @@ IX_NATE_PATH  = ix_nate
 
 INCS = src+$(MAC_PATH)/src
 
-REG_STATES_FILE=reg_states.txt
+COMB_OUTPUT_FILE=comb_output.txt
+SYNC_OUTPUT_FILE=sync_output.txt
 BITSTREAM_FILE=bitstream.txt
 GEN_SCRIPT=scripts/new_config/main.py
 
@@ -44,24 +45,6 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        src/baked/baked_connection_block_north.v \
        src/clb_tile.v \
        src/fpga.v \
-#       $(SRAM_PATH)/src/behavioral/unit_sram.v \
-#       $(SRAM_PATH)/src/behavioral/unit_sram_reduced.v \
-#       src/consts.vh \
-#       src/fpga_clb_tiles.v 
-#       $(MAC_PATH)/src/multiply.v \
-#       $(MAC_PATH)/src/accumulate.v \
-#       $(MAC_PATH)/src/mac_mul_block_0.v \
-#       $(MAC_PATH)/src/mac_mul_block_1.v \
-#       $(MAC_PATH)/src/mac_mul_block_2.v \
-#       $(MAC_PATH)/src/mac_mul_block_3.v \
-#       $(MAC_PATH)/src/mac_cluster.v \
-#       $(MAC_PATH)/src/mac_combiner_block.v \
-#       $(MAC_PATH)/src/mac_acc_block.v \
-#       $(MAC_PATH)/src/mac_mul_negator_block.v \
-#       $(MAC_PATH)/src/mac_acc_negator_block.v \
-#       $(MAC_PATH)/arithmetic_cells/src/n_bit_adder.v\
-#       $(MAC_PATH)/arithmetic_cells/src/n_bit_array_multiplier.v\
-
 
 OPTS = -notice \
        -PP \
@@ -87,7 +70,7 @@ $(BITSTREAM_FILE): $(GEN_SCRIPT)
 	python $(GEN_SCRIPT)
 
 sim: $(SIMV) $(BITSTREAM_FILE)
-	$(SIMV) -q +ntb_random_seed_automatic +load_config=$(BITSTREAM_FILE) +load_reg_states=$(REG_STATES_FILE)
+	$(SIMV) -q +ntb_random_seed_automatic +load_config=$(BITSTREAM_FILE) +load_sync_output=$(SYNC_OUTPUT_FILE) +load_comb_output=$(COMB_OUTPUT_FILE)
 
 clean:
-	rm -rf *simv* csrc ucli.key *.vcd $(BITSTREAM_FILE) $(REG_STATES_FILE)
+	rm -rf *simv* csrc ucli.key *.vcd $(BITSTREAM_FILE) $(SYNC_OUTPUT_FILE)
