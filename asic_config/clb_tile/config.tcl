@@ -69,9 +69,12 @@ if {$use_debug_products} {
   set sb_gds $gds_root/baked_clb_switch_box/baked_clb_switch_box.gds
 }
 
-# Experimental Tristates
+# Additional mapping.
 set ::env(TRISTATE_BUFFER_MAP) $src_root/src/tbuf_map.v
 set ::env(SYNTH_MUX_MAP) $src_root/src/mux_map.v
+
+# Requires open_pdks at tag:mpw-one-a
+set ::env(SYNTH_LATCH_MAP) $::env(PDK_ROOT)/open_pdks/sky130/openlane/$::env(PDK_VARIANT)/latch_map.v
 
 # Verilog files for top level RTL connections. Do not include black boxes!
 set ::env(VERILOG_FILES) [concat \
@@ -90,8 +93,6 @@ set ::env(VERILOG_FILES) [concat \
   $nate_src/transmission_gate/std/transmission_gate_cell.v \
   [glob $config_src/*.v] \
 ]
-
-set ::env(TRISTATE_BUFFER_MAP) $src_root/src/tbuf_map.v
 
 set ::env(EXTRA_LEFS) [list $slicel_lef $nate_lef ]; #$cb_n_lef $cb_e_lef $sb_lef]
 set ::env(EXTRA_GDS_FILES) [list $slicel_gds $nate_gds ]; # $cb_n_gds $cb_e_gds $sb_gds]
