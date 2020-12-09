@@ -1,0 +1,960 @@
+VERSION 5.7 ;
+  NOWIREEXTENSIONATPIN ON ;
+  DIVIDERCHAR "/" ;
+  BUSBITCHARS "[]" ;
+MACRO wishbone_configuratorinator
+  CLASS BLOCK ;
+  FOREIGN wishbone_configuratorinator ;
+  ORIGIN -0.005 0.000 ;
+  SIZE 334.745 BY 103.410 ;
+  PIN cen
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 316.970 0.000 317.250 4.000 ;
+    END
+  END cen
+  PIN set_out[0]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 167.010 0.000 167.290 4.000 ;
+    END
+  END set_out[0]
+  PIN set_out[1]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 204.270 0.000 204.550 4.000 ;
+    END
+  END set_out[1]
+  PIN set_out[2]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 241.990 0.000 242.270 4.000 ;
+    END
+  END set_out[2]
+  PIN set_out[3]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 279.250 0.000 279.530 4.000 ;
+    END
+  END set_out[3]
+  PIN shift_out[0]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 17.050 0.000 17.330 4.000 ;
+    END
+  END shift_out[0]
+  PIN shift_out[1]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 54.310 0.000 54.590 4.000 ;
+    END
+  END shift_out[1]
+  PIN shift_out[2]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 92.030 0.000 92.310 4.000 ;
+    END
+  END shift_out[2]
+  PIN shift_out[3]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 129.290 0.000 129.570 4.000 ;
+    END
+  END shift_out[3]
+  PIN wb_clk_i
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 0.030 99.410 0.310 103.410 ;
+    END
+  END wb_clk_i
+  PIN wb_rst_i
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 2.790 99.410 3.070 103.410 ;
+    END
+  END wb_rst_i
+  PIN wbs_ack_o
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 6.010 99.410 6.290 103.410 ;
+    END
+  END wbs_ack_o
+  PIN wbs_addr_i[0]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 9.230 99.410 9.510 103.410 ;
+    END
+  END wbs_addr_i[0]
+  PIN wbs_addr_i[10]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 41.430 99.410 41.710 103.410 ;
+    END
+  END wbs_addr_i[10]
+  PIN wbs_addr_i[11]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 44.190 99.410 44.470 103.410 ;
+    END
+  END wbs_addr_i[11]
+  PIN wbs_addr_i[12]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 47.410 99.410 47.690 103.410 ;
+    END
+  END wbs_addr_i[12]
+  PIN wbs_addr_i[13]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 50.630 99.410 50.910 103.410 ;
+    END
+  END wbs_addr_i[13]
+  PIN wbs_addr_i[14]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 53.850 99.410 54.130 103.410 ;
+    END
+  END wbs_addr_i[14]
+  PIN wbs_addr_i[15]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 57.070 99.410 57.350 103.410 ;
+    END
+  END wbs_addr_i[15]
+  PIN wbs_addr_i[16]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 60.290 99.410 60.570 103.410 ;
+    END
+  END wbs_addr_i[16]
+  PIN wbs_addr_i[17]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 63.510 99.410 63.790 103.410 ;
+    END
+  END wbs_addr_i[17]
+  PIN wbs_addr_i[18]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 66.730 99.410 67.010 103.410 ;
+    END
+  END wbs_addr_i[18]
+  PIN wbs_addr_i[19]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 69.950 99.410 70.230 103.410 ;
+    END
+  END wbs_addr_i[19]
+  PIN wbs_addr_i[1]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 12.450 99.410 12.730 103.410 ;
+    END
+  END wbs_addr_i[1]
+  PIN wbs_addr_i[20]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 73.170 99.410 73.450 103.410 ;
+    END
+  END wbs_addr_i[20]
+  PIN wbs_addr_i[21]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 76.390 99.410 76.670 103.410 ;
+    END
+  END wbs_addr_i[21]
+  PIN wbs_addr_i[22]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 79.610 99.410 79.890 103.410 ;
+    END
+  END wbs_addr_i[22]
+  PIN wbs_addr_i[23]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 82.830 99.410 83.110 103.410 ;
+    END
+  END wbs_addr_i[23]
+  PIN wbs_addr_i[24]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 85.590 99.410 85.870 103.410 ;
+    END
+  END wbs_addr_i[24]
+  PIN wbs_addr_i[25]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 88.810 99.410 89.090 103.410 ;
+    END
+  END wbs_addr_i[25]
+  PIN wbs_addr_i[26]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 92.030 99.410 92.310 103.410 ;
+    END
+  END wbs_addr_i[26]
+  PIN wbs_addr_i[27]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 95.250 99.410 95.530 103.410 ;
+    END
+  END wbs_addr_i[27]
+  PIN wbs_addr_i[28]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 98.470 99.410 98.750 103.410 ;
+    END
+  END wbs_addr_i[28]
+  PIN wbs_addr_i[29]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 101.690 99.410 101.970 103.410 ;
+    END
+  END wbs_addr_i[29]
+  PIN wbs_addr_i[2]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 15.670 99.410 15.950 103.410 ;
+    END
+  END wbs_addr_i[2]
+  PIN wbs_addr_i[30]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 104.910 99.410 105.190 103.410 ;
+    END
+  END wbs_addr_i[30]
+  PIN wbs_addr_i[31]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 108.130 99.410 108.410 103.410 ;
+    END
+  END wbs_addr_i[31]
+  PIN wbs_addr_i[3]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 18.890 99.410 19.170 103.410 ;
+    END
+  END wbs_addr_i[3]
+  PIN wbs_addr_i[4]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 22.110 99.410 22.390 103.410 ;
+    END
+  END wbs_addr_i[4]
+  PIN wbs_addr_i[5]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 25.330 99.410 25.610 103.410 ;
+    END
+  END wbs_addr_i[5]
+  PIN wbs_addr_i[6]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 28.550 99.410 28.830 103.410 ;
+    END
+  END wbs_addr_i[6]
+  PIN wbs_addr_i[7]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 31.770 99.410 32.050 103.410 ;
+    END
+  END wbs_addr_i[7]
+  PIN wbs_addr_i[8]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 34.990 99.410 35.270 103.410 ;
+    END
+  END wbs_addr_i[8]
+  PIN wbs_addr_i[9]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 38.210 99.410 38.490 103.410 ;
+    END
+  END wbs_addr_i[9]
+  PIN wbs_cyc_i
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 111.350 99.410 111.630 103.410 ;
+    END
+  END wbs_cyc_i
+  PIN wbs_data_i[0]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 114.570 99.410 114.850 103.410 ;
+    END
+  END wbs_data_i[0]
+  PIN wbs_data_i[10]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 146.310 99.410 146.590 103.410 ;
+    END
+  END wbs_data_i[10]
+  PIN wbs_data_i[11]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 149.530 99.410 149.810 103.410 ;
+    END
+  END wbs_data_i[11]
+  PIN wbs_data_i[12]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 152.750 99.410 153.030 103.410 ;
+    END
+  END wbs_data_i[12]
+  PIN wbs_data_i[13]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 155.970 99.410 156.250 103.410 ;
+    END
+  END wbs_data_i[13]
+  PIN wbs_data_i[14]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 159.190 99.410 159.470 103.410 ;
+    END
+  END wbs_data_i[14]
+  PIN wbs_data_i[15]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 162.410 99.410 162.690 103.410 ;
+    END
+  END wbs_data_i[15]
+  PIN wbs_data_i[16]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 165.630 99.410 165.910 103.410 ;
+    END
+  END wbs_data_i[16]
+  PIN wbs_data_i[17]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 168.850 99.410 169.130 103.410 ;
+    END
+  END wbs_data_i[17]
+  PIN wbs_data_i[18]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 171.610 99.410 171.890 103.410 ;
+    END
+  END wbs_data_i[18]
+  PIN wbs_data_i[19]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 174.830 99.410 175.110 103.410 ;
+    END
+  END wbs_data_i[19]
+  PIN wbs_data_i[1]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 117.790 99.410 118.070 103.410 ;
+    END
+  END wbs_data_i[1]
+  PIN wbs_data_i[20]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 178.050 99.410 178.330 103.410 ;
+    END
+  END wbs_data_i[20]
+  PIN wbs_data_i[21]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 181.270 99.410 181.550 103.410 ;
+    END
+  END wbs_data_i[21]
+  PIN wbs_data_i[22]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 184.490 99.410 184.770 103.410 ;
+    END
+  END wbs_data_i[22]
+  PIN wbs_data_i[23]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 187.710 99.410 187.990 103.410 ;
+    END
+  END wbs_data_i[23]
+  PIN wbs_data_i[24]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 190.930 99.410 191.210 103.410 ;
+    END
+  END wbs_data_i[24]
+  PIN wbs_data_i[25]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 194.150 99.410 194.430 103.410 ;
+    END
+  END wbs_data_i[25]
+  PIN wbs_data_i[26]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 197.370 99.410 197.650 103.410 ;
+    END
+  END wbs_data_i[26]
+  PIN wbs_data_i[27]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 200.590 99.410 200.870 103.410 ;
+    END
+  END wbs_data_i[27]
+  PIN wbs_data_i[28]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 203.810 99.410 204.090 103.410 ;
+    END
+  END wbs_data_i[28]
+  PIN wbs_data_i[29]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 207.030 99.410 207.310 103.410 ;
+    END
+  END wbs_data_i[29]
+  PIN wbs_data_i[2]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 121.010 99.410 121.290 103.410 ;
+    END
+  END wbs_data_i[2]
+  PIN wbs_data_i[30]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 210.250 99.410 210.530 103.410 ;
+    END
+  END wbs_data_i[30]
+  PIN wbs_data_i[31]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 213.010 99.410 213.290 103.410 ;
+    END
+  END wbs_data_i[31]
+  PIN wbs_data_i[3]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 124.230 99.410 124.510 103.410 ;
+    END
+  END wbs_data_i[3]
+  PIN wbs_data_i[4]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 126.990 99.410 127.270 103.410 ;
+    END
+  END wbs_data_i[4]
+  PIN wbs_data_i[5]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 130.210 99.410 130.490 103.410 ;
+    END
+  END wbs_data_i[5]
+  PIN wbs_data_i[6]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 133.430 99.410 133.710 103.410 ;
+    END
+  END wbs_data_i[6]
+  PIN wbs_data_i[7]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 136.650 99.410 136.930 103.410 ;
+    END
+  END wbs_data_i[7]
+  PIN wbs_data_i[8]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 139.870 99.410 140.150 103.410 ;
+    END
+  END wbs_data_i[8]
+  PIN wbs_data_i[9]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 143.090 99.410 143.370 103.410 ;
+    END
+  END wbs_data_i[9]
+  PIN wbs_data_o[0]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 216.230 99.410 216.510 103.410 ;
+    END
+  END wbs_data_o[0]
+  PIN wbs_data_o[10]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 248.430 99.410 248.710 103.410 ;
+    END
+  END wbs_data_o[10]
+  PIN wbs_data_o[11]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 251.650 99.410 251.930 103.410 ;
+    END
+  END wbs_data_o[11]
+  PIN wbs_data_o[12]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 254.410 99.410 254.690 103.410 ;
+    END
+  END wbs_data_o[12]
+  PIN wbs_data_o[13]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 257.630 99.410 257.910 103.410 ;
+    END
+  END wbs_data_o[13]
+  PIN wbs_data_o[14]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 260.850 99.410 261.130 103.410 ;
+    END
+  END wbs_data_o[14]
+  PIN wbs_data_o[15]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 264.070 99.410 264.350 103.410 ;
+    END
+  END wbs_data_o[15]
+  PIN wbs_data_o[16]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 267.290 99.410 267.570 103.410 ;
+    END
+  END wbs_data_o[16]
+  PIN wbs_data_o[17]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 270.510 99.410 270.790 103.410 ;
+    END
+  END wbs_data_o[17]
+  PIN wbs_data_o[18]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 273.730 99.410 274.010 103.410 ;
+    END
+  END wbs_data_o[18]
+  PIN wbs_data_o[19]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 276.950 99.410 277.230 103.410 ;
+    END
+  END wbs_data_o[19]
+  PIN wbs_data_o[1]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 219.450 99.410 219.730 103.410 ;
+    END
+  END wbs_data_o[1]
+  PIN wbs_data_o[20]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 280.170 99.410 280.450 103.410 ;
+    END
+  END wbs_data_o[20]
+  PIN wbs_data_o[21]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 283.390 99.410 283.670 103.410 ;
+    END
+  END wbs_data_o[21]
+  PIN wbs_data_o[22]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 286.610 99.410 286.890 103.410 ;
+    END
+  END wbs_data_o[22]
+  PIN wbs_data_o[23]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 289.830 99.410 290.110 103.410 ;
+    END
+  END wbs_data_o[23]
+  PIN wbs_data_o[24]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 293.050 99.410 293.330 103.410 ;
+    END
+  END wbs_data_o[24]
+  PIN wbs_data_o[25]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 295.810 99.410 296.090 103.410 ;
+    END
+  END wbs_data_o[25]
+  PIN wbs_data_o[26]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 299.030 99.410 299.310 103.410 ;
+    END
+  END wbs_data_o[26]
+  PIN wbs_data_o[27]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 302.250 99.410 302.530 103.410 ;
+    END
+  END wbs_data_o[27]
+  PIN wbs_data_o[28]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 305.470 99.410 305.750 103.410 ;
+    END
+  END wbs_data_o[28]
+  PIN wbs_data_o[29]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 308.690 99.410 308.970 103.410 ;
+    END
+  END wbs_data_o[29]
+  PIN wbs_data_o[2]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 222.670 99.410 222.950 103.410 ;
+    END
+  END wbs_data_o[2]
+  PIN wbs_data_o[30]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 311.910 99.410 312.190 103.410 ;
+    END
+  END wbs_data_o[30]
+  PIN wbs_data_o[31]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 315.130 99.410 315.410 103.410 ;
+    END
+  END wbs_data_o[31]
+  PIN wbs_data_o[3]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 225.890 99.410 226.170 103.410 ;
+    END
+  END wbs_data_o[3]
+  PIN wbs_data_o[4]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 229.110 99.410 229.390 103.410 ;
+    END
+  END wbs_data_o[4]
+  PIN wbs_data_o[5]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 232.330 99.410 232.610 103.410 ;
+    END
+  END wbs_data_o[5]
+  PIN wbs_data_o[6]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 235.550 99.410 235.830 103.410 ;
+    END
+  END wbs_data_o[6]
+  PIN wbs_data_o[7]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 238.770 99.410 239.050 103.410 ;
+    END
+  END wbs_data_o[7]
+  PIN wbs_data_o[8]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 241.990 99.410 242.270 103.410 ;
+    END
+  END wbs_data_o[8]
+  PIN wbs_data_o[9]
+    DIRECTION OUTPUT TRISTATE ;
+    PORT
+      LAYER met2 ;
+        RECT 245.210 99.410 245.490 103.410 ;
+    END
+  END wbs_data_o[9]
+  PIN wbs_sel_i[0]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 318.350 99.410 318.630 103.410 ;
+    END
+  END wbs_sel_i[0]
+  PIN wbs_sel_i[1]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 321.570 99.410 321.850 103.410 ;
+    END
+  END wbs_sel_i[1]
+  PIN wbs_sel_i[2]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 324.790 99.410 325.070 103.410 ;
+    END
+  END wbs_sel_i[2]
+  PIN wbs_sel_i[3]
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 328.010 99.410 328.290 103.410 ;
+    END
+  END wbs_sel_i[3]
+  PIN wbs_stb_i
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 331.230 99.410 331.510 103.410 ;
+    END
+  END wbs_stb_i
+  PIN wbs_we_i
+    DIRECTION INPUT ;
+    PORT
+      LAYER met2 ;
+        RECT 334.450 99.410 334.730 103.410 ;
+    END
+  END wbs_we_i
+  PIN VPWR
+    DIRECTION INPUT ;
+    USE POWER ;
+    PORT
+      LAYER met4 ;
+        RECT 57.635 10.640 59.235 92.720 ;
+    END
+  END VPWR
+  PIN VGND
+    DIRECTION INPUT ;
+    USE GROUND ;
+    PORT
+      LAYER met4 ;
+        RECT 111.995 10.640 113.595 92.720 ;
+    END
+  END VGND
+  OBS
+      LAYER li1 ;
+        RECT 4.080 10.795 330.220 92.565 ;
+      LAYER met1 ;
+        RECT 2.770 6.840 334.750 93.460 ;
+      LAYER met2 ;
+        RECT 0.590 99.130 2.510 99.410 ;
+        RECT 3.350 99.130 5.730 99.410 ;
+        RECT 6.570 99.130 8.950 99.410 ;
+        RECT 9.790 99.130 12.170 99.410 ;
+        RECT 13.010 99.130 15.390 99.410 ;
+        RECT 16.230 99.130 18.610 99.410 ;
+        RECT 19.450 99.130 21.830 99.410 ;
+        RECT 22.670 99.130 25.050 99.410 ;
+        RECT 25.890 99.130 28.270 99.410 ;
+        RECT 29.110 99.130 31.490 99.410 ;
+        RECT 32.330 99.130 34.710 99.410 ;
+        RECT 35.550 99.130 37.930 99.410 ;
+        RECT 38.770 99.130 41.150 99.410 ;
+        RECT 41.990 99.130 43.910 99.410 ;
+        RECT 44.750 99.130 47.130 99.410 ;
+        RECT 47.970 99.130 50.350 99.410 ;
+        RECT 51.190 99.130 53.570 99.410 ;
+        RECT 54.410 99.130 56.790 99.410 ;
+        RECT 57.630 99.130 60.010 99.410 ;
+        RECT 60.850 99.130 63.230 99.410 ;
+        RECT 64.070 99.130 66.450 99.410 ;
+        RECT 67.290 99.130 69.670 99.410 ;
+        RECT 70.510 99.130 72.890 99.410 ;
+        RECT 73.730 99.130 76.110 99.410 ;
+        RECT 76.950 99.130 79.330 99.410 ;
+        RECT 80.170 99.130 82.550 99.410 ;
+        RECT 83.390 99.130 85.310 99.410 ;
+        RECT 86.150 99.130 88.530 99.410 ;
+        RECT 89.370 99.130 91.750 99.410 ;
+        RECT 92.590 99.130 94.970 99.410 ;
+        RECT 95.810 99.130 98.190 99.410 ;
+        RECT 99.030 99.130 101.410 99.410 ;
+        RECT 102.250 99.130 104.630 99.410 ;
+        RECT 105.470 99.130 107.850 99.410 ;
+        RECT 108.690 99.130 111.070 99.410 ;
+        RECT 111.910 99.130 114.290 99.410 ;
+        RECT 115.130 99.130 117.510 99.410 ;
+        RECT 118.350 99.130 120.730 99.410 ;
+        RECT 121.570 99.130 123.950 99.410 ;
+        RECT 124.790 99.130 126.710 99.410 ;
+        RECT 127.550 99.130 129.930 99.410 ;
+        RECT 130.770 99.130 133.150 99.410 ;
+        RECT 133.990 99.130 136.370 99.410 ;
+        RECT 137.210 99.130 139.590 99.410 ;
+        RECT 140.430 99.130 142.810 99.410 ;
+        RECT 143.650 99.130 146.030 99.410 ;
+        RECT 146.870 99.130 149.250 99.410 ;
+        RECT 150.090 99.130 152.470 99.410 ;
+        RECT 153.310 99.130 155.690 99.410 ;
+        RECT 156.530 99.130 158.910 99.410 ;
+        RECT 159.750 99.130 162.130 99.410 ;
+        RECT 162.970 99.130 165.350 99.410 ;
+        RECT 166.190 99.130 168.570 99.410 ;
+        RECT 169.410 99.130 171.330 99.410 ;
+        RECT 172.170 99.130 174.550 99.410 ;
+        RECT 175.390 99.130 177.770 99.410 ;
+        RECT 178.610 99.130 180.990 99.410 ;
+        RECT 181.830 99.130 184.210 99.410 ;
+        RECT 185.050 99.130 187.430 99.410 ;
+        RECT 188.270 99.130 190.650 99.410 ;
+        RECT 191.490 99.130 193.870 99.410 ;
+        RECT 194.710 99.130 197.090 99.410 ;
+        RECT 197.930 99.130 200.310 99.410 ;
+        RECT 201.150 99.130 203.530 99.410 ;
+        RECT 204.370 99.130 206.750 99.410 ;
+        RECT 207.590 99.130 209.970 99.410 ;
+        RECT 210.810 99.130 212.730 99.410 ;
+        RECT 213.570 99.130 215.950 99.410 ;
+        RECT 216.790 99.130 219.170 99.410 ;
+        RECT 220.010 99.130 222.390 99.410 ;
+        RECT 223.230 99.130 225.610 99.410 ;
+        RECT 226.450 99.130 228.830 99.410 ;
+        RECT 229.670 99.130 232.050 99.410 ;
+        RECT 232.890 99.130 235.270 99.410 ;
+        RECT 236.110 99.130 238.490 99.410 ;
+        RECT 239.330 99.130 241.710 99.410 ;
+        RECT 242.550 99.130 244.930 99.410 ;
+        RECT 245.770 99.130 248.150 99.410 ;
+        RECT 248.990 99.130 251.370 99.410 ;
+        RECT 252.210 99.130 254.130 99.410 ;
+        RECT 254.970 99.130 257.350 99.410 ;
+        RECT 258.190 99.130 260.570 99.410 ;
+        RECT 261.410 99.130 263.790 99.410 ;
+        RECT 264.630 99.130 267.010 99.410 ;
+        RECT 267.850 99.130 270.230 99.410 ;
+        RECT 271.070 99.130 273.450 99.410 ;
+        RECT 274.290 99.130 276.670 99.410 ;
+        RECT 277.510 99.130 279.890 99.410 ;
+        RECT 280.730 99.130 283.110 99.410 ;
+        RECT 283.950 99.130 286.330 99.410 ;
+        RECT 287.170 99.130 289.550 99.410 ;
+        RECT 290.390 99.130 292.770 99.410 ;
+        RECT 293.610 99.130 295.530 99.410 ;
+        RECT 296.370 99.130 298.750 99.410 ;
+        RECT 299.590 99.130 301.970 99.410 ;
+        RECT 302.810 99.130 305.190 99.410 ;
+        RECT 306.030 99.130 308.410 99.410 ;
+        RECT 309.250 99.130 311.630 99.410 ;
+        RECT 312.470 99.130 314.850 99.410 ;
+        RECT 315.690 99.130 318.070 99.410 ;
+        RECT 318.910 99.130 321.290 99.410 ;
+        RECT 322.130 99.130 324.510 99.410 ;
+        RECT 325.350 99.130 327.730 99.410 ;
+        RECT 328.570 99.130 330.950 99.410 ;
+        RECT 331.790 99.130 334.170 99.410 ;
+        RECT 0.030 4.280 334.720 99.130 ;
+        RECT 0.030 4.000 16.770 4.280 ;
+        RECT 17.610 4.000 54.030 4.280 ;
+        RECT 54.870 4.000 91.750 4.280 ;
+        RECT 92.590 4.000 129.010 4.280 ;
+        RECT 129.850 4.000 166.730 4.280 ;
+        RECT 167.570 4.000 203.990 4.280 ;
+        RECT 204.830 4.000 241.710 4.280 ;
+        RECT 242.550 4.000 278.970 4.280 ;
+        RECT 279.810 4.000 316.690 4.280 ;
+        RECT 317.530 4.000 334.720 4.280 ;
+      LAYER met3 ;
+        RECT 0.005 10.715 322.335 92.645 ;
+      LAYER met4 ;
+        RECT 113.995 10.640 288.985 92.720 ;
+  END
+END wishbone_configuratorinator
+END LIBRARY
+
