@@ -41,7 +41,7 @@ if {$use_debug_products} {
   set wb_runs $design_root/250/config_team/asic_config/wishbone_configuratorinator
   set wb_run {debug}
   set wb_lef $wb_runs/runs/$wb_run/results/magic/wishbone_configuratorinator.lef
-  set wb_gds $wb_runs/runs/$wb_run/results/magic/wishbone_configuratorinator.lef
+  set wb_gds $wb_runs/runs/$wb_run/results/magic/wishbone_configuratorinator.gds
 } else {
   set gds_root $src_root/gds
 

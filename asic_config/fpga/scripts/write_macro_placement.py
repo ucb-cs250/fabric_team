@@ -4,9 +4,9 @@ FILE_NAME = 'macro_placement.cfg'
 
 MX=3
 MY=4
-LX_LY=(100, 100)
-CLB_DIMENSIONS=(800, 800)
-BUFFER=(100, 100)
+LX_LY=(250, 300)
+CLB_DIMENSIONS=(800, 750)
+BUFFER=(100, 75)
 INST_NAME='X\[{x}\].Y\[{y}\].clb'
 
 PLACEMENTS = []
@@ -21,7 +21,7 @@ for x in range(MX):
         ly = LX_LY[1] + y * (CLB_DIMENSIONS[1] + BUFFER[1])
         add_placement(name, lx, ly)
 
-add_placement('wishbonatron', 2700, 100)
+add_placement('wishbonatron', 1300, 75)
 
 with open(FILE_NAME, 'w') as f:
     for placement in PLACEMENTS:
