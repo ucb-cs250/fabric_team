@@ -57,7 +57,7 @@ if {$use_debug_products} {
 
   # wishbone client
   set wb_lef $gds_root/wishbone_configuratorinator/wishbone_configuratorinator.lef
-  set wb_gds $gds_root/wishbone_configuratorinator/wishbone_configuratorinator.lef
+  set wb_gds $gds_root/wishbone_configuratorinator/wishbone_configuratorinator.gds
 }
 
 # Verilog files for top level RTL connections. Do not include black boxes!
