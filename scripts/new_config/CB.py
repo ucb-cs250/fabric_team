@@ -103,6 +103,11 @@ class CB():
         else:
             assert False, "invalid cmd for CB"
 
+    # reset
+    def reset(self):
+        for i in range(0, self.config_width):
+            self.config_bits[i] = "0"
+
     # generate bitstream for the entire fabric
     def output_bitstream(self):
         res = ""

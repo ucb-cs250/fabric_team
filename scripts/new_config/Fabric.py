@@ -79,6 +79,10 @@ class Fabric():
                 result += stream
         return result
 
+    # reset
+    def reset(self):
+        pass
+
 
 # a = Fabric(2,4,4,8,4,False,True)
 # a.output_column_wise_bitstream()
