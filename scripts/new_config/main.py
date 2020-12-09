@@ -19,6 +19,18 @@ def main():
     fpga250.get_slicel(0, 0).set_reg_init_val("11000001")
     fpga250.get_slicel(0, 0).set_memset_bit("1")
 
+    fpga250.get_slicel(0, 1).set_comb_output("LUT0", "1")
+    fpga250.get_slicel(0, 1).set_comb_output("LUT1", "1")
+    fpga250.get_slicel(0, 1).set_comb_output("LUT4", "1")
+    fpga250.get_slicel(0, 1).set_comb_output("LUT5", "1")
+    fpga250.get_slicel(0, 1).set_comb_output("LUT6", "1")
+    fpga250.get_slicel(0, 1).set_comb_output("LUT7", "1")
+
+    fpga250.get_slicel(1, 0).set_comb_output("LUT0", "1")
+    fpga250.get_slicel(1, 0).set_comb_output("LUT1", "1")
+    fpga250.get_slicel(1, 0).set_comb_output("LUT2", "1")
+    fpga250.get_slicel(1, 0).set_comb_output("LUT3", "1")
+
     fpga250.get_slicel(0, 1).set_lut_config("LUT0", hex_to_bin("8000", 16)) # 4-AND
     fpga250.get_slicel(0, 1).set_lut_config("LUT1", hex_to_bin("8000", 16))
     fpga250.get_slicel(0, 1).set_lut_config("LUT4", hex_to_bin("8000", 16))
@@ -114,15 +126,19 @@ def main():
     fpga250.get_cb_east(1, 0).set_pip("CB_DOUBLE0_TO_CLB0_IN", 4+3, 7)
 
     bitstream = fpga250.output_column_wise_bitstream()
-    reg_states  = fpga250.dump_reg_states()
+    comb_output = fpga250.dump_comb_output()
+    sync_output = fpga250.dump_sync_output()
 
     bitstream_file = open("bitstream.txt", "w")
     bitstream_file.write(bitstream)
-    reg_states_file = open("reg_states.txt", "w")
-    reg_states_file.write(reg_states)
+    comb_output_file = open("comb_output.txt", "w")
+    comb_output_file.write(comb_output)
+    sync_output_file = open("sync_output.txt", "w")
+    sync_output_file.write(sync_output)
 
     bitstream_file.close()
-    reg_states_file.close()
+    comb_output_file.close()
+    sync_output_file.close()
 
 if __name__ == '__main__':
 		main()

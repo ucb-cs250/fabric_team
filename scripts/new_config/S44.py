@@ -8,7 +8,7 @@ class S44():
         self.MSB_lut_name = MSB_lut_name
         self.LSB_lut_name = LSB_lut_name
         self.debug = debug
-        
+
         # default config values
         self.split = "0"
         self.MSB_lut = "0" * int((self.cfg_size - 1) / 2)
@@ -22,9 +22,9 @@ class S44():
             if self.debug:
                 print("MSB lut config success")
         elif name == self.LSB_lut_name:
-            self.LSB_lut = config_in  
+            self.LSB_lut = config_in
             if self.debug:
-                print("LSB lut config success")         
+                print("LSB lut config success")
         else:
             if self.debug:
                 print("the lut you specified does not belong to this S44")

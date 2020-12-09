@@ -31,7 +31,6 @@ module fpga_test_harness();
   localparam CLBOUT_EACH_SIDE = 5;
   localparam CLBOS = 4;
   localparam CLBOD = 4;
- 
 
   wire [IO_NORTH-1:0] gpio_north;
   wire [IO_SOUTH-1:0] gpio_south;
@@ -114,15 +113,21 @@ module fpga_test_harness();
   localparam COL_BITS  = `CLB_TILE_BITSTREAM_SIZE * MY;
   localparam FPGA_BITS = COL_BITS * MX;
   reg [FPGA_BITS-1:0] bitstream[1];
-  reg [8*MX*MY-1:0]   gold_reg_states[1];
+  reg [8*MX*MY-1:0]   gold_sync_output[1];
+  reg [8*MX*MY-1:0]   gold_comb_output[1];
 
   reg [1023:0] load_config = 0;
-  reg [1023:0] load_reg_states = 0;
+  reg [1023:0] load_sync_output = 0;
+  reg [1023:0] load_comb_output = 0;
+
   initial begin
-    $value$plusargs("load_config=%s",   load_config);
-    $value$plusargs("load_reg_states=%s", load_reg_states);
+    $value$plusargs("load_config=%s",      load_config);
+    $value$plusargs("load_sync_output=%s", load_sync_output);
+    $value$plusargs("load_comb_output=%s", load_comb_output);
+
     #1 $readmemb(load_config, bitstream);
-    #1 $readmemb(load_reg_states, gold_reg_states);
+    #1 $readmemb(load_sync_output, gold_sync_output);
+    #1 $readmemb(load_comb_output, gold_comb_output);
   end
 
   wire [COL_BITS-1:0] col_bitstream [MX-1:0];
@@ -134,19 +139,22 @@ module fpga_test_harness();
     end
   endgenerate
 
-  wire [8*MX*MY-1:0] fabric_reg_states;
+  wire [8*MX*MY-1:0] fabric_sync_output;
+  wire [8*MX*MY-1:0] fabric_comb_output;
 
   // Extract the current registers' states from the Fabric
   // They will be compared against the golden registers' states given by a test
   generate
     for (x = 0; x < MX; x = x + 1) begin
       for (y = 0; y < MY; y = y + 1) begin
-        assign fabric_reg_states[x * MY * 8 + y * 8 +: 8] = FPGA.X[MX-1-x].Y[MY-1-y].clb.slice.sync_output;
+        assign fabric_sync_output[x * MY * 8 + y * 8 +: 8] = FPGA.X[MX-1-x].Y[MY-1-y].clb.slice.sync_output;
+        assign fabric_comb_output[x * MY * 8 + y * 8 +: 8] = FPGA.X[MX-1-x].Y[MY-1-y].clb.slice.comb_output;
       end
     end
   endgenerate
 
   reg debug_config = 0;
+  reg failed_tests = 0;
 
   localparam NUM_BYTES = COL_BITS / 8;
   localparam REM_BITS  = COL_BITS - NUM_BYTES * 8;
@@ -178,7 +186,7 @@ module fpga_test_harness();
     for (i = 0; i < NUM_BYTES; i = i + 1) begin
       // sending the bits
       address <= 32'h3000_0002;
-      for (j = 0; j < MX; j = j + 1) begin  
+      for (j = 0; j < MX; j = j + 1) begin
         write_data[j * 8 +: 8] <= col_bitstream[j][i * 8 +: 8];
       end
       we <= 1;
@@ -188,12 +196,14 @@ module fpga_test_harness();
       transact <= 0;
       we <= 0;
       @(negedge ack);
+    repeat(5) @(posedge clk);
+
     end
 
     // Send the remaining bits
     address <= 32'h3000_0001;
     write_data <= {8'hFF, 8'hFF, 8'hFF, 8'hFF};
-    for (i = 0; i < MX; i = i + 1) begin  
+    for (i = 0; i < MX; i = i + 1) begin
       write_data[i * 8 +: 8] <= REM_BITS;
     end
 
@@ -209,7 +219,7 @@ module fpga_test_harness();
 
     // sending the bits
     address <= 32'h3000_0002;
-    for (i = 0; i < MX; i = i + 1) begin  
+    for (i = 0; i < MX; i = i + 1) begin
       write_data[i * 8 +: 8] <= col_bitstream[i][COL_BITS - 1 : NUM_BYTES * 8];
     end
     we <= 1;
@@ -218,7 +228,9 @@ module fpga_test_harness();
     @(posedge ack);
     transact <= 0;
     we <= 0;
-    @(negedge ack);        
+    @(negedge ack);
+
+    repeat(5) @(posedge clk);
 
     $display("Configuration done!");
 
@@ -234,24 +246,39 @@ module fpga_test_harness();
     debug_config = 1'b0;
 `endif
 
-    $display("fabric_reg_states=%b", fabric_reg_states);
-    $display("gold_reg_states=%b",   gold_reg_states[0]);
+    $display("fabric_sync_output=%b", fabric_sync_output);
+    $display("gold_sync_output=%b",   gold_sync_output[0]);
 
-    if (fabric_reg_states === gold_reg_states[0])
-      $display("PASSED!");
-    else
-      $display("FAILED: reg_states mismatch!");
+    $display("fabric_comb_output=%b", fabric_comb_output);
+    $display("gold_comb_output=%b",   gold_comb_output[0]);
+
+    if (fabric_sync_output === gold_sync_output[0])
+      $display("[sync test] PASSED!");
+    else begin
+      $display("[sync test] FAILED: sync_output mismatch!");
+      failed_tests = failed_tests + 1;
+    end
+
+    if (fabric_comb_output === gold_comb_output[0])
+      $display("[comb test] PASSED!");
+    else begin
+      $display("[comb test] FAILED: comb_output mismatch!");
+      failed_tests = failed_tests + 1;
+    end
 
     #100;
     $display("Fabric test done!");
+    if (failed_tests === 0) begin
+      $fatal("failed");
+    end
     $finish;
   end
 
 `ifdef DEBUG_CONFIG
   // Print the config states of all the tiles for debuggging
   generate
-    for (x = 0; x < MX; x = x + 1) begin
-      for (y = 0; y < MY; y = y + 1) begin
+    for (x = 0; x < 2; x = x + 1) begin
+      for (y = 0; y < 1; y = y + 1) begin
         always @(posedge clk) begin
           if (debug_config === 1'b1) begin
 
@@ -293,15 +320,15 @@ module fpga_test_harness();
               x, y,
               FPGA.X[x].Y[y].clb.slice.sliceluroni.sync_out);
 
-            $display("X[%d]Y[%d] cb_east_config_bits = %h",
+            $display("X[%d]Y[%d] cb_east_config_bits = %b",
               x, y,
               FPGA.X[x].Y[y].clb.cb_east.inst.connectaroni.c);
 
-            $display("X[%d]Y[%d] cb_north_config_bits = %h",
+            $display("X[%d]Y[%d] cb_north_config_bits = %b",
               x, y,
               FPGA.X[x].Y[y].clb.cb_north.inst.connectaroni.c);
 
-            $display("X[%d]Y[%d] sb_config_bits = %h",
+            $display("X[%d]Y[%d] sb_config_bits = %b",
               x, y,
               FPGA.X[x].Y[y].clb.sb.switcharoni.c);
           end

@@ -2,7 +2,7 @@ from CLB_tile import *
 
 # the fabric class
 class Fabric():
-    
+
     # init
     def __init__(self, num_rows, num_cols, WS, WD, S_XX_BASE, debug=False, top_level_debug=False):
         self.num_rows = num_rows
@@ -13,7 +13,7 @@ class Fabric():
         self.WS = WS
         self.WD = WD
         self.clb_tile_array = list()
-        
+
         # init every tile and build up the array (flattened)
         for i in range(0, self.num_rows):
             for j in range(0, self.num_cols):
@@ -37,13 +37,20 @@ class Fabric():
     # get the north CB
     def get_cb_north(self, row, col):
         # return a particular CB in north direction
-        return self.clb_tile_array[row * self.num_cols + col].cb_north  
+        return self.clb_tile_array[row * self.num_cols + col].cb_north
 
-    def dump_reg_states(self):
+    def dump_sync_output(self):
         result = ""
         for col in range(self.num_cols):
             for row in range(self.num_rows):
-                result += self.clb_tile_array[row * self.num_cols + col].slicel.dump_reg_states()
+                result += self.clb_tile_array[row * self.num_cols + col].slicel.dump_sync_output()
+        return result
+
+    def dump_comb_output(self):
+        result = ""
+        for col in range(self.num_cols):
+            for row in range(self.num_rows):
+                result += self.clb_tile_array[row * self.num_cols + col].slicel.dump_comb_output()
         return result
 
     # generate bitstream for the entire fabric, from 00, 01, 02, ..., 0y, then 10, 11, ..., 1y, then, ..., x0, x1, ..., xy
