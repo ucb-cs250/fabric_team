@@ -21,6 +21,13 @@ class CLBTile():
     def report_XY(self):
         print("this tile is located on row %d and column %d" % (self.cord_X, self.cord_Y))
 
+    # reset
+    def reset(self):
+        self.cb_east.reset()
+        self.sb.reset()
+        self.cb_north.reset()
+        self.slicel.reset()
+
     # generate bitstream for this clb tile
     def output_bitstream(self):
         return self.slicel.output_bitstream() + self.cb_north.output_bitstream() +\

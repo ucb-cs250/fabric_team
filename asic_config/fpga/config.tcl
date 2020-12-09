@@ -88,7 +88,7 @@ set use_absolute_sizing true
 if { $use_absolute_sizing } {
   puts_info {Using absolute sizing}
   set ::env(FP_SIZING) absolute
-  set ::env(DIE_AREA) "0 0 3100 3800"   ;# This is the limit handed down by efabless.
+  set ::env(DIE_AREA) "0 0 2900 3500"   ;# This is the limit handed down by efabless.
   set ::env(PL_TARGET_DENSITY) 0.006
 
   set ::env(PL_BASIC_PLACEMENT) 0
