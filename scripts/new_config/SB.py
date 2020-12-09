@@ -55,14 +55,14 @@ class SB():
             connections.append((nodes["s"+str(i)], nodes["e"+str(i+1)]))
             connections.append((nodes["s"+str(i+1)], nodes["w"+str(i+1)]))
             connections.append((nodes["n"+str(i+1)], nodes["w"+str(i)]))
+            connections.append((nodes["n"+str(i)], nodes["s"+str(i)]))
+            connections.append((nodes["e"+str(i+1)], nodes["w"+str(i+1)]))
+            connections.append((nodes["n"+str(i+1)], nodes["s"+str(i+1)]))
+            connections.append((nodes["e"+str(i)], nodes["w"+str(i)]))
             connections.append((nodes["n"+str(i+1)], nodes["e"+str(i+1)]))
             connections.append((nodes["s"+str(i+1)], nodes["e"+str(i)]))
             connections.append((nodes["s"+str(i)], nodes["w"+str(i)]))
             connections.append((nodes["n"+str(i)], nodes["w"+str(i+1)]))
-            connections.append((nodes["n"+str(i)], nodes["s"+str(i)]))
-            connections.append((nodes["e"+str(i+1)], nodes["w"+str(i+1)]))
-            connections.append((nodes["n"+str(i+1)], nodes["e"+str(i+1)]))
-            connections.append((nodes["e"+str(i)], nodes["w"+str(i)]))
             config_width += 12
 
         # assuming WS is even
