@@ -19,3 +19,7 @@ cp asic_config/baked_connection_block_north/runs/debug/results/lvs/baked_connect
 cp asic_config/baked_clb_switch_box/runs/debug/results/magic/baked_clb_switch_box.gds gds/baked_clb_switch_box/
 cp asic_config/baked_clb_switch_box/runs/debug/results/magic/baked_clb_switch_box.lef gds/baked_clb_switch_box/
 cp asic_config/baked_clb_switch_box/runs/debug/results/lvs/baked_clb_switch_box.lvs.powered.v cell_netlists/baked_clb_switch_box/
+
+cp config_team/asic_config/wishbone_configuratorinator/runs/debug/results/magic/wishbone_configuratorinator.gds gds/wishbone_configuratorinator/
+cp config_team/asic_config/wishbone_configuratorinator/runs/debug/results/magic/wishbone_configuratorinator.lef gds/wishbone_configuratorinator/
+cp config_team/asic_config/wishbone_configuratorinator/runs/debug/results/lvs/wishbone_configuratorinator.lvs.powered.v cell_netlists/wishbone_configuratorinator/

@@ -113,8 +113,7 @@ wire [MX-1:0] col_cen;
 wire [MX-1:0] col_set[MY:0];
 wire [MX-1:0] col_shift[MY:0];
 
-wire [MY-1:0] carry_in;
-wire [MY-1:0] carry_out;
+wire [MY:0] carry;
 
 genvar x;
 genvar y;
@@ -162,8 +161,8 @@ generate
         .cb_east_in(   dc_ew[  y][x+1]),
         .clb_west_out( dc_ew[  y][x  ]),
 
-        .carry_in(carry_in[y]),
-        .carry_out(carry_out[y]),
+        .carry_in(carry[y+1][x]),
+        .carry_out(carry[y][x]),
 
         .shift_in_hard(col_shift[  y][  x]),
         .set_in_hard(  col_set  [  y][  x]),
@@ -224,14 +223,6 @@ wishbone_configuratorinator #(
   .set_out(wb_set_out),
   .shift_out(wb_shift_out)
 );
-
-generate
-  for (y = 0; y < MY; y = y + 1) begin
-    if (y > 0) begin
-      assign carry_in[y] = carry_out[y-1];
-    end
-  end
-endgenerate
 
 generate
   for (x = 0; x < MX; x = x + 1) begin
