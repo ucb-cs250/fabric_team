@@ -17,7 +17,8 @@ class SliceL():
         self.S44_1 = S44("S44_1", self.S_XX_BASE, "LUT2", "LUT3", self.debug)
         self.S44_0 = S44("S44_0", self.S_XX_BASE, "LUT0", "LUT1", self.debug)
         self.reg_init_val = "0" * 8
-        self.reg_state = "0" * 8
+        self.sync_output = ["0"] * 8
+        self.comb_output = ["x"] * 8
 
     # set the input select bit
     def set_input_select_bit(self, config_in):
@@ -51,7 +52,7 @@ class SliceL():
     def set_reg_init_val(self, config_in):
         assert len(config_in) == 8
         self.reg_init_val = config_in
-        self.reg_state = config_in
+        self.sync_output = [config_bit for config_bit in config_in[::-1]]
         if self.debug:
             print("reg initial value bits config success")
 
@@ -92,7 +93,7 @@ class SliceL():
         elif LUT_name == self.S44_2.MSB_lut_name:
             self.S44_2.set_lut_config(LUT_name, config_in)
             if self.debug:
-                print("set lut config on " + LUT_name + " is successful")        
+                print("set lut config on " + LUT_name + " is successful")
         elif LUT_name == self.S44_2.LSB_lut_name:
             self.S44_2.set_lut_config(LUT_name, config_in)
             if self.debug:
@@ -100,7 +101,7 @@ class SliceL():
         elif LUT_name == self.S44_1.MSB_lut_name:
             self.S44_1.set_lut_config(LUT_name, config_in)
             if self.debug:
-                print("set lut config on " + LUT_name + " is successful")        
+                print("set lut config on " + LUT_name + " is successful")
         elif LUT_name == self.S44_1.LSB_lut_name:
             self.S44_1.set_lut_config(LUT_name, config_in)
             if self.debug:
@@ -108,17 +109,65 @@ class SliceL():
         elif LUT_name == self.S44_0.MSB_lut_name:
             self.S44_0.set_lut_config(LUT_name, config_in)
             if self.debug:
-                print("set lut config on " + LUT_name + " is successful")        
+                print("set lut config on " + LUT_name + " is successful")
         elif LUT_name == self.S44_0.LSB_lut_name:
             self.S44_0.set_lut_config(LUT_name, config_in)
             if self.debug:
-                print("set lut config on " + LUT_name + " is successful")        
+                print("set lut config on " + LUT_name + " is successful")
         else:
             if self.debug:
                 print("the lut you specified does not belong to this slicel")
 
-    def dump_reg_states(self):
-        return self.reg_state
+    def set_sync_output(self, DFF_name, value):
+        if DFF_name == "DFF1":
+            self.sync_output[0] = value
+        elif DFF_name == "DFF0":
+            self.sync_output[1] = value
+        elif DFF_name == "DFF3":
+            self.sync_output[2] = value
+        elif DFF_name == "DFF2":
+            self.sync_output[5] = value
+        elif DFF_name == "DFF5":
+            self.sync_output[4] = value
+        elif DFF_name == "DFF4":
+            self.sync_output[5] = value
+        elif DFF_name == "DFF7":
+            self.sync_output[6] = value
+        elif DFF_name == "DFF6":
+            self.sync_output[7] = value
+        else:
+            assert False, "Unknown DFF name!"
+
+    def set_comb_output(self, instance_name, value):
+        if instance_name == self.S44_0.LSB_lut_name:
+            self.comb_output[0] = value
+        elif instance_name == self.S44_0.MSB_lut_name:
+            self.comb_output[1] = value
+        elif instance_name == self.S44_1.LSB_lut_name:
+            self.comb_output[2] = value
+        elif instance_name == self.S44_1.MSB_lut_name:
+            self.comb_output[3] = value
+        elif instance_name == self.S44_2.LSB_lut_name:
+            self.comb_output[4] = value
+        elif instance_name == self.S44_2.MSB_lut_name:
+            self.comb_output[5] = value
+        elif instance_name == self.S44_3.LSB_lut_name:
+            self.comb_output[6] = value
+        elif instance_name == self.S44_3.MSB_lut_name:
+            self.comb_output[7] = value
+        elif "CARRY4":
+            self.comb_output[0] = value[0]
+            self.comb_output[2] = value[1]
+            self.comb_output[4] = value[2]
+            self.comb_output[6] = value[3]
+        else:
+            assert False, "Unknown instance name!"
+
+    def dump_sync_output(self):
+        return "".join(self.sync_output[::-1])
+
+    def dump_comb_output(self):
+        return "".join(self.comb_output[::-1])
 
     # generate bitstream for this slicel
     def output_bitstream(self):

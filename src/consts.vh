@@ -100,6 +100,10 @@
 // Connect CLB output m to wire single0[n] of Connection Block (from an adjacent tile)
 `define CLB1_OUT_TO_CB_DOUBLE0(m, n) (`CB_OFFSET2 + `SWITCH_PER_OUT * m + `CLBOS + n)
 
+// Connect CLB output m (from an adjacent tile) to CLB input n
+`define CLB1_OUT_TO_CLB0_IN(m, n) (`SWITCH_PER_IN * m + `WS + `WD + n)
+// Connect CLB output m to CLB input (from an adjacent tile)
+`define CLB0_OUT_TO_CLB1_IN(m, n) (`CB_OFFSET1 + `SWITCH_PER_IN * m + `WS + `WD + n)
 
 // Indices of Config bits for Switchbox PIPs
 // Reference: ix_yukio/src/switch_box_element_two.v
