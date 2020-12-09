@@ -113,7 +113,7 @@ wire [MX-1:0] col_cen;
 wire [MX-1:0] col_set[MY:0];
 wire [MX-1:0] col_shift[MY:0];
 
-wire [MY:0] carry;
+wire [MX-1:0] carry[MY:0];
 
 genvar x;
 genvar y;
@@ -155,14 +155,14 @@ generate
         .clb_south_in( dc_sn[  y][  x]),
         .cb_north_out( dc_sn[y+1][  x]),
 
-        .clb_west_in(  dc_we[  y][x  ]),
+        .clb_west_in(  dc_we[  y][  x]),
         .cb_east_out(  dc_we[  y][x+1]),
 
         .cb_east_in(   dc_ew[  y][x+1]),
-        .clb_west_out( dc_ew[  y][x  ]),
+        .clb_west_out( dc_ew[  y][  x]),
 
-        .carry_in(carry[y+1][x]),
-        .carry_out(carry[y][x]),
+        .carry_in(  carry[y+1][  x]),
+        .carry_out( carry[  y][  x]),
 
         .shift_in_hard(col_shift[  y][  x]),
         .set_in_hard(  col_set  [  y][  x]),
