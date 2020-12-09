@@ -4,7 +4,7 @@ FILE_NAME = 'macro_placement.cfg'
 
 MX=3
 MY=4
-LX_LY=(250, 300)
+LX_LY=(250, 250)
 CLB_DIMENSIONS=(800, 750)
 BUFFER=(100, 75)
 INST_NAME='X\[{x}\].Y\[{y}\].clb'
