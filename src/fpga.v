@@ -161,8 +161,8 @@ generate
         .cb_east_in(   dc_ew[  y][x+1]),
         .clb_west_out( dc_ew[  y][  x]),
 
-        .carry_in(  carry[y+1][  x]),
-        .carry_out( carry[  y][  x]),
+        .carry_in(  carry[y ][  x]),
+        .carry_out( carry[+1][  x]),
 
         .shift_in_hard(col_shift[  y][  x]),
         .set_in_hard(  col_set  [  y][  x]),
