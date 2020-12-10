@@ -5,7 +5,7 @@ import subprocess
 
 # the tester class
 class Tester():
-    
+
     # init
     def __init__(self, fabric, cmd_dir):
         self.fabric = fabric
@@ -16,7 +16,7 @@ class Tester():
 
     # create a test
     def create_test(self, test_name, configure_func):
-        # create a replicated fabric 
+        # create a replicated fabric
         test_fabric = Fabric(self.fabric.num_rows, self.fabric.num_cols, self.fabric.WS, self.fabric.WD, self.fabric.S_XX_BASE, self.fabric.debug, self.fabric.top_level_debug)
         # configure the test_fabric
         configure_func(test_fabric)
@@ -28,9 +28,32 @@ class Tester():
         for i in self.test_list:
             storage = list()
             print("running test: %s" % i[0])
-            process = subprocess.Popen(["make", "sim", "test=testbench/fpga_test_harness.v"], stdout=subprocess.PIPE, cwd="../../")
+            bitstream   = i[1].output_column_wise_bitstream()
+            golden_comb_output = i[1].dump_comb_output()
+            golden_sync_output = i[1].dump_sync_output()
+
+            bitstream_file = open("test_files/bitstream.%s.txt" % i[0], "w")
+            bitstream_file.write(bitstream)
+            comb_output_file = open("test_files/comb_output.%s.txt" % i[0], "w")
+            comb_output_file.write(golden_comb_output)
+            sync_output_file = open("test_files/sync_output.%s.txt" % i[0], "w")
+            sync_output_file.write(golden_sync_output)
+
+            bitstream_file.close()
+            comb_output_file.close()
+            sync_output_file.close()
+
+            #process = subprocess.Popen(["make", "sim", "test=testbench/fpga_test_harness.v"], stdout=subprocess.PIPE, cwd="../../")
+            process = subprocess.Popen([
+              "./fpga_test_harness.simv",
+              "-q",
+              "+ntb_random_seed_automatic",
+              "+load_config=test_files/bitstream.%s.txt" % i[0],
+              "+load_sync_output=test_files/sync_output.%s.txt" % i[0],
+              "+load_comb_output=test_files/comb_output.%s.txt" % i[0]], stdout=subprocess.PIPE, cwd="./")
+
             process.wait()
-            
+
             # gather results
             for line in process.stdout:
                 storage.append(line.decode('utf-8'))
@@ -45,6 +68,11 @@ class Tester():
                 comb_flag = False
 
                 for line in storage:
+                    if line.startswith("fabric_comb_output="):
+                        fabric_comb_output = line.strip('\n').split('=')[-1]
+                    if line.startswith("fabric_sync_output="):
+                        fabric_sync_output = line.strip('\n').split('=')[-1]
+
                     if line.startswith("[sync test]"):
                         sync_flag = True
                         # check result for sycn
@@ -77,12 +105,14 @@ class Tester():
                     comb_result = "comb failed"
 
                 # update the result_list
-                self.result_list.append((i[0], sync_result, sync_reason, comb_result, comb_reason))
+                self.result_list.append((i[0], sync_result, sync_reason, comb_result, comb_reason, fabric_sync_output, fabric_comb_output, golden_sync_output, golden_comb_output))
         print("run complete")
         print()
 
     # report
     def report(self):
+        total_tests = 2 * len(self.result_list)
+        num_failed_tests = 0
         print("generating report for the below test cases:")
         for i in self.result_list:
             test_name = i[0]
@@ -90,16 +120,26 @@ class Tester():
             sync_reason = i[2]
             comb_result = i[3]
             comb_reason = i[4]
+            fabric_sync_output = i[5]
+            fabric_comb_output = i[6]
+            golden_sync_output = i[7]
+            golden_comb_output = i[8]
             print("    test name: %s" % test_name)
             print("      %s" % sync_result)
             if sync_result == "sync failed":
+                num_failed_tests += 1
                 print("      fail reason: %s" % sync_reason)
+                print("fabric_sync_output %s" % fabric_sync_output)
+                print("golden_sync_output %s" % golden_sync_output)
             print("      %s" % comb_result)
             if comb_result == "comb failed":
+                num_failed_tests += 1
                 print("      fail reason: %s" % comb_reason)
+                print("fabric_comb_output %s" % fabric_comb_output)
+                print("golden_comb_output %s" % golden_comb_output)
             print()
 
-        print("report complete")
+        print("report complete. Passed %d/%d" % (total_tests - num_failed_tests, total_tests))
 
 
 # configuration function
@@ -125,7 +165,7 @@ if __name__ == "__main__":
     # specify the cmd dir
     cmd_dir = "/home/cc/eecs151/fa20/class/eecs151-abp/250/fabric_team"
 
-    # construct a fabric 
+    # construct a fabric
     MX = 1
     MY = 1
     WS = 4
@@ -144,7 +184,7 @@ if __name__ == "__main__":
     # run all tests
     tester.run()
 
-    # verify the results 
+    # verify the results
     tester.report()
 
 
