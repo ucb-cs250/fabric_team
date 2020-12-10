@@ -2,10 +2,10 @@ module fpga #(
   parameter MX = 3,
   parameter MY = 4,
   // There are 38 IO pins in Caravel, so we distribute them around the chip.
-  parameter IO_NORTH = 10,
-  parameter IO_SOUTH = 8,
-  parameter IO_EAST = 10,
-  parameter IO_WEST = 10,
+  parameter IO_NORTH = 10,  // Actually 9
+  parameter IO_SOUTH = 8,   // Actually 0
+  parameter IO_EAST = 10,   // Actually 15
+  parameter IO_WEST = 10,   // Actually 14
 
   // SRAM
 
