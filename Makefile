@@ -3,7 +3,7 @@
 # make sim test=testbench/clb_with_config_test.v
 # make sim test=ix_yukio/testbench/clb_switch_box_tb.v
 
-VCS = vcs
+VCS = vcs -full64
 
 CLB_PATH      = clb_team
 CFG_PATH      = config_team
@@ -60,9 +60,8 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        +error+100 \
        -timescale=1ns/1ps
 
-OPTS = +lint=all,noVCDE,noONGS,noUI \
+OPTS = +lint=all \
        -sverilog \
-       +error+100 \
        -timescale=1ns/1ps
 
 test = path_to_a_test_bench_file
