@@ -47,7 +47,7 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        src/clb_tile.v \
        src/fpga.v \
 
-OPTS = -notice \
+#OPTS = -notice \
        -PP \
        -line \
        +lint=all,noVCDE,noONGS,noUI \
@@ -56,6 +56,11 @@ OPTS = -notice \
        +vcs+lic+wait \
        +rad \
        -quiet \
+       -sverilog \
+       +error+100 \
+       -timescale=1ns/1ps
+
+OPTS = +lint=all,noVCDE,noONGS,noUI \
        -sverilog \
        +error+100 \
        -timescale=1ns/1ps
