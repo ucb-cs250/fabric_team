@@ -494,6 +494,78 @@ def test10(fpga250):
     # Set the expected outputs
     fpga250.get_slicel(2, 2).set_comb_output("CARRY", "0111")
 
+def test11(fpga250):
+    description = '''
+      Drive GPIO_NORTH[2:0] to 1 using DFF1(3, 0)
+      Drive GPIO_SOUTH[2:0] to 1 using DFF1(0, 0)
+      Drive GPIO_EAST[3:0] to 1 using DFF1(0, 2)
+      Drive GPIO_WEST[3:0] to 1 using DFF1(0, 0)
+    '''
+
+    fpga250.get_slicel(0, 0).set_reg_init_val("00000001")
+    fpga250.get_slicel(0, 0).set_memset_bit("1")
+
+    fpga250.get_slicel(3, 0).set_reg_init_val("00000001")
+    fpga250.get_slicel(3, 0).set_memset_bit("1")
+
+    fpga250.get_slicel(0, 2).set_reg_init_val("00000001")
+    fpga250.get_slicel(0, 2).set_memset_bit("1")
+
+    # GPIO_NORTH[0]
+    fpga250.get_cb_east(3, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 0)
+    fpga250.get_sb(3, 0).set_pip("SINGLE", "S", 0, "N", 0)
+
+    # GPIO_NORTH[1]
+    fpga250.get_sb(3, 0).set_pip("SINGLE", "S", 0, "E", 1)
+    fpga250.get_sb(3, 1).set_pip("SINGLE", "W", 1, "N", 0)
+
+    # GPIO_NORTH[2]
+    fpga250.get_sb(3, 1).set_pip("SINGLE", "W", 1, "E", 1)
+    fpga250.get_sb(3, 2).set_pip("SINGLE", "W", 1, "N", 0)
+
+    # GPIO_SOUTH[0]
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 0)
+
+    # GPIO_SOUTH[1]
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 1)
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "S", 1, "E", 0)
+    fpga250.get_sb(0, 1).set_pip("SINGLE", "W", 0, "S", 0)
+
+    # GPIO_SOUTH[2]
+    fpga250.get_sb(0, 1).set_pip("SINGLE", "W", 0, "E", 0)
+    fpga250.get_sb(0, 2).set_pip("SINGLE", "W", 0, "S", 0)
+
+    # GPIO_EAST[0]
+    fpga250.get_cb_east(0, 2).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 1)
+    fpga250.get_sb(0, 2).set_pip("SINGLE", "S", 1, "E", 0)
+
+    # GPIO_EAST[1]
+    fpga250.get_sb(0, 2).set_pip("SINGLE", "S", 1, "N", 1)
+    fpga250.get_sb(1, 2).set_pip("SINGLE", "S", 1, "E", 0)
+
+    # GPIO_EAST[2]
+    fpga250.get_sb(1, 2).set_pip("SINGLE", "S", 1, "N", 1)
+    fpga250.get_sb(2, 2).set_pip("SINGLE", "S", 1, "E", 0)
+
+    # GPIO_EAST[3]
+    fpga250.get_sb(2, 2).set_pip("SINGLE", "S", 1, "N", 1)
+    fpga250.get_sb(3, 2).set_pip("SINGLE", "S", 1, "E", 0)
+
+    # GPIO_WEST[0]
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "S", 0, "W", 0)
+
+    # GPIO_WEST[1]
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "S", 0, "N", 0)
+    fpga250.get_sb(1, 0).set_pip("SINGLE", "S", 0, "W", 0)
+
+    # GPIO_WEST[2]
+    fpga250.get_sb(1, 0).set_pip("SINGLE", "S", 0, "N", 0)
+    fpga250.get_sb(2, 0).set_pip("SINGLE", "S", 0, "W", 0)
+
+    # GPIO_WEST[3]
+    fpga250.get_sb(2, 0).set_pip("SINGLE", "S", 0, "N", 0)
+    fpga250.get_sb(3, 0).set_pip("SINGLE", "S", 0, "W", 0)
+
 def main():
     MX = 3
     MY = 4
@@ -504,7 +576,6 @@ def main():
 
     fpga250 = Fabric(MY, MX, WS, WD, S_XX_BASE, debug=debug, top_level_debug=debug)
 
-    #test0(fpga250)
     #test1(fpga250)
     #test2(fpga250)
     #test3(fpga250)
@@ -514,7 +585,8 @@ def main():
     #test7(fpga250)
     #test8(fpga250)
     #test9(fpga250)
-    test10(fpga250)
+    #test10(fpga250)
+    test11(fpga250)
 
     bitstream = fpga250.output_column_wise_bitstream()
     comb_output = fpga250.dump_comb_output()

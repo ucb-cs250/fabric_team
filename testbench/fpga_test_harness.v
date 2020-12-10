@@ -246,6 +246,11 @@ module fpga_test_harness();
     debug_config = 1'b0;
 `endif
 
+    $display("GPIO_NORTH=%b", gpio_north);
+    $display("GPIO_SOUTH=%b", gpio_south);
+    $display("GPIO_EAST=%b", gpio_east);
+    $display("GPIO_WEST=%b", gpio_west);
+
     $display("fabric_sync_output=%b", fabric_sync_output);
     $display("gold_sync_output=%b",   gold_sync_output[0]);
 
