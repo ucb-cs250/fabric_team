@@ -367,20 +367,12 @@ def test10(fpga250):
     '''
 
     # Init DFFs
-    fpga250.get_slicel(0, 0).set_reg_init_val("00000000")
+    # 4'b1100 + 4'b0010
+    fpga250.get_slicel(0, 0).set_reg_init_val("11000000")
     fpga250.get_slicel(0, 0).set_memset_bit("1")
-    fpga250.get_slicel(0, 1).set_reg_init_val("00000000")
+    fpga250.get_slicel(0, 1).set_reg_init_val("00000001")
     fpga250.get_slicel(0, 1).set_memset_bit("1")
 
-    fpga250.get_slicel(0, 0).set_sync_output("DFF7", "0")
-    fpga250.get_slicel(0, 0).set_sync_output("DFF6", "1")
-    fpga250.get_slicel(0, 0).set_sync_output("DFF1", "1")
-    fpga250.get_slicel(0, 0).set_sync_output("DFF0", "0")
-
-    fpga250.get_slicel(0, 1).set_sync_output("DFF7", "0")
-    fpga250.get_slicel(0, 1).set_sync_output("DFF6", "0")
-    fpga250.get_slicel(0, 1).set_sync_output("DFF1", "0")
-    fpga250.get_slicel(0, 1).set_sync_output("DFF0", "1")
 
     # Route DFF0(0, 0) and DFF0(0, 1) to LUT1(2, 2) and LUT0(2, 2)
     fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 0)
@@ -388,22 +380,22 @@ def test10(fpga250):
     fpga250.get_sb(1, 0).set_pip("SINGLE", "S", 0, "N", 0)
     fpga250.get_sb(2, 0).set_pip("SINGLE", "S", 0, "E", 1)
     fpga250.get_sb(2, 1).set_pip("SINGLE", "W", 1, "E", 1)
-    fpga250.get_sb(2, 2).set_pip("SINGLE", "E", 1, "S", 0)
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 0)
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 4)
+    fpga250.get_sb(2, 2).set_pip("SINGLE", "W", 1, "S", 1)
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 0)
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 4)
 
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 2) # this is actually "dont-care"
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 3) # this is actually "dont-care"
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 6) # this is actually "dont-care"
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 7) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 2) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 3) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 6) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 7) # this is actually "dont-care"
 
     fpga250.get_cb_east(0, 1).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 1)
     fpga250.get_sb(0, 1).set_pip("SINGLE", "S", 1, "N", 1)
     fpga250.get_sb(1, 1).set_pip("SINGLE", "S", 1, "N", 1)
     fpga250.get_sb(2, 1).set_pip("SINGLE", "S", 1, "E", 0)
-    fpga250.get_sb(2, 2).set_pip("SINGLE", "E", 0, "S", 1)
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 1)
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 5)
+    fpga250.get_sb(2, 2).set_pip("SINGLE", "W", 0, "S", 0)
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 1)
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 5)
 
     # Route DFF1(0, 0) and DFF1(0, 1) to LUT3(2, 2) and LUT2(2, 2)
     fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 2)
@@ -425,18 +417,18 @@ def test10(fpga250):
     fpga250.get_cb_north(1, 2).set_pip("CB_SINGLE0_TO_CLB1_IN", 2, 5)
 
     # Route DFF6(0, 0) and DFF6(0, 1) to LUT5(2, 2) and LUT4(2, 2)
-    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 0)
-    fpga250.get_sb(0, 0).set_pip("SINGLE", "W", 0, "N", 1)
-    fpga250.get_sb(1, 0).set_pip("SINGLE", "S", 1, "N", 1)
-    fpga250.get_sb(2, 0).set_pip("SINGLE", "S", 1, "E", 0)
-    fpga250.get_sb(2, 1).set_pip("SINGLE", "E", 0, "S", 1)
-    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 1, 0)
-    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 1, 4)
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 2)
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "W", 2, "N", 3)
+    fpga250.get_sb(1, 0).set_pip("SINGLE", "S", 3, "N", 3)
+    fpga250.get_sb(2, 0).set_pip("SINGLE", "S", 3, "E", 2)
+    fpga250.get_sb(2, 1).set_pip("SINGLE", "W", 2, "S", 2)
+    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 2, 0)
+    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 2, 4)
 
-    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 1, 2) # this is actually "dont-care"
-    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 1, 3) # this is actually "dont-care"
-    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 1, 6) # this is actually "dont-care"
-    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 1, 7) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 2, 2) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 2, 3) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 2, 6) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 2, 7) # this is actually "dont-care"
 
     fpga250.get_cb_north(0, 1).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 1)
     fpga250.get_sb(0, 1).set_pip("SINGLE", "W", 1, "N", 0)
@@ -445,45 +437,35 @@ def test10(fpga250):
     fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 0, 5)
 
     # Route DFF7(0, 0) and DFF7(0, 1) to LUT7(2, 2) and LUT6(2, 2)
-    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 2)
-    fpga250.get_sb(0, 0).set_pip("SINGLE", "W", 2, "E", 2)
-    fpga250.get_sb(0, 1).set_pip("SINGLE", "W", 2, "E", 2)
-    fpga250.get_sb(0, 2).set_pip("SINGLE", "W", 2, "E", 2)
-    fpga250.get_sb(0, 3).set_pip("SINGLE", "W", 2, "N", 3)
-    fpga250.get_sb(1, 3).set_pip("SINGLE", "S", 3, "N", 3)
-    fpga250.get_sb(2, 3).set_pip("SINGLE", "S", 3, "N", 3)
-    fpga250.get_sb(3, 3).set_pip("SINGLE", "S", 3, "W", 2)
-    fpga250.get_sb(3, 2).set_pip("SINGLE", "W", 2, "S", 2)
-    fpga250.get_sb(2, 2).set_pip("SINGLE", "N", 2, "W", 3)
-    fpga250.get_cb_north(2, 2).set_pip("CB_SINGLE0_TO_CLB_SINGLE0", 3, 0)
-    fpga250.get_cb_north(2, 2).set_pip("CB_SINGLE0_TO_CLB_SINGLE0", 3, 4)
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CB_DOUBLE0", 2, 0)
+    fpga250.get_sb(0, 0).set_pip("DOUBLE", "W", 0, "N", 1)
+    # skip SB(1, 0)
+    fpga250.get_sb(2, 0).set_pip("DOUBLE", "S", 1, "E", 0)
+    # skip SB(2, 1)
+    fpga250.get_cb_north(2, 2).set_pip("CB_DOUBLE0_TO_CLB0_IN", 0, 0)
+    fpga250.get_cb_north(2, 2).set_pip("CB_DOUBLE0_TO_CLB0_IN", 0, 4)
 
-    fpga250.get_cb_north(2, 2).set_pip("CB_SINGLE0_TO_CLB_SINGLE0", 3, 2) # this is actually "dont-care"
-    fpga250.get_cb_north(2, 2).set_pip("CB_SINGLE0_TO_CLB_SINGLE0", 3, 3) # this is actually "dont-care"
-    fpga250.get_cb_north(2, 2).set_pip("CB_SINGLE0_TO_CLB_SINGLE0", 3, 6) # this is actually "dont-care"
-    fpga250.get_cb_north(2, 2).set_pip("CB_SINGLE0_TO_CLB_SINGLE0", 3, 7) # this is actually "dont-care"
+    fpga250.get_cb_north(2, 2).set_pip("CB_DOUBLE0_TO_CLB0_IN", 0, 2) # this is actually "dont-care"
+    fpga250.get_cb_north(2, 2).set_pip("CB_DOUBLE0_TO_CLB0_IN", 0, 3) # this is actually "dont-care"
+    fpga250.get_cb_north(2, 2).set_pip("CB_DOUBLE0_TO_CLB0_IN", 0, 6) # this is actually "dont-care"
+    fpga250.get_cb_north(2, 2).set_pip("CB_DOUBLE0_TO_CLB0_IN", 0, 7) # this is actually "dont-care"
 
-    fpga250.get_cb_north(0, 1).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 3)
-    fpga250.get_sb(0, 1).set_pip("SINGLE", "W", 3, "E", 3)
-    fpga250.get_sb(0, 2).set_pip("SINGLE", "W", 3, "E", 3)
-    fpga250.get_sb(0, 3).set_pip("SINGLE", "W", 3, "N", 2)
-    fpga250.get_sb(1, 3).set_pip("SINGLE", "S", 2, "N", 2)
-    fpga250.get_sb(2, 3).set_pip("SINGLE", "S", 2, "N", 2)
-    fpga250.get_sb(3, 3).set_pip("SINGLE", "S", 2, "W", 3)
-    fpga250.get_sb(3, 2).set_pip("SINGLE", "W", 3, "S", 3)
-    fpga250.get_sb(2, 2).set_pip("SINGLE", "N", 3, "W", 2)
-    fpga250.get_cb_north(2, 2).set_pip("CB_SINGLE0_TO_CLB_SINGLE0", 2, 1)
-    fpga250.get_cb_north(2, 2).set_pip("CB_SINGLE0_TO_CLB_SINGLE0", 2, 5)
+    fpga250.get_cb_north(0, 1).set_pip("CLB0_OUT_TO_CB_DOUBLE0", 2, 1)
+    fpga250.get_sb(0, 1).set_pip("DOUBLE", "W", 1, "N", 0)
+    # skip SB(1, 1)
+    fpga250.get_sb(2, 1).set_pip("DOUBLE", "S", 0, "E", 1)
+    fpga250.get_cb_north(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 1)
+    fpga250.get_cb_north(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 5)
 
     # Setup the logic functions for LUTs in CLB(2, 2)
-    fpga250.get_slicel(2, 2).set_lut_config("LUT1", hex_to_bin("8888", 16)) # 2-AND
-    fpga250.get_slicel(2, 2).set_lut_config("LUT0", hex_to_bin("6666", 16)) # 2-XOR
-    fpga250.get_slicel(2, 2).set_lut_config("LUT3", hex_to_bin("8888", 16)) # 2-AND
-    fpga250.get_slicel(2, 2).set_lut_config("LUT2", hex_to_bin("6666", 16)) # 2-XOR
-    fpga250.get_slicel(2, 2).set_lut_config("LUT5", hex_to_bin("8888", 16)) # 2-AND
-    fpga250.get_slicel(2, 2).set_lut_config("LUT4", hex_to_bin("6666", 16)) # 2-XOR
-    fpga250.get_slicel(2, 2).set_lut_config("LUT7", hex_to_bin("8888", 16)) # 2-AND
-    fpga250.get_slicel(2, 2).set_lut_config("LUT6", hex_to_bin("6666", 16)) # 2-XOR
+    fpga250.get_slicel(2, 2).set_lut_config("LUT1", hex_to_bin("6666", 16)) # 2-XOR
+    fpga250.get_slicel(2, 2).set_lut_config("LUT0", hex_to_bin("8888", 16)) # 2-AND
+    fpga250.get_slicel(2, 2).set_lut_config("LUT3", hex_to_bin("6666", 16)) # 2-XOR
+    fpga250.get_slicel(2, 2).set_lut_config("LUT2", hex_to_bin("8888", 16)) # 2-AND
+    fpga250.get_slicel(2, 2).set_lut_config("LUT5", hex_to_bin("6666", 16)) # 2-XOR
+    fpga250.get_slicel(2, 2).set_lut_config("LUT4", hex_to_bin("8888", 16)) # 2-AND
+    fpga250.get_slicel(2, 2).set_lut_config("LUT7", hex_to_bin("6666", 16)) # 2-XOR
+    fpga250.get_slicel(2, 2).set_lut_config("LUT6", hex_to_bin("8888", 16)) # 2-AND
 
     fpga250.get_slicel(2, 2).set_split("S44_0", "1")
     fpga250.get_slicel(2, 2).set_split("S44_1", "1")
@@ -492,7 +474,84 @@ def test10(fpga250):
     fpga250.get_slicel(2, 2).set_use_cc("1")
 
     # Set the expected outputs
-    fpga250.get_slicel(2, 2).set_comb_output("CARRY", "0111")
+    # 4'b1100 + 4'b0010
+    # This test fails right now because we leave the carry input dangling ('x')
+    # so the LSB of the sum result is always 'x'
+    # TODO: introduce additional config bit inside SLICEL to set the initial value
+    # for the carry in bit
+    fpga250.get_slicel(2, 2).set_comb_output("CARRY", "01010100")
+
+def test11(fpga250):
+    description = '''
+      Drive GPIO_NORTH[2:0] to 1 using DFF1(3, 0)
+      Drive GPIO_SOUTH[2:0] to 1 using DFF1(0, 0)
+      Drive GPIO_EAST[3:0] to 1 using DFF1(0, 2)
+      Drive GPIO_WEST[3:0] to 1 using DFF1(0, 0)
+    '''
+
+    fpga250.get_slicel(0, 0).set_reg_init_val("00000001")
+    fpga250.get_slicel(0, 0).set_memset_bit("1")
+
+    fpga250.get_slicel(3, 0).set_reg_init_val("00000001")
+    fpga250.get_slicel(3, 0).set_memset_bit("1")
+
+    fpga250.get_slicel(0, 2).set_reg_init_val("00000001")
+    fpga250.get_slicel(0, 2).set_memset_bit("1")
+
+    # GPIO_NORTH[0]
+    fpga250.get_cb_east(3, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 0)
+    fpga250.get_sb(3, 0).set_pip("SINGLE", "S", 0, "N", 0)
+
+    # GPIO_NORTH[1]
+    fpga250.get_sb(3, 0).set_pip("SINGLE", "S", 0, "E", 1)
+    fpga250.get_sb(3, 1).set_pip("SINGLE", "W", 1, "N", 0)
+
+    # GPIO_NORTH[2]
+    fpga250.get_sb(3, 1).set_pip("SINGLE", "W", 1, "E", 1)
+    fpga250.get_sb(3, 2).set_pip("SINGLE", "W", 1, "N", 0)
+
+    # GPIO_SOUTH[0]
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 0)
+
+    # GPIO_SOUTH[1]
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 1)
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "S", 1, "E", 0)
+    fpga250.get_sb(0, 1).set_pip("SINGLE", "W", 0, "S", 0)
+
+    # GPIO_SOUTH[2]
+    fpga250.get_sb(0, 1).set_pip("SINGLE", "W", 0, "E", 0)
+    fpga250.get_sb(0, 2).set_pip("SINGLE", "W", 0, "S", 0)
+
+    # GPIO_EAST[0]
+    fpga250.get_cb_east(0, 2).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 1)
+    fpga250.get_sb(0, 2).set_pip("SINGLE", "S", 1, "E", 0)
+
+    # GPIO_EAST[1]
+    fpga250.get_sb(0, 2).set_pip("SINGLE", "S", 1, "N", 1)
+    fpga250.get_sb(1, 2).set_pip("SINGLE", "S", 1, "E", 0)
+
+    # GPIO_EAST[2]
+    fpga250.get_sb(1, 2).set_pip("SINGLE", "S", 1, "N", 1)
+    fpga250.get_sb(2, 2).set_pip("SINGLE", "S", 1, "E", 0)
+
+    # GPIO_EAST[3]
+    fpga250.get_sb(2, 2).set_pip("SINGLE", "S", 1, "N", 1)
+    fpga250.get_sb(3, 2).set_pip("SINGLE", "S", 1, "E", 0)
+
+    # GPIO_WEST[0]
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "S", 0, "W", 0)
+
+    # GPIO_WEST[1]
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "S", 0, "N", 0)
+    fpga250.get_sb(1, 0).set_pip("SINGLE", "S", 0, "W", 0)
+
+    # GPIO_WEST[2]
+    fpga250.get_sb(1, 0).set_pip("SINGLE", "S", 0, "N", 0)
+    fpga250.get_sb(2, 0).set_pip("SINGLE", "S", 0, "W", 0)
+
+    # GPIO_WEST[3]
+    fpga250.get_sb(2, 0).set_pip("SINGLE", "S", 0, "N", 0)
+    fpga250.get_sb(3, 0).set_pip("SINGLE", "S", 0, "W", 0)
 
 def main():
     MX = 3
@@ -504,7 +563,6 @@ def main():
 
     fpga250 = Fabric(MY, MX, WS, WD, S_XX_BASE, debug=debug, top_level_debug=debug)
 
-    #test0(fpga250)
     #test1(fpga250)
     #test2(fpga250)
     #test3(fpga250)
@@ -515,6 +573,7 @@ def main():
     #test8(fpga250)
     #test9(fpga250)
     test10(fpga250)
+    #test11(fpga250)
 
     bitstream = fpga250.output_column_wise_bitstream()
     comb_output = fpga250.dump_comb_output()
