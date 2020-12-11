@@ -151,6 +151,6 @@ set ::env(ROUTING_CORES) 10
 
 set ::env(FP_PIN_ORDER_CFG) $our_root/pin_order.cfg
 
-set ::env(PDN_CFG) $our_root/pdn.tcl
+#set ::env(PDN_CFG) $our_root/pdn.tcl
 
 set ::env(USE_ARC_ANTENNA_CHECK) 0
