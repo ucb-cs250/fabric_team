@@ -198,9 +198,9 @@ mac_tile #(
 // The configuration regions are split into three columns, each with its own
 // configurator.
 localparam NUM_CONFIG_REGIONS = 3;
-wire [MX-1:0] wb_set_out[NUM_CONFIG_REGIONS-1:0];
-wire [MX-1:0] wb_shift_out[NUM_CONFIG_REGIONS-1:0];
-wire [MX-1:0] wb_cen_out[NUM_CONFIG_REGIONS-1:0];
+wire [3:0] wb_set_out[NUM_CONFIG_REGIONS-1:0];
+wire [3:0] wb_shift_out[NUM_CONFIG_REGIONS-1:0];
+wire [3:0] wb_cen_out[NUM_CONFIG_REGIONS-1:0];
 
 // wb_set_out[3] is disconnected.
 // wb_shift_out[3] is disconnected.

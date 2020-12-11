@@ -1,6 +1,6 @@
 module fpga #(
-  parameter MX = 3,
-  parameter MY = 4,
+  parameter MX = 6,
+  parameter MY = 7,
   // There are 38 IO pins in Caravel, so we distribute them around the chip.
   parameter IO_NORTH = 10,  // Actually 9
   parameter IO_SOUTH = 8,   // Actually 0
@@ -59,7 +59,6 @@ module fpga #(
 wire clk;
 wire rst;
 wire en;
-wire cen;
 
 /* We take the wishbone clock to be our fabric clock, I guess.
 * rst is the first GPIO pin.
@@ -74,16 +73,16 @@ assign en = gpio_north[8];
 * scale).
 * 
 *         +-----------++-----------++-----------+
-*     5   | clb_tile  ||           || clb_tile  |
-*         +-----------+| sram_tile |+-----------+
-*         +-----------+|           |+-----------+
-*     4   | clb_tile  ||           || clb_tile  |
+*     5   | clb_tile  || clb_tile  || clb_tile  |
+*         +-----------++-----------++-----------+
+*         +-----------++-----------++-----------+
+*     4   | clb_tile  || clb_tile  || clb_tile  |
 *         +-----------++-----------++-----------+
 * ^       +-----------++-----------++-----------+
-* |   3   | clb_tile  ||           || clb_tile  |
-* MY      +-----------+| mac_tile  |+-----------+
-* |       +-----------+|           |+-----------+
-* v   2   | clb_tile  ||           || clb_tile  |
+* |   3   | clb_tile  || clb_tile  || clb_tile  |
+* MY      +-----------++-----------++-----------+
+* |       +-----------++-----------++-----------+
+* v   2   | clb_tile  || clb_tile  || clb_tile  |
 *         +-----------++-----------++-----------+
 *         +-----------++-----------++-----------+
 *     1   | clb_tile  || clb_tile  || clb_tile  |
@@ -191,38 +190,38 @@ endgenerate
 //  .west()
 //);
 
-wire [3:0] wb_set_out;
-wire [3:0] wb_shift_out;
+wire [3:0] wb_set_out[NUM_CONFIG_REGIONS-1:0];
+wire [3:0] wb_shift_out[NUM_CONFIG_REGIONS-1:0];
+wire [3:0] wb_cen_out[NUM_CONFIG_REGIONS-1:0];
 
-// wb_set_out[3] is disconnected.
-// wb_shift_out[3] is disconnected.
-assign col_set[0][MX-1:0] = wb_set_out[2:0];
-assign col_shift[0][MX-1:0] = wb_shift_out[2:0];
-
+localparam NUM_CONFIG_REGIONS = 2;
 genvar i;
+
 generate
-  for (i = 0; i < MX; i = i + 1) begin
-    assign col_cen[i] = cen;
+  for (i = 0; i < NUM_CONFIG_REGIONS; i = i + 1) begin:wb
+    assign col_set[0][4*i +: 4] = wb_set_out[i][3:0];
+    assign col_shift[0][4*i +: 4] = wb_shift_out[i][3:0];
+    assign col_cen[4*i +: 4] = wb_cen_out[i][3:0];
+
+    wishbone_configuratorinator #(
+      .BASE_ADDR(32'h3000_0000 + i << 24)
+    ) wishbonatron (
+      .wb_clk_i(wb_clk_i),
+      .wb_rst_i(wb_rst_i),
+      .wbs_stb_i(wbs_stb_i),
+      .wbs_cyc_i(wbs_cyc_i),
+      .wbs_we_i(wbs_we_i),
+      .wbs_sel_i(wbs_sel_i),
+      .wbs_data_i(wbs_data_i),
+      .wbs_addr_i(wbs_addr_i),
+      .wbs_ack_o(wbs_ack_o),
+      .wbs_data_o(wbs_data_o),
+      .cen(wb_cen_out[i]),
+      .set_out(wb_set_out[i]),
+      .shift_out(wb_shift_out[i])
+    );
   end
 endgenerate
-
-wishbone_configuratorinator #(
-  .BASE_ADDR(32'h3000_0000)
-) wishbonatron (
-  .wb_clk_i(wb_clk_i),
-  .wb_rst_i(wb_rst_i),
-  .wbs_stb_i(wbs_stb_i),
-  .wbs_cyc_i(wbs_cyc_i),
-  .wbs_we_i(wbs_we_i),
-  .wbs_sel_i(wbs_sel_i),
-  .wbs_data_i(wbs_data_i),
-  .wbs_addr_i(wbs_addr_i),
-  .wbs_ack_o(wbs_ack_o),
-  .wbs_data_o(wbs_data_o),
-  .cen(cen),
-  .set_out(wb_set_out),
-  .shift_out(wb_shift_out)
-);
 
 generate
   for (x = 0; x < MX; x = x + 1) begin
