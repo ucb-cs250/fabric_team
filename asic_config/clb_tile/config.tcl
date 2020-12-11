@@ -122,19 +122,19 @@ set ::env(SYNTH_STRATEGY) 3
 
 set ::env(SYNTH_READ_BLACKBOX_LIB) 1
 
-set ::env(CELL_PAD) 4
+set ::env(CELL_PAD) 1
 
 #set ::env(FP_SIZING) "absolute"
 #set ::env(DIE_AREA) [list 0.0 0.0 580.0 640.0]
 # Halo around the Macros
 #set ::env(FP_HORIZONTAL_HALO) 23
 #set ::env(FP_VERTICAL_HALO) 23
-set ::env(FP_CORE_UTIL) 60
+set ::env(FP_CORE_UTIL) 80
 #set ::env(FP_PDN_VOFFSET) 0
 #set ::env(FP_PDN_VPITCH) 30
 
 #set ::env(PL_TARGET_DENSITY) 0.34
-set ::env(PL_TARGET_DENSITY) 0.62
+set ::env(PL_TARGET_DENSITY) 0.845
 
 # These were set to attempt to skip global placement, which we don't seem to be
 # able to satisfy with only 4 cells to move around.
