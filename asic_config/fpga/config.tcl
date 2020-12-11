@@ -95,8 +95,9 @@ if { $use_absolute_sizing } {
   set ::env(PL_SKIP_INITIAL_PLACEMENT) 1
   set ::env(PL_RANDOM_GLB_PLACEMENT) 0
 
-  set ::env(FP_HORIZONTAL_HALO) 1
-  set ::env(FP_VERTICAL_HALO) 1
+  set ::env(FP_HORIZONTAL_HALO) 10
+  set ::env(FP_VERTICAL_HALO) 10
+  set ::env(CLOCK_TREE_SYNTH) 1
 } else {
   puts_info {Using relative sizing}
   set ::env(FP_CORE_UTIL) 50
