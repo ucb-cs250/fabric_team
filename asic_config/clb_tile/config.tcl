@@ -117,12 +117,15 @@ set ::env(MACRO_PLACEMENT_CFG) $our_root/macro_placement.cfg
 set ::env(CLOCK_PERIOD) 50
 set ::env(CLOCK_PORT) "clk"
 set ::env(CLOCK_TREE_SYNTH) 1
-set ::env(SYNTH_MAX_FANOUT) 5
+set ::env(SYNTH_MAX_FANOUT) 8
 set ::env(SYNTH_STRATEGY) 3
-
+#set ::env(CLOCK_BUFFER_FANOUT) 8
 set ::env(SYNTH_READ_BLACKBOX_LIB) 1
-
+#set ::env(FILL_INSERTION) 0
 set ::env(CELL_PAD) 1
+#set ::env(DIODE_INSERTION_STRATEGY) 2
+
+#set ::env(FAKEDIODE_CELL) "sky130_fd_sc_hd__fakediode_2"
 
 #set ::env(FP_SIZING) "absolute"
 #set ::env(DIE_AREA) [list 0.0 0.0 580.0 640.0]
@@ -134,7 +137,7 @@ set ::env(FP_CORE_UTIL) 80
 #set ::env(FP_PDN_VPITCH) 30
 
 #set ::env(PL_TARGET_DENSITY) 0.34
-set ::env(PL_TARGET_DENSITY) 0.845
+set ::env(PL_TARGET_DENSITY) 0.85
 
 # These were set to attempt to skip global placement, which we don't seem to be
 # able to satisfy with only 4 cells to move around.
@@ -147,10 +150,14 @@ set ::env(PL_TARGET_DENSITY) 0.845
 #set ::env(GLB_RT_ADJUSTMENT) 0
 set ::env(GLB_RT_MAXLAYER) 5
 
+set ::env(GLB_RT_ADJUSTMENT) "0.3"
+
 set ::env(ROUTING_CORES) 10
 
 set ::env(FP_PIN_ORDER_CFG) $our_root/pin_order.cfg
 
 set ::env(PDN_CFG) $our_root/pdn.tcl
+
+set ::env(GLB_RT_MAX_DIODE_INS_ITERS) "10"
 
 set ::env(USE_ARC_ANTENNA_CHECK) 0
