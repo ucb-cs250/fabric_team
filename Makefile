@@ -62,7 +62,16 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
 
 OPTS = +lint=all \
        -sverilog \
-       -timescale=1ns/1ps
+       -timescale=1ns/1ps \
+	-notice -line +lint=all,noVCDE,noONGS,noUI -error=PCWM-L -quiet \
+	+warn=noTMR \
+	+v2k +vcs+lic+wait \
+	+vcs+initreg+random \
+	+rad \
+	+vcs+loopdetect \
+	-v2005 \
+	-debug_pp \
+	+vcs+vcdpluson
 
 test = path_to_a_test_bench_file
 testname = $(basename $(notdir $(test)))
