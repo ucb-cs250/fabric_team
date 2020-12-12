@@ -1,7 +1,7 @@
 module mac_tile_tb;
 
 parameter CLOCK_PERIOD = 20;
-parameter INPUT_FILE = "bitstream.txt";
+parameter INPUT_FILE = "mac_tile.bitstream.txt";
 
 localparam DCB_NS_W = 192;
 localparam IN_OUT_BUS_WIDTH = DCB_NS_W + 2;

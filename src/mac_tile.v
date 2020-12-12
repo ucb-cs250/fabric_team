@@ -143,7 +143,7 @@ baked_mac_cluster #(
   .MAC_MULT_WIDTH(MAC_MULT_WIDTH),
   .MAC_ACC_WIDTH(MAC_ACC_WIDTH),
   .MAC_INT_WIDTH(MAC_INT_WIDTH)
-) macaroni (
+) mac_daddy (
   .clk(clk),
   .rst(rst),
   .en(en),

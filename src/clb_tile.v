@@ -52,9 +52,6 @@ assign set_out_hard = set;
 
 wire set_in_soft, shift_in_soft;
 
-wire [WS-1:0] sb_west_single, sb_south_single;
-wire [WD-1:0] sb_west_double, sb_south_double;
-
 wire [1:0] north_comb_out, east_comb_out, south_comb_out, west_comb_out;
 wire [1:0] north_sync_out, east_sync_out, south_sync_out, west_sync_out;
 
@@ -127,10 +124,10 @@ baked_connection_block_north #(
   .shift_in(slice_so),
   .shift_out(cb_north_so),
 
-  .single0(sb_west_single),
-  .double0(sb_west_double),
-  .single1(west_single),
-  .double1(west_double),
+  .single0(west_single),
+  .double0(west_double),
+  .single1(),
+  .double1(),
 
   // no global wire for now
   // carry signals go directly to top-level interface
@@ -168,10 +165,10 @@ baked_connection_block_east #(
   .shift_in(sb_so),
   .shift_out(cb_east_so),
 
-  .single0(sb_south_single),
-  .double0(sb_south_double),
-  .single1(south_single),
-  .double1(south_double),
+  .single0(south_single),
+  .double0(south_double),
+  .single1(),
+  .double1(),
 
   // no global wire for now
   // carry signals go directly to top-level interface
@@ -203,10 +200,10 @@ baked_clb_switch_box #(
   .east_single(east_single),
   .east_double(east_double),
 
-  .south_single(sb_south_single),
-  .south_double(sb_south_double),
-  .west_single(sb_west_single),
-  .west_double(sb_west_double)
+  .south_single(south_single),
+  .south_double(south_double),
+  .west_single(west_single),
+  .west_double(west_double)
 );
 
 endmodule

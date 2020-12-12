@@ -20,6 +20,8 @@ set our_root $src_root/asic_config/clb_tile
 set fabric_src $src_root/src
 set config_src $src_root/config_team/src/behavioral
 set ix_src $src_root/ix_yukio/src
+set clb_src $src_root/clb_team/src/behavioral
+
 set baked_bb_src $fabric_src/blackbox
 set baked_src $fabric_src/baked
 
@@ -69,9 +71,12 @@ if {$use_debug_products} {
   set sb_gds $gds_root/baked_clb_switch_box/baked_clb_switch_box.gds
 }
 
-# Experimental Tristates
+# Additional mapping.
 set ::env(TRISTATE_BUFFER_MAP) $src_root/src/tbuf_map.v
 set ::env(SYNTH_MUX_MAP) $src_root/src/mux_map.v
+
+# Requires open_pdks at tag:mpw-one-a
+set ::env(SYNTH_LATCH_MAP) $::env(PDK_ROOT)/open_pdks/sky130/openlane/$::env(PDK_VARIANT)/latch_map.v
 
 # Verilog files for top level RTL connections. Do not include black boxes!
 set ::env(VERILOG_FILES) [concat \
@@ -80,7 +85,13 @@ set ::env(VERILOG_FILES) [concat \
   $baked_src/baked_connection_block_east.v \
   $baked_src/baked_connection_block.v \
   $baked_src/baked_clb_switch_box.v \
-  $baked_bb_src/baked_slicel.v \
+  $baked_src/baked_slicel.v \
+  $clb_src/slicel.v \
+  $clb_src/lut_sXX_softcode.v \
+  $clb_src/carry_chain.v \
+  $clb_src/mux_f_slice.v \
+  $clb_src/lut.v \
+  $clb_src/block_config_latches.v \
   $ix_src/connection_block.v \
   $ix_src/clb_switch_box.v \
   $ix_src/transmission_gate_oneway.v \
@@ -91,10 +102,10 @@ set ::env(VERILOG_FILES) [concat \
   [glob $config_src/*.v] \
 ]
 
-set ::env(TRISTATE_BUFFER_MAP) $src_root/src/tbuf_map.v
-
-set ::env(EXTRA_LEFS) [list $slicel_lef $nate_lef ]; #$cb_n_lef $cb_e_lef $sb_lef]
-set ::env(EXTRA_GDS_FILES) [list $slicel_gds $nate_gds ]; # $cb_n_gds $cb_e_gds $sb_gds]
+#set ::env(EXTRA_LEFS) [list $slicel_lef $nate_lef ]; #$cb_n_lef $cb_e_lef $sb_lef]
+#set ::env(EXTRA_GDS_FILES) [list $slicel_gds $nate_gds ]; # $cb_n_gds $cb_e_gds $sb_gds]
+set ::env(EXTRA_LEFS) [list $nate_lef ]; #$cb_n_lef $cb_e_lef $sb_lef]
+set ::env(EXTRA_GDS_FILES) [list $nate_gds ]; # $cb_n_gds $cb_e_gds $sb_gds]
 
 set filename $::env(OPENLANE_ROOT)/designs/250/$::env(PDK)_$::env(PDK_VARIANT)_config.tcl
 if { [file exists $filename] == 1} {
@@ -103,22 +114,30 @@ if { [file exists $filename] == 1} {
 
 set ::env(MACRO_PLACEMENT_CFG) $our_root/macro_placement.cfg
 
-set ::env(CLOCK_PERIOD) 20
+set ::env(CLOCK_PERIOD) 50
 set ::env(CLOCK_PORT) "clk"
 set ::env(CLOCK_TREE_SYNTH) 1
-
+set ::env(SYNTH_MAX_FANOUT) 8
+set ::env(SYNTH_STRATEGY) 3
+#set ::env(CLOCK_BUFFER_FANOUT) 8
 set ::env(SYNTH_READ_BLACKBOX_LIB) 1
+#set ::env(FILL_INSERTION) 0
+set ::env(CELL_PAD) 1
+#set ::env(DIODE_INSERTION_STRATEGY) 2
 
-set ::env(FP_SIZING) "absolute"
-set ::env(DIE_AREA) [list 0.0 0.0 580.0 640.0]
+#set ::env(FAKEDIODE_CELL) "sky130_fd_sc_hd__fakediode_2"
+
+#set ::env(FP_SIZING) "absolute"
+#set ::env(DIE_AREA) [list 0.0 0.0 580.0 640.0]
 # Halo around the Macros
-set ::env(FP_HORIZONTAL_HALO) 23
-set ::env(FP_VERTICAL_HALO) 23
-#set ::env(FP_CORE_UTIL) 35
+#set ::env(FP_HORIZONTAL_HALO) 23
+#set ::env(FP_VERTICAL_HALO) 23
+set ::env(FP_CORE_UTIL) 80
 #set ::env(FP_PDN_VOFFSET) 0
 #set ::env(FP_PDN_VPITCH) 30
 
-set ::env(PL_TARGET_DENSITY) 0.34
+#set ::env(PL_TARGET_DENSITY) 0.34
+set ::env(PL_TARGET_DENSITY) 0.85
 
 # These were set to attempt to skip global placement, which we don't seem to be
 # able to satisfy with only 4 cells to move around.
@@ -131,10 +150,14 @@ set ::env(PL_TARGET_DENSITY) 0.34
 #set ::env(GLB_RT_ADJUSTMENT) 0
 set ::env(GLB_RT_MAXLAYER) 5
 
+set ::env(GLB_RT_ADJUSTMENT) "0.3"
+
 set ::env(ROUTING_CORES) 10
 
 set ::env(FP_PIN_ORDER_CFG) $our_root/pin_order.cfg
 
-set ::env(PDN_CFG) $our_root/pdn.tcl
+#set ::env(PDN_CFG) $our_root/pdn.tcl
+
+set ::env(GLB_RT_MAX_DIODE_INS_ITERS) "10"
 
 set ::env(USE_ARC_ANTENNA_CHECK) 0

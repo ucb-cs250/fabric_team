@@ -3,7 +3,7 @@
 # make sim test=testbench/clb_with_config_test.v
 # make sim test=ix_yukio/testbench/clb_switch_box_tb.v
 
-VCS = vcs
+VCS = vcs -full64
 
 CLB_PATH      = clb_team
 CFG_PATH      = config_team
@@ -17,7 +17,8 @@ INCS = src+$(MAC_PATH)/src
 COMB_OUTPUT_FILE=comb_output.txt
 SYNC_OUTPUT_FILE=sync_output.txt
 BITSTREAM_FILE=bitstream.txt
-GEN_SCRIPT=scripts/new_config/main.py
+UNITTESTS=scripts/new_config/unittests.py
+TEST_SCRIPT=scripts/new_config/main.py
 
 SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        $(CLB_PATH)/src/behavioral/lut_sXX_softcode.v \
@@ -58,6 +59,10 @@ OPTS = -notice \
        +error+100 \
        -timescale=1ns/1ps
 
+OPTS = +lint=all \
+       -sverilog \
+       -timescale=1ns/1ps
+
 test = path_to_a_test_bench_file
 testname = $(basename $(notdir $(test)))
 SIMV = ./$(testname).simv
@@ -65,11 +70,14 @@ SIMV = ./$(testname).simv
 $(SIMV): $(SRCS) $(SKY130_CELLS) $(test)
 	$(VCS) $(OPTS) +incdir+$(INCS) $^ -o $@
 
-$(BITSTREAM_FILE): $(GEN_SCRIPT)
-	python $(GEN_SCRIPT)
+$(BITSTREAM_FILE): $(UNITTESTS)
+	python $(UNITTESTS)
 
 sim: $(SIMV) $(BITSTREAM_FILE)
 	$(SIMV) -q +ntb_random_seed_automatic +load_config=$(BITSTREAM_FILE) +load_sync_output=$(SYNC_OUTPUT_FILE) +load_comb_output=$(COMB_OUTPUT_FILE)
 
+regression: $(SIMV)
+	rm -rf test_files && mkdir -p test_files && python $(TEST_SCRIPT)
+
 clean:
-	rm -rf *simv* csrc ucli.key *.vcd $(BITSTREAM_FILE) $(SYNC_OUTPUT_FILE)
+	rm -rf *simv* csrc ucli.key *.vcd $(BITSTREAM_FILE) $(SYNC_OUTPUT_FILE) $(COMB_OUTPUT_FILE) test_files/

@@ -126,7 +126,7 @@ class SliceL():
         elif DFF_name == "DFF3":
             self.sync_output[2] = value
         elif DFF_name == "DFF2":
-            self.sync_output[5] = value
+            self.sync_output[3] = value
         elif DFF_name == "DFF5":
             self.sync_output[4] = value
         elif DFF_name == "DFF4":

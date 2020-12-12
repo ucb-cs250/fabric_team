@@ -10,12 +10,12 @@ proc not_in {list e} {expr {[lsearch -not -exact $list $e]>=0}}
 # 
 # OPENLANE CONFIGURATION FILE
 #
-set ::env(DESIGN_NAME) fpga
+set ::env(DESIGN_NAME) fpga_bigboi
 set ::env(PDK_VARIANT) sky130_fd_sc_hd
 
 set design_root $::env(OPENLANE_ROOT)/designs
 set src_root $design_root/250
-set our_root $src_root/asic_config/fpga
+set our_root $src_root/asic_config/fpga_bigboi
 
 set fabric_src $src_root/src
 set blackbox_src $fabric_src/blackbox
@@ -62,7 +62,8 @@ if {$use_debug_products} {
 
 # Verilog files for top level RTL connections. Do not include black boxes!
 set ::env(VERILOG_FILES) [concat \
-  $fabric_src/fpga.v \
+  $fabric_src/fpga_bigboi.v \
+  $fabric_src/clb_grid.v \
   $blackbox_src/clb_tile.v \
   $blackbox_src/mac_tile.v \
   $blackbox_src/wishbone_configuratorinator.v \
@@ -89,7 +90,7 @@ set use_absolute_sizing true
 if { $use_absolute_sizing } {
   puts_info {Using absolute sizing}
   set ::env(FP_SIZING) absolute
-  set ::env(DIE_AREA) "0 0 3100 3800"   ;# This is the limit handed down by efabless.
+  set ::env(DIE_AREA) "0 0 8400 7900"   ;# This is the limit handed down by efabless.
   set ::env(PL_TARGET_DENSITY) 0.006
 
   set ::env(PL_BASIC_PLACEMENT) 0

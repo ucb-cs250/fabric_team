@@ -3,11 +3,11 @@
 FILE_NAME = 'search.config'
 
 PARAMS = {
-    'FP_CORE_UTIL': ' '.join(str((x+1)*5) for x in range(10)),
-    'PL_BASIC_PLACEMENT': '0 1',
-    'PL_SKIP_INITIAL_PLACEMENT': '0 1',
-    'PL_RANDOM_GLB_PLACEMENT': '0 1',
-    'PL_TARGET_DENSITY': ' '.join(str(x/1000.0) for x in range(1000))
+#    'FP_CORE_UTIL': ' '.join(str((x+1)*5) for x in range(10)),
+#    'PL_BASIC_PLACEMENT': '0 1',
+#    'PL_SKIP_INITIAL_PLACEMENT': '0 1',
+#    'PL_RANDOM_GLB_PLACEMENT': '0 1',
+    'PL_TARGET_DENSITY': ' '.join(str(x/100.0) for x in range(100))
 }
 
 EXTRA_PARAMS = [
