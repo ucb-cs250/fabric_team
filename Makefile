@@ -47,7 +47,6 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        src/fpga.v \
 
 OPTS = -notice \
-       -PP \
        -line \
        +lint=all,noVCDE,noONGS,noUI \
        +warn=noTMR \
