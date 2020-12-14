@@ -1,4 +1,6 @@
 from pathlib import Path
+import os
+import subprocess
 from Cell_Extractor import *
 
 # this module simulates the netlist after synthesis using a testbench
@@ -11,7 +13,7 @@ class Post_Syn_Simulator():
         self.lib_list = lib_list
         self.tb_name = tb_name
 
-    def run(self):
+    def build_makefile(self):
         # first construct the makefile
         with open(str(self.makefile_path / "Makefile"), "w") as f:
             # 1.0 VCS
@@ -103,6 +105,23 @@ class Post_Syn_Simulator():
             f.write("clean:\n")
             f.write("	rm -rf *simv* csrc ucli.key *.vcd $(BITSTREAM_FILE) $(SYNC_OUTPUT_FILE) $(COMB_OUTPUT_FILE) test_files/")
 
+        
+    def run(self):
+        # after writing the makefile, we now run it
+        # TODO: what is the command here
+        process = subprocess.Popen(["make", "sim", "..."], stdout=subprocess.PIPE, cwd="./"))
+        process.wait()
+
+        # gather the results 
+        storage = list()
+        process.wait()
+
+        for line in process.stdout:
+            storage.append(line.decode('utf-8'))
+
+        # TODO: how do we parse this result from VCS? what are we looking for
+
+
     def report(self):
         pass
 
@@ -147,4 +166,4 @@ if __name__ == "__main__":
     tb_name = "toplevel"
 
     a = Post_Syn_Simulator(makefile_path, src_list, lib_list, tb_name)
-    a.run()
+    a.build_makefile()
