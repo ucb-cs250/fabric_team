@@ -2,12 +2,14 @@
 
 FILE_NAME = 'macro_placement.cfg'
 
-MX=3
-MY=4
-LX_LY=(100, 225)
-CLB_DIMENSIONS=(710, 750)
-BUFFER=(50, 50)
-INST_NAME='X\[{x}\].Y\[{y}\].clb'
+MX=7
+MY=8
+NUM_WB=2
+LX_LY=(100, 200)
+CLB_DIMENSIONS=(350, 360)
+BUFFER=(30, 30)
+CLB_INST_NAME='{parent}X\[{x}\].Y\[{y}\].clb'
+WB_INST_NAME='wb\[{i}\].wishbonatron'
 
 PLACEMENTS = []
 
@@ -16,12 +18,14 @@ def add_placement(name, lx, ly):
 
 for x in range(MX):
     for y in range(MY):
-        name = INST_NAME.format(x=x, y=y)
+        name = CLB_INST_NAME.format(parent='', x=x, y=y)
         lx = LX_LY[0] + x * (CLB_DIMENSIONS[0] + BUFFER[0])
         ly = LX_LY[1] + y * (CLB_DIMENSIONS[1] + BUFFER[1])
         add_placement(name, lx, ly)
 
-add_placement('wishbonatron', 1300, 50)
+for i in range(NUM_WB):
+    name = WB_INST_NAME.format(i=i)
+    add_placement(name, 700 + i*1300, 50)
 
 with open(FILE_NAME, 'w') as f:
     for placement in PLACEMENTS:

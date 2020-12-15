@@ -6,8 +6,8 @@ set ::macro_blockage_layer_list "li1 met1 met2 met3 met4 met5"
 pdngen::specify_grid stdcell {
     name grid
     core_ring {
-      met4 {width 20 spacing 5 core_offset 20}
-      met5 {width 20 spacing 5 core_offset 20}
+      met4 {width 3 spacing 1.6 core_offset 5}
+      met5 {width 3 spacing 1.6 core_offset 5}
     }
     rails {
       met1 {width $::env(FP_PDN_RAIL_WIDTH) pitch $::env(PLACE_SITE_HEIGHT) offset $::env(FP_PDN_RAIL_OFFSET)}
@@ -21,14 +21,12 @@ pdngen::specify_grid stdcell {
 
 # Specify macro-level info for mac block.
 pdngen::specify_grid macro {
-  #instance my_mac
   macro clb_tile
   power_pins VPWR
   ground_pins VGND
   blockages "li1 met1 met2 met3 met4"
   straps {
   }
-  #connect {{met5 met4}}
   connect {{met4_PIN_ver met5}}
 }
 
@@ -51,6 +49,8 @@ pdngen::specify_grid macro {
 pdngen::specify_grid macro {
   macro wishbone_configuratorinator
   blockages "li1 met1 met2 met3 met4"
+  power_pins VPWR
+  ground_pins VGND
   straps {
   }
   connect {{met4_PIN_ver met5}}

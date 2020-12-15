@@ -84,11 +84,14 @@ set ::env(CLOCK_PERIOD) 30
 set ::env(CLOCK_PORT) "wb_clk_i"
 set ::env(CLOCK_TREE_SYNTH) 1
 
+set ::env(DESIGN_IS_CORE) 0
+
 set use_absolute_sizing true
 if { $use_absolute_sizing } {
   puts_info {Using absolute sizing}
   set ::env(FP_SIZING) absolute
-  set ::env(DIE_AREA) "0 0 2600 3300"   ;# This is the limit handed down by efabless.
+  # TODO(aryap): Try adding +250 to the X width and fitting in a 7th column.
+  set ::env(DIE_AREA) "0 0 2850 3400"   ;# This is the limit handed down by efabless.
   set ::env(PL_TARGET_DENSITY) 0.006
 
   set ::env(PL_BASIC_PLACEMENT) 0
@@ -97,15 +100,17 @@ if { $use_absolute_sizing } {
 
   set ::env(FP_HORIZONTAL_HALO) 10
   set ::env(FP_VERTICAL_HALO) 10
-  set ::env(CLOCK_TREE_SYNTH) 1
+  set ::env(CLOCK_TREE_SYNTH) 0
+
+  # PDN fiddling. Try to reproduce the calculations in
+  # openlane/scripts/tcl_commands/floorplan.tcl with some modifications:
+  set ::env(FP_PDN_HPITCH) [expr {153.18/2.0}]
 } else {
   puts_info {Using relative sizing}
   set ::env(FP_CORE_UTIL) 50
   set ::env(PL_TARGET_DENSITY) 0.55
 }
 
-#set ::env(FP_PDN_VOFFSET) 0
-#set ::env(FP_PDN_VPITCH) 30
 
 set ::env(DIODE_INSERTION_STRATEGY) 0
 

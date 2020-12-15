@@ -11,6 +11,7 @@ proc not_in {list e} {expr {[lsearch -not -exact $list $e]>=0}}
 # OPENLANE CONFIGURATION FILE
 #
 set ::env(DESIGN_NAME) clb_tile
+set ::env(DESIGN_IS_CORE) 0
 set ::env(PDK_VARIANT) sky130_fd_sc_hd
 
 set design_root $::env(OPENLANE_ROOT)/designs
@@ -147,8 +148,12 @@ set ::env(PL_TARGET_DENSITY) 0.85
 #
 #set ::env(PL_OPENPHYSYN_OPTIMIZATIONS) 0
 
+set ::env(GLB_RT_ALLOW_CONGESTION) 1
+
 #set ::env(GLB_RT_ADJUSTMENT) 0
-set ::env(GLB_RT_MAXLAYER) 5
+#set ::env(GLB_RT_MAXLAYER) 2    ;# Don't route on li1
+set ::env(GLB_RT_MAXLAYER) 4    ;# Don't route on met4 or met5
+#set ::env(GLB_RT_OBS) "li1 0.00 22.68 1748.00 486.24, li1 0.00 851.08 1748.00 486.24, met5 0.0 0.0 1748.0 1360.0"
 
 set ::env(GLB_RT_ADJUSTMENT) "0.3"
 
@@ -156,7 +161,7 @@ set ::env(ROUTING_CORES) 10
 
 set ::env(FP_PIN_ORDER_CFG) $our_root/pin_order.cfg
 
-#set ::env(PDN_CFG) $our_root/pdn.tcl
+set ::env(PDN_CFG) $our_root/pdn.tcl
 
 set ::env(GLB_RT_MAX_DIODE_INS_ITERS) "10"
 
