@@ -1,6 +1,7 @@
 module fpga #(
-  parameter MX = 6,
-  parameter MY = 7,
+  parameter MX = 7,
+  parameter MY = 8,
+  parameter NUM_CONFIG_REGIONS = 2,
   // There are 38 IO pins in Caravel, so we distribute them around the chip.
   parameter IO_NORTH = 10,  // Actually 9
   parameter IO_SOUTH = 8,   // Actually 0
@@ -194,7 +195,6 @@ wire [3:0] wb_set_out[NUM_CONFIG_REGIONS-1:0];
 wire [3:0] wb_shift_out[NUM_CONFIG_REGIONS-1:0];
 wire [3:0] wb_cen_out[NUM_CONFIG_REGIONS-1:0];
 
-localparam NUM_CONFIG_REGIONS = 2;
 genvar i;
 
 generate
