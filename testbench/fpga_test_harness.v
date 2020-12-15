@@ -48,7 +48,7 @@ module fpga_test_harness();
   wire [3:0] wbs_sel_i;
   wire [31:0] wbs_data_i;
   wire [31:0] wbs_addr_i;
-  wire [NUM_CONFIG_REGIONS-1:0] wbs_ack_o;
+  wire wbs_ack_o;
   wire [31:0] wbs_data_o;
 
   fpga #(
@@ -180,11 +180,11 @@ module fpga_test_harness();
       we <= 1;
       transact <= 1;
 
-      @(posedge ack[wb]);
+      @(posedge ack);
       transact <= 0;
       we <= 0;
 
-      @(negedge ack[wb]);
+      @(negedge ack);
     end
 
     for (wb = 0; wb < NUM_CONFIG_REGIONS; wb = wb + 1) begin
@@ -198,10 +198,10 @@ module fpga_test_harness();
         we <= 1;
         transact <= 1;
 
-        @(posedge ack[wb]);
+        @(posedge ack);
         transact <= 0;
         we <= 0;
-        @(negedge ack[wb]);
+        @(negedge ack);
 
         repeat(5) @(posedge clk);
       end
@@ -219,10 +219,10 @@ module fpga_test_harness();
       we <= 1;
       transact <= 1;
 
-      @(posedge ack[wb]);
+      @(posedge ack);
       transact <= 0;
       we <= 0;
-      @(negedge ack[wb]);
+      @(negedge ack);
 
       repeat(5) @(posedge clk);
     end
@@ -237,10 +237,10 @@ module fpga_test_harness();
       we <= 1;
       transact <= 1;
 
-      @(posedge ack[wb]);
+      @(posedge ack);
       transact <= 0;
       we <= 0;
-      @(negedge ack[wb]);
+      @(negedge ack);
 
       repeat(5) @(posedge clk);
     end

@@ -54,7 +54,7 @@ module fpga #(
   input [3:0] wbs_sel_i,
   input [31:0] wbs_data_i,
   input [31:0] wbs_addr_i,
-  output [NUM_CONFIG_REGIONS-1:0] wbs_ack_o,
+  output wbs_ack_o,
   output [31:0] wbs_data_o
 
 );
@@ -196,11 +196,12 @@ endgenerate
 wire [3:0] wb_set_out[NUM_CONFIG_REGIONS-1:0];
 wire [3:0] wb_shift_out[NUM_CONFIG_REGIONS-1:0];
 wire wb_cen_out[NUM_CONFIG_REGIONS-1:0];
-wire [31:0] wbs_data_o_wire[NUM_CONFIG_REGIONS-1:0];
+wire [31:0] wbs_data_o_internal[NUM_CONFIG_REGIONS-1:0];
 wire [31:0] tmp[NUM_CONFIG_REGIONS:0];
+wire wbs_ack_o_internal[NUM_CONFIG_REGIONS-1:0];
 assign tmp[0] = 0;
 assign wbs_data_o = tmp[NUM_CONFIG_REGIONS];
-
+assign wbs_ack_o = wbs_ack_o_internal[0] | wbs_ack_o_internal[1];
 genvar i;
 
 generate
@@ -220,14 +221,14 @@ generate
       .wbs_sel_i(wbs_sel_i),
       .wbs_data_i(wbs_data_i),
       .wbs_addr_i(wbs_addr_i),
-      .wbs_ack_o(wbs_ack_o[i]),
-      .wbs_data_o(wbs_data_o_wire[i]),
+      .wbs_ack_o(wbs_ack_o_internal[i]),
+      .wbs_data_o(wbs_data_o_internal[i]),
       .cen(wb_cen_out[i]),
       .set_out(wb_set_out[i]),
       .shift_out(wb_shift_out[i])
     );
 
-    assign tmp[i + 1] = wbs_ack_o[i] ? wbs_data_o[i] : tmp[i];
+    assign tmp[i + 1] = wbs_ack_o_internal[i] ? wbs_data_o[i] : tmp[i];
   end
 endgenerate
 
