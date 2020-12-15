@@ -12,8 +12,8 @@ module fpga_test_harness();
   initial clk = 0;
   always #(FABRIC_CLOCK_PERIOD/2) clk = ~clk;
 
-  localparam MX = 3;
-  localparam MY = 4;
+  localparam MX = 6;
+  localparam MY = 7;
 
   localparam IO_NORTH = 10;
   localparam IO_SOUTH = 8;
@@ -31,6 +31,8 @@ module fpga_test_harness();
   localparam CLBOUT_EACH_SIDE = 5;
   localparam CLBOS = 4;
   localparam CLBOD = 4;
+
+  localparam NUM_CONFIG_REGIONS = 2;
 
   wire [IO_NORTH-1:0] gpio_north;
   wire [IO_SOUTH-1:0] gpio_south;
@@ -61,7 +63,8 @@ module fpga_test_harness();
     .CLBOUT(CLBOUT),
     .CLBOUT_EACH_SIDE(CLBOUT_EACH_SIDE),
     .CLBOS(CLBOS),
-    .CLBOD(CLBOD)
+    .CLBOD(CLBOD),
+    .NUM_CONFIG_REGIONS(NUM_CONFIG_REGIONS)
   ) FPGA (
     .gpio_north(gpio_north),
     .gpio_south(gpio_south),
@@ -87,10 +90,9 @@ module fpga_test_harness();
   reg [31:0] write_data = 0;
   reg transact = 0;
   reg we = 0;
-  // FIXME: assume the fabric has 4 columns for now
   reg [3:0] select = 4'b1111;
 
-  wire ack;
+  wire [1:0] ack;
   wire [31:0] read_data;
 
   assign wbs_stb_i  = transact;
@@ -158,7 +160,7 @@ module fpga_test_harness();
 
   localparam NUM_BYTES = COL_BITS / 8;
   localparam REM_BITS  = COL_BITS - NUM_BYTES * 8;
-  integer i, j;
+  integer i, j, wb;
   initial begin
     $dumpfile("fpga_test_harness.vcd");
     $dumpvars;
@@ -171,23 +173,66 @@ module fpga_test_harness();
     rst = 1'b0;
     fabric_reset = 1'b0;
 
-    address <= 32'h3000_0001;
-    write_data <= {8'hFF, 8'hFF, 8'hFF, 8'hFF};
-    we <= 1;
-    transact <= 1;
+    for (wb = 0; wb < NUM_CONFIG_REGIONS; wb = wb + 1) begin
+      // Wishbone wb
+      address <= 32'h3000_0004 + (wb << 24);
+      write_data <= {8'hFF, 8'hFF, 8'hFF, 8'hFF};
+      we <= 1;
+      transact <= 1;
 
-    @(posedge ack);
-    transact <= 0;
-    we <= 0;
-    @(negedge ack);
+      @(posedge ack);
+      transact <= 0;
+      we <= 0;
 
-    repeat(5) @(posedge clk);
+      @(negedge ack);
+    end
 
-    for (i = 0; i < NUM_BYTES; i = i + 1) begin
+    for (wb = 0; wb < NUM_CONFIG_REGIONS; wb = wb + 1) begin
+      for (i = 0; i < NUM_BYTES; i = i + 1) begin
+        // sending the bits
+        address <= 32'h3000_0008 + (wb << 24);
+        for (j = wb * 4; j < wb * 4 + 4; j = j + 1) begin
+          if (j < MX)
+            write_data[(j % 4) * 8 +: 8] <= col_bitstream[j][i * 8 +: 8];
+        end
+        we <= 1;
+        transact <= 1;
+
+        @(posedge ack);
+        transact <= 0;
+        we <= 0;
+        @(negedge ack);
+
+        repeat(5) @(posedge clk);
+      end
+    end
+
+    // Send the remaining bits
+    for (wb = 0; wb < NUM_CONFIG_REGIONS; wb = wb + 1) begin
+      address <= 32'h3000_0004 + (wb << 24);
+      write_data <= {8'hFF, 8'hFF, 8'hFF, 8'hFF};
+      for (i = wb * 4; i < wb * 4 + 4; i = i + 1) begin
+        if (i < MX)
+          write_data[(i % 4) * 8 +: 8] <= REM_BITS;
+      end
+
+      we <= 1;
+      transact <= 1;
+
+      @(posedge ack);
+      transact <= 0;
+      we <= 0;
+      @(negedge ack);
+
+      repeat(5) @(posedge clk);
+    end
+
+    for (wb = 0; wb < NUM_CONFIG_REGIONS; wb = wb + 1) begin
       // sending the bits
-      address <= 32'h3000_0002;
-      for (j = 0; j < MX; j = j + 1) begin
-        write_data[j * 8 +: 8] <= col_bitstream[j][i * 8 +: 8];
+      address <= 32'h3000_0008 + (wb << 24);
+      for (i = wb * 4; i < wb * 4 + 4; i = i + 1) begin
+        if (i < MX)
+          write_data[(i % 4) * 8 +: 8] <= col_bitstream[i][COL_BITS - 1 : NUM_BYTES * 8];
       end
       we <= 1;
       transact <= 1;
@@ -196,39 +241,9 @@ module fpga_test_harness();
       transact <= 0;
       we <= 0;
       @(negedge ack);
-    repeat(5) @(posedge clk);
 
+      repeat(5) @(posedge clk);
     end
-
-    // Send the remaining bits
-    address <= 32'h3000_0001;
-    write_data <= {8'hFF, 8'hFF, 8'hFF, 8'hFF};
-    for (i = 0; i < MX; i = i + 1) begin
-      write_data[i * 8 +: 8] <= REM_BITS;
-    end
-
-    we <= 1;
-    transact <= 1;
-
-    @(posedge ack);
-    transact <= 0;
-    we <= 0;
-    @(negedge ack);
-
-    repeat(5) @(posedge clk);
-
-    // sending the bits
-    address <= 32'h3000_0002;
-    for (i = 0; i < MX; i = i + 1) begin
-      write_data[i * 8 +: 8] <= col_bitstream[i][COL_BITS - 1 : NUM_BYTES * 8];
-    end
-    we <= 1;
-    transact <= 1;
-
-    @(posedge ack);
-    transact <= 0;
-    we <= 0;
-    @(negedge ack);
 
     repeat(5) @(posedge clk);
 

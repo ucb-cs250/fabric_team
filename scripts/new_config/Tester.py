@@ -15,11 +15,11 @@ class Tester():
         self.cmd_dir = cmd_dir
 
     # create a test
-    def create_test(self, test_name, configure_func):
+    def create_test(self, test_name, configure_func, *args):
         # create a replicated fabric
         test_fabric = Fabric(self.fabric.num_rows, self.fabric.num_cols, self.fabric.WS, self.fabric.WD, self.fabric.S_XX_BASE, self.fabric.debug, self.fabric.top_level_debug)
         # configure the test_fabric
-        configure_func(test_fabric)
+        configure_func(test_fabric, *args)
         # once the test has been configured, put it into the test_list as a tuple
         self.test_list.append((test_name, test_fabric))
 
@@ -66,12 +66,13 @@ class Tester():
             else:
                 sync_flag = False
                 comb_flag = False
-
+                fabric_comb_output = ""
+                fabric_sync_output = ""
                 for line in storage:
-                    if line.startswith("fabric_comb_output="):
-                        fabric_comb_output = line.strip('\n').split('=')[-1]
-                    if line.startswith("fabric_sync_output="):
-                        fabric_sync_output = line.strip('\n').split('=')[-1]
+                    if line.startswith("fabric_comb_output ="):
+                        fabric_comb_output = line.strip('\n').split(" = ")[-1]
+                    if line.startswith("fabric_sync_output ="):
+                        fabric_sync_output = line.strip('\n').split(" = ")[-1]
 
                     if line.startswith("[sync test]"):
                         sync_flag = True
