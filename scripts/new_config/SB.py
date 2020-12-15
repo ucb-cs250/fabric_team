@@ -122,14 +122,14 @@ class SB():
             connections.append((nodes["ds"+str(i)], nodes["de"+str(i+1)]))
             connections.append((nodes["ds"+str(i+1)], nodes["dw"+str(i+1)]))
             connections.append((nodes["dn"+str(i+1)], nodes["dw"+str(i)]))
+            connections.append((nodes["dn"+str(i)], nodes["ds"+str(i)]))
+            connections.append((nodes["de"+str(i+1)], nodes["dw"+str(i+1)]))
+            connections.append((nodes["dn"+str(i+1)], nodes["ds"+str(i+1)]))
+            connections.append((nodes["de"+str(i)], nodes["dw"+str(i)]))
             connections.append((nodes["dn"+str(i+1)], nodes["de"+str(i+1)]))
             connections.append((nodes["ds"+str(i+1)], nodes["de"+str(i)]))
             connections.append((nodes["ds"+str(i)], nodes["dw"+str(i)]))
             connections.append((nodes["dn"+str(i)], nodes["dw"+str(i+1)]))
-            connections.append((nodes["dn"+str(i)], nodes["ds"+str(i)]))
-            connections.append((nodes["de"+str(i+1)], nodes["dw"+str(i+1)]))
-            connections.append((nodes["dn"+str(i+1)], nodes["de"+str(i+1)]))
-            connections.append((nodes["de"+str(i)], nodes["dw"+str(i)]))
             config_width += 12
 
         return nodes, inverse_nodes, connections, config_width

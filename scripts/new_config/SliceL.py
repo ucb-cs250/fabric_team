@@ -156,10 +156,9 @@ class SliceL():
         elif instance_name == self.S44_3.MSB_lut_name:
             self.comb_output[7] = value
         elif "CARRY4":
-            self.comb_output[0] = value[0]
-            self.comb_output[2] = value[1]
-            self.comb_output[4] = value[2]
-            self.comb_output[6] = value[3]
+            # bits 0, 2, 4, 6: the sum output
+            # bits 1, 3, 5, 7: the carry output
+            self.comb_output = value[::-1]
         else:
             assert False, "Unknown instance name!"
 
