@@ -35,8 +35,6 @@ module fpga #(
   parameter CLBOS = 4,
   parameter CLBOD = 4,
   parameter CLBX = 1,
-
-  parameter NUM_CONFIG_REGIONS = 2
 )(
   inout [IO_NORTH-1:0] gpio_north,
   inout [IO_SOUTH-1:0] gpio_south,
