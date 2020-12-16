@@ -9,8 +9,8 @@ from os.path import isfile, join
 class Cell_Extractor():
 
     # init
-    def __init__(self, log_path, foundry_root_path, third_party_root_path, top_level_name, debug=False):
-        self.log_path = log_path
+    def __init__(self, log_paths, foundry_root_path, third_party_root_path, top_level_name, debug=False):
+        self.log_paths = log_paths
         self.foundry_root_path = foundry_root_path
         self.third_party_root_path = third_party_root_path
         self.top_level_name = top_level_name
@@ -21,31 +21,32 @@ class Cell_Extractor():
 
     # parses the log for the desired info
     def parse(self):
-        with open(self.log_path, 'r') as f:
-            lines = f.readlines()
+        for log_path in self.log_paths:
+          with open(log_path, 'r') as f:
+              lines = f.readlines()
 
-        # search for the first occurrence of the pattern
-        start_idx = 0
-        for index, item in enumerate(lines):
-            if item.strip().startswith('Number of cells:'):
-                start_idx = index
-                break
+          # search for the first occurrence of the pattern
+          start_idx = 0
+          for index, item in enumerate(lines):
+              if item.strip().startswith('Number of cells:'):
+                  start_idx = index
+                  break
 
-        # start collecting cell info
-        if start_idx+1 >= len(lines):
-            print("No cell exist in the report, please check the log")
-            return
+          # start collecting cell info
+          if start_idx+1 >= len(lines):
+              print("No cell exist in the report, please check the log")
+              return
 
-        narrowed_list = lines[start_idx+1:]
-        for index, item in enumerate(narrowed_list):
-            components = item.strip('\n')
-            # hit the empty line
-            if components == '':
-                break
+          narrowed_list = lines[start_idx+1:]
+          for index, item in enumerate(narrowed_list):
+              components = item.strip('\n')
+              # hit the empty line
+              if components == '':
+                  break
 
-            cell_name, *_, cell_count = components.strip().split(' ')
-            # add this entry to the cell_map
-            self.cell_map[cell_name] = ''
+              cell_name, *_, cell_count = components.strip().split(' ')
+              # add this entry to the cell_map
+              self.cell_map[cell_name] = ''
 
         print('parse complete')
 
@@ -109,12 +110,12 @@ if __name__ == "__main__":
     pdk_root = os.environ.get('PDK_ROOT')
     assert pdk_root != None, "PDK_ROOT is not set!"
 
-    synthesis_report = sys.argv[1]
+    synthesis_reports = sys.argv[1:]
 
     # This is the typical setup
     foundry_path = pdk_root + '/skywater-pdk'
     third_party_path = '../thirdparty'
-    extractor = Cell_Extractor(synthesis_report, foundry_path, third_party_path, 'clb_tile', debug=False)
+    extractor = Cell_Extractor(synthesis_reports, foundry_path, third_party_path, 'clb_tile', debug=False)
     extractor.parse()
     extractor.extract()
     extractor.generate_mk()

@@ -3,8 +3,7 @@
 # make sim test=testbench/clb_with_config_test.v
 # make sim test=ix_yukio/testbench/clb_switch_box_tb.v
 
-#VCS = vcs -full64
-VCS = vcs
+VCS = vcs -full64
 
 CLB_PATH      = clb_team
 CFG_PATH      = config_team
@@ -21,7 +20,10 @@ BITSTREAM_FILE=bitstream.txt
 UNITTESTS=scripts/new_config/unittests.py
 TEST_SCRIPT=scripts/new_config/main.py
 MK_GEN_SCRIPT=scripts/asic_flow/Cell_Extractor.py
-SYNTHESIS_REPORT=cell_netlists/clb_tile/yosys_3.stat.rpt
+SYNTHESIS_REPORT=cell_netlists/clb_tile/yosys_3.stat.rpt \
+                 cell_netlists/wishbone_configuratorinator_00/yosys_3.stat.rpt \
+                 cell_netlists/wishbone_configuratorinator_10/yosys_0.stat.rpt \
+                 cell_netlists/fpga/yosys_2.stat.rpt
 
 SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        $(CLB_PATH)/src/behavioral/lut_sXX_softcode.v \
@@ -53,6 +55,9 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        src/fpga.v \
 
 GATE_SRCS = cell_netlists/clb_tile/clb_tile.synthesis.v \
+            cell_netlists/wishbone_configuratorinator_00/wishbone_configuratorinator_00.synthesis.v \
+            cell_netlists/wishbone_configuratorinator_10/wishbone_configuratorinator_10.synthesis.v \
+            cell_netlists/fpga/fpga.synthesis.v \
             $(IX_YUKIO_PATH)/src/transmission_gate_cell.v \
 
 OPTS = -notice \
@@ -82,7 +87,7 @@ $(SIMV): $(SRCS) $(test)
 	$(VCS) $(OPTS) +incdir+$(INCS) $^ -o $@
 
 $(GATE_SIMV): $(GATE_SRCS) $(SKY130_CELLS) $(test)
-	$(VCS) $(OPTS) +incdir+$(INCS)+$(SKY130_INCS) +define+FUNCTIONAL+UNIT_DELAY="#5.0" $^ -o $@
+	$(VCS) $(OPTS) +incdir+$(INCS)+$(SKY130_INCS) +define+FUNCTIONAL+UNIT_DELAY="#0.5"+GATE_LV $^ -o $@
 
 $(BITSTREAM_FILE): $(UNITTESTS)
 	python3 $(UNITTESTS)

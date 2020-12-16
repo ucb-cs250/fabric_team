@@ -12,8 +12,8 @@ module fpga_test_harness();
   initial clk = 0;
   always #(FABRIC_CLOCK_PERIOD/2) clk = ~clk;
 
-  localparam MX = 6;
-  localparam MY = 7;
+  localparam MX = 7;
+  localparam MY = 8;
 
   localparam IO_NORTH = 10;
   localparam IO_SOUTH = 8;
@@ -144,6 +144,7 @@ module fpga_test_harness();
   wire [8*MX*MY-1:0] fabric_sync_output;
   wire [8*MX*MY-1:0] fabric_comb_output;
 
+`ifndef GATE_LV
   // Extract the current registers' states from the Fabric
   // They will be compared against the golden registers' states given by a test
   generate
@@ -154,13 +155,19 @@ module fpga_test_harness();
       end
     end
   endgenerate
+`endif
+
+  always @(posedge clk) begin
+    //$display("TEST 0: %b %b, 1: %b %b", FPGA.col_shift[0], FPGA.col_set[0],
+    //  FPGA.col_shift[1], FPGA.col_set[1]);
+  end
 
   reg debug_config = 0;
   reg failed_tests = 0;
 
   localparam NUM_BYTES = COL_BITS / 8;
   localparam REM_BITS  = COL_BITS - NUM_BYTES * 8;
-  integer i, j, wb;
+  integer i, j, z, wb;
   initial begin
     $dumpfile("fpga_test_harness.vcd");
     $dumpvars;
@@ -207,42 +214,75 @@ module fpga_test_harness();
       end
     end
 
+    if (REM_BITS > 0) begin
     // Send the remaining bits
-    for (wb = 0; wb < NUM_CONFIG_REGIONS; wb = wb + 1) begin
-      address <= 32'h3000_0004 + (wb << 4);
-      write_data <= {8'hFF, 8'hFF, 8'hFF, 8'hFF};
-      for (i = wb * 4; i < wb * 4 + 4; i = i + 1) begin
-        if (i < MX)
-          write_data[(i % 4) * 8 +: 8] <= REM_BITS;
+      for (wb = 0; wb < NUM_CONFIG_REGIONS; wb = wb + 1) begin
+        address <= 32'h3000_0004 + (wb << 4);
+        for (i = wb * 4; i < wb * 4 + 4; i = i + 1) begin
+          if (i < MX)
+            write_data[(i % 4) * 8 +: 8] <= REM_BITS;
+        end
+
+        we <= 1;
+        transact <= 1;
+
+        @(posedge ack);
+        transact <= 0;
+        we <= 0;
+        @(negedge ack);
+
+        repeat(5) @(posedge clk);
       end
 
-      we <= 1;
-      transact <= 1;
+      for (wb = 0; wb < NUM_CONFIG_REGIONS; wb = wb + 1) begin
+        // sending the bits
+        address <= 32'h3000_0008 + (wb << 4);
+        for (i = wb * 4; i < wb * 4 + 4; i = i + 1) begin
+          if (i < MX)
+            for (z = 0; z < REM_BITS; z = z + 1)
+              write_data[(i % 4) * 8 + z] <= col_bitstream[i][NUM_BYTES * 8 + z];
+        end
+        we <= 1;
+        transact <= 1;
 
-      @(posedge ack);
-      transact <= 0;
-      we <= 0;
-      @(negedge ack);
+        @(posedge ack);
+        transact <= 0;
+        we <= 0;
+        @(negedge ack);
 
-      repeat(5) @(posedge clk);
+        repeat(5) @(posedge clk);
+      end
     end
+    else begin
+      // Set the counters to 0 to fire cen
+      for (wb = 0; wb < NUM_CONFIG_REGIONS; wb = wb + 1) begin
+        address <= 32'h3000_0004 + (wb << 4);
+        write_data = {8'h00, 8'h00, 8'h00, 8'h00};
 
-    for (wb = 0; wb < NUM_CONFIG_REGIONS; wb = wb + 1) begin
-      // sending the bits
-      address <= 32'h3000_0008 + (wb << 4);
-      for (i = wb * 4; i < wb * 4 + 4; i = i + 1) begin
-        if (i < MX)
-          write_data[(i % 4) * 8 +: 8] <= col_bitstream[i][COL_BITS - 1 : NUM_BYTES * 8];
+        we <= 1;
+        transact <= 1;
+
+        @(posedge ack);
+        transact <= 0;
+        we <= 0;
+        @(negedge ack);
+
+        repeat(5) @(posedge clk);
       end
-      we <= 1;
-      transact <= 1;
 
-      @(posedge ack);
-      transact <= 0;
-      we <= 0;
-      @(negedge ack);
+      for (wb = 0; wb < NUM_CONFIG_REGIONS; wb = wb + 1) begin
+        // We don't actually send anything here
+        address <= 32'h3000_0008 + (wb << 4);
+        we <= 1;
+        transact <= 1;
 
-      repeat(5) @(posedge clk);
+        @(posedge ack);
+        transact <= 0;
+        we <= 1;
+        @(negedge ack);
+
+        repeat(5) @(posedge clk);
+      end
     end
 
     repeat(5) @(posedge clk);
@@ -266,6 +306,7 @@ module fpga_test_harness();
     $display("GPIO_EAST=%b", gpio_east);
     $display("GPIO_WEST=%b", gpio_west);
 
+`ifndef GATE_LV
     $display("fabric_sync_output = %b", fabric_sync_output);
     $display("gold_sync_output   = %b", gold_sync_output[0]);
 
@@ -285,6 +326,7 @@ module fpga_test_harness();
       $display("[comb test] FAILED: comb_output mismatch!");
       failed_tests = failed_tests + 1;
     end
+`endif
 
     #100;
     $display("Fabric test done! Num tests failed: %d", failed_tests);
