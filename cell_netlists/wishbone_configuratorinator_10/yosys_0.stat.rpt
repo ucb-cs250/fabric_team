@@ -1,0 +1,43 @@
+
+22. Printing statistics.
+
+=== wishbone_configuratorinator_10 ===
+
+   Number of wires:                794
+   Number of wire bits:            896
+   Number of public wires:          88
+   Number of public wire bits:     190
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                855
+     sky130_fd_sc_hd__a2111oi_4     32
+     sky130_fd_sc_hd__a211o_4       24
+     sky130_fd_sc_hd__a21bo_4        6
+     sky130_fd_sc_hd__a21boi_4       1
+     sky130_fd_sc_hd__a21o_4        23
+     sky130_fd_sc_hd__a21oi_4       10
+     sky130_fd_sc_hd__a2bb2oi_4      1
+     sky130_fd_sc_hd__a41o_4         5
+     sky130_fd_sc_hd__a41oi_4        6
+     sky130_fd_sc_hd__and2_4        18
+     sky130_fd_sc_hd__and3_4        47
+     sky130_fd_sc_hd__and4_4        48
+     sky130_fd_sc_hd__buf_2        159
+     sky130_fd_sc_hd__dfxtp_4      140
+     sky130_fd_sc_hd__inv_2         76
+     sky130_fd_sc_hd__nand2_4        3
+     sky130_fd_sc_hd__nand3_4       60
+     sky130_fd_sc_hd__nand4_4       11
+     sky130_fd_sc_hd__nor2_4        60
+     sky130_fd_sc_hd__nor3_4         7
+     sky130_fd_sc_hd__nor4_4         4
+     sky130_fd_sc_hd__o21a_4        15
+     sky130_fd_sc_hd__o21ai_4       93
+     sky130_fd_sc_hd__o22a_4         1
+     sky130_fd_sc_hd__or2_4          3
+     sky130_fd_sc_hd__or4_4          1
+     sky130_fd_sc_hd__xnor2_4        1
+
+   Chip area for module '\wishbone_configuratorinator_10': 11873.888000
+
