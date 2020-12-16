@@ -20,6 +20,10 @@ cp asic_config/baked_clb_switch_box/runs/debug/results/magic/baked_clb_switch_bo
 cp asic_config/baked_clb_switch_box/runs/debug/results/magic/baked_clb_switch_box.lef gds/baked_clb_switch_box/
 cp asic_config/baked_clb_switch_box/runs/debug/results/lvs/baked_clb_switch_box.lvs.powered.v cell_netlists/baked_clb_switch_box/
 
-cp config_team/asic_config/wishbone_configuratorinator/runs/debug/results/magic/wishbone_configuratorinator.gds gds/wishbone_configuratorinator/
-cp config_team/asic_config/wishbone_configuratorinator/runs/debug/results/magic/wishbone_configuratorinator.lef gds/wishbone_configuratorinator/
-cp config_team/asic_config/wishbone_configuratorinator/runs/debug/results/lvs/wishbone_configuratorinator.lvs.powered.v cell_netlists/wishbone_configuratorinator/
+cp config_team/asic_config/wishbone_configuratorinator_00/runs/debug/results/magic/wishbone_configuratorinator_00.gds gds/wishbone_configuratorinator_00/
+cp config_team/asic_config/wishbone_configuratorinator_00/runs/debug/results/magic/wishbone_configuratorinator_00.lef gds/wishbone_configuratorinator_00/
+cp config_team/asic_config/wishbone_configuratorinator_00/runs/debug/results/lvs/wishbone_configuratorinator_00.lvs.powered.v cell_netlists/wishbone_configuratorinator_00/
+
+cp config_team/asic_config/wishbone_configuratorinator_10/runs/debug/results/magic/wishbone_configuratorinator_10.gds gds/wishbone_configuratorinator_10/
+cp config_team/asic_config/wishbone_configuratorinator_10/runs/debug/results/magic/wishbone_configuratorinator_10.lef gds/wishbone_configuratorinator_10/
+cp config_team/asic_config/wishbone_configuratorinator_10/runs/debug/results/lvs/wishbone_configuratorinator_10.lvs.powered.v cell_netlists/wishbone_configuratorinator_10/
