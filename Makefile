@@ -42,6 +42,8 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        $(IX_YUKIO_PATH)/src/transmission_gate_oneway.v \
        $(IX_YUKIO_PATH)/src/connection_block.v \
        $(IX_YUKIO_PATH)/src/transmission_gate_cell.v \
+       $(CFG_PATH)/src/wrapped/wishbone_configuratorinator_00.v \
+       $(CFG_PATH)/src/wrapped/wishbone_configuratorinator_10.v \
        src/baked/baked_slicel.v \
        src/baked/baked_clb_switch_box.v \
        src/baked/baked_connection_block.v \
@@ -51,7 +53,7 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        src/fpga.v \
 
 GATE_SRCS = cell_netlists/clb_tile/clb_tile.synthesis.v \
-						$(IX_YUKIO_PATH)/src/transmission_gate_cell.v \
+            $(IX_YUKIO_PATH)/src/transmission_gate_cell.v \
 
 OPTS = -notice \
        -line \
@@ -80,7 +82,7 @@ $(SIMV): $(SRCS) $(test)
 	$(VCS) $(OPTS) +incdir+$(INCS) $^ -o $@
 
 $(GATE_SIMV): $(GATE_SRCS) $(SKY130_CELLS) $(test)
-	$(VCS) $(OPTS) +incdir+$(INCS)+$(SKY130_INCS) +define+FUNCTIONAL+UNIT_DELAY="#0.1" $^ -o $@
+	$(VCS) $(OPTS) +incdir+$(INCS)+$(SKY130_INCS) +define+FUNCTIONAL+UNIT_DELAY="#5.0" $^ -o $@
 
 $(BITSTREAM_FILE): $(UNITTESTS)
 	python3 $(UNITTESTS)

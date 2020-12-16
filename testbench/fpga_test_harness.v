@@ -175,7 +175,7 @@ module fpga_test_harness();
 
     for (wb = 0; wb < NUM_CONFIG_REGIONS; wb = wb + 1) begin
       // Wishbone wb
-      address <= 32'h3000_0004 + (wb << 24);
+      address <= 32'h3000_0004 + (wb << 4);
       write_data <= {8'hFF, 8'hFF, 8'hFF, 8'hFF};
       we <= 1;
       transact <= 1;
@@ -190,7 +190,7 @@ module fpga_test_harness();
     for (wb = 0; wb < NUM_CONFIG_REGIONS; wb = wb + 1) begin
       for (i = 0; i < NUM_BYTES; i = i + 1) begin
         // sending the bits
-        address <= 32'h3000_0008 + (wb << 24);
+        address <= 32'h3000_0008 + (wb << 4);
         for (j = wb * 4; j < wb * 4 + 4; j = j + 1) begin
           if (j < MX)
             write_data[(j % 4) * 8 +: 8] <= col_bitstream[j][i * 8 +: 8];
@@ -209,7 +209,7 @@ module fpga_test_harness();
 
     // Send the remaining bits
     for (wb = 0; wb < NUM_CONFIG_REGIONS; wb = wb + 1) begin
-      address <= 32'h3000_0004 + (wb << 24);
+      address <= 32'h3000_0004 + (wb << 4);
       write_data <= {8'hFF, 8'hFF, 8'hFF, 8'hFF};
       for (i = wb * 4; i < wb * 4 + 4; i = i + 1) begin
         if (i < MX)
@@ -229,7 +229,7 @@ module fpga_test_harness();
 
     for (wb = 0; wb < NUM_CONFIG_REGIONS; wb = wb + 1) begin
       // sending the bits
-      address <= 32'h3000_0008 + (wb << 24);
+      address <= 32'h3000_0008 + (wb << 4);
       for (i = wb * 4; i < wb * 4 + 4; i = i + 1) begin
         if (i < MX)
           write_data[(i % 4) * 8 +: 8] <= col_bitstream[i][COL_BITS - 1 : NUM_BYTES * 8];
