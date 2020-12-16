@@ -3,7 +3,8 @@
 # make sim test=testbench/clb_with_config_test.v
 # make sim test=ix_yukio/testbench/clb_switch_box_tb.v
 
-VCS = vcs -full64
+#VCS = vcs -full64
+VCS = vcs
 
 CLB_PATH      = clb_team
 CFG_PATH      = config_team
@@ -19,6 +20,8 @@ SYNC_OUTPUT_FILE=sync_output.txt
 BITSTREAM_FILE=bitstream.txt
 UNITTESTS=scripts/new_config/unittests.py
 TEST_SCRIPT=scripts/new_config/main.py
+MK_GEN_SCRIPT=scripts/asic_flow/Cell_Extractor.py
+SYNTHESIS_REPORT=cell_netlists/clb_tile/yosys_3.stat.rpt
 
 SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        $(CLB_PATH)/src/behavioral/lut_sXX_softcode.v \
@@ -47,6 +50,9 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        src/clb_tile.v \
        src/fpga.v \
 
+GATE_SRCS = cell_netlists/clb_tile/clb_tile.synthesis.v \
+						$(IX_YUKIO_PATH)/src/transmission_gate_cell.v \
+
 OPTS = -notice \
        -line \
        +lint=all,noVCDE,noONGS,noUI \
@@ -65,18 +71,31 @@ OPTS = -notice \
 test = path_to_a_test_bench_file
 testname = $(basename $(notdir $(test)))
 SIMV = ./$(testname).simv
+GATE_SIMV = ./$(testname)_gate.simv
 
-$(SIMV): $(SRCS) $(SKY130_CELLS) $(test)
+SKY130_CELLS_D_MK = sky130_cells_dep.mk
+-include $(SKY130_CELLS_D_MK)
+
+$(SIMV): $(SRCS) $(test)
 	$(VCS) $(OPTS) +incdir+$(INCS) $^ -o $@
 
-$(BITSTREAM_FILE): $(UNITTESTS)
-	python $(UNITTESTS)
+$(GATE_SIMV): $(GATE_SRCS) $(SKY130_CELLS) $(test)
+	$(VCS) $(OPTS) +incdir+$(INCS)+$(SKY130_INCS) +define+FUNCTIONAL+UNIT_DELAY="#0.1" $^ -o $@
 
-sim: $(SIMV) $(BITSTREAM_FILE)
+$(BITSTREAM_FILE): $(UNITTESTS)
+	python3 $(UNITTESTS)
+
+sim-rtl: $(SIMV) $(BITSTREAM_FILE)
 	$(SIMV) -q +ntb_random_seed_automatic +load_config=$(BITSTREAM_FILE) +load_sync_output=$(SYNC_OUTPUT_FILE) +load_comb_output=$(COMB_OUTPUT_FILE)
 
+$(SKY130_CELLS_D_MK): $(MK_GEN_SCRIPT) $(SYNTHESIS_REPORT)
+	python3 $(MK_GEN_SCRIPT) $(SYNTHESIS_REPORT)
+
+sim-gl: $(SKY130_CELLS_D_MK) $(GATE_SIMV) $(BITSTREAM_FILE)
+	$(GATE_SIMV) -q +ntb_random_seed_automatic +load_config=$(BITSTREAM_FILE) +load_sync_output=$(SYNC_OUTPUT_FILE) +load_comb_output=$(COMB_OUTPUT_FILE)
+
 regression: $(SIMV)
-	rm -rf test_files && mkdir -p test_files && python $(TEST_SCRIPT)
+	rm -rf test_files && mkdir -p test_files && python3 $(TEST_SCRIPT)
 
 clean:
 	rm -rf *simv* csrc ucli.key *.vcd $(BITSTREAM_FILE) $(SYNC_OUTPUT_FILE) $(COMB_OUTPUT_FILE) test_files/

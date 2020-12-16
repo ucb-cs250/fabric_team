@@ -553,9 +553,111 @@ def test11(fpga250):
     fpga250.get_sb(2, 0).set_pip("SINGLE", "S", 0, "N", 0)
     fpga250.get_sb(3, 0).set_pip("SINGLE", "S", 0, "W", 0)
 
+def test12(fpga250):
+    description = '''
+    '''
+
+    fpga250.get_slicel(0, 0).set_reg_init_val("01111110")
+    fpga250.get_slicel(0, 0).set_memset_bit("1")
+
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 0)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 1)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 2)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 3)
+
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 0)
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 1)
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 2)
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 3)
+
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "S", 0, "N", 0)
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "S", 1, "N", 1)
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "S", 2, "N", 2)
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "S", 3, "N", 3)
+
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "W", 0, "E", 0)
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "W", 1, "E", 1)
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "W", 2, "E", 2)
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "W", 3, "E", 3)
+
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 2, 0)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 2, 1)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 2, 2)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 2, 3)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 3, 4)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 3, 5)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 3, 6)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 3, 7)
+
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 2, 0)
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 2, 1)
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 2, 2)
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 2, 3)
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 3, 4)
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 3, 5)
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 3, 6)
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 3, 7)
+
+    fpga250.get_slicel(0, 0).set_lut_config("LUT0", hex_to_bin("8000", 16)) # 4-AND
+    fpga250.get_slicel(0, 0).set_lut_config("LUT1", hex_to_bin("8000", 16)) # 4-AND
+    fpga250.get_slicel(0, 0).set_lut_config("LUT2", hex_to_bin("8000", 16)) # 4-AND
+    fpga250.get_slicel(0, 0).set_lut_config("LUT3", hex_to_bin("8000", 16)) # 4-AND
+    fpga250.get_slicel(0, 0).set_lut_config("LUT4", hex_to_bin("8000", 16)) # 4-AND
+    fpga250.get_slicel(0, 0).set_lut_config("LUT5", hex_to_bin("8000", 16)) # 4-AND
+    fpga250.get_slicel(0, 0).set_lut_config("LUT6", hex_to_bin("8000", 16)) # 4-AND
+    fpga250.get_slicel(0, 0).set_lut_config("LUT7", hex_to_bin("8000", 16)) # 4-AND
+    fpga250.get_slicel(0, 0).set_split("S44_3", "1")
+    fpga250.get_slicel(0, 0).set_split("S44_2", "1")
+    fpga250.get_slicel(0, 0).set_split("S44_1", "1")
+    fpga250.get_slicel(0, 0).set_split("S44_0", "1")
+
+def test13(fpga250):
+    description = '''
+    '''
+    fpga250.get_cb_east(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 0)
+    fpga250.get_cb_east(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 1)
+    fpga250.get_cb_east(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 2)
+    fpga250.get_cb_east(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 3)
+    fpga250.get_cb_east(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 4)
+    fpga250.get_cb_east(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 5)
+    fpga250.get_cb_east(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 6)
+    fpga250.get_cb_east(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 7)
+
+    fpga250.get_cb_north(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 0)
+    fpga250.get_cb_north(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 1)
+    fpga250.get_cb_north(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 2)
+    fpga250.get_cb_north(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 3)
+    fpga250.get_cb_north(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 4)
+    fpga250.get_cb_north(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 5)
+    fpga250.get_cb_north(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 6)
+    fpga250.get_cb_north(0, 0).set_pip("CLB1_OUT_TO_CLB0_IN", 0, 7)
+
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 0, 0)
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 1, 1)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 0, 0)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 1, 1)
+
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 0, 0)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CLB1_IN", 0, 0)
+
+    fpga250.get_slicel(0, 0).set_lut_config("LUT1", hex_to_bin("6666", 16)) # 2-XOR
+    fpga250.get_slicel(0, 0).set_lut_config("LUT0", hex_to_bin("8888", 16)) # 2-AND
+    fpga250.get_slicel(0, 0).set_lut_config("LUT3", hex_to_bin("6666", 16)) # 2-XOR
+    fpga250.get_slicel(0, 0).set_lut_config("LUT2", hex_to_bin("8888", 16)) # 2-AND
+    fpga250.get_slicel(0, 0).set_lut_config("LUT5", hex_to_bin("6666", 16)) # 2-XOR
+    fpga250.get_slicel(0, 0).set_lut_config("LUT4", hex_to_bin("8888", 16)) # 2-AND
+    fpga250.get_slicel(0, 0).set_lut_config("LUT7", hex_to_bin("6666", 16)) # 2-XOR
+    fpga250.get_slicel(0, 0).set_lut_config("LUT6", hex_to_bin("8888", 16)) # 2-AND
+
+    fpga250.get_slicel(0, 0).set_split("S44_0", "1")
+    fpga250.get_slicel(0, 0).set_split("S44_1", "1")
+    fpga250.get_slicel(0, 0).set_split("S44_2", "1")
+    fpga250.get_slicel(0, 0).set_split("S44_3", "1")
+    fpga250.get_slicel(0, 0).set_use_cc("1")
+
 def main():
-    MX = 6
-    MY = 7
+    MX = 1
+    MY = 1
     WS = 4
     WD = 8
     S_XX_BASE = 4
@@ -563,7 +665,7 @@ def main():
 
     fpga250 = Fabric(MY, MX, WS, WD, S_XX_BASE, debug=debug, top_level_debug=debug)
 
-    test1(fpga250, 0, 0)
+    #test1(fpga250, 0, 0)
     #test2(fpga250, 1, 1)
     #test3(fpga250, 1, 1)
     #test4(fpga250, 1, 1)
@@ -574,6 +676,7 @@ def main():
     #test9(fpga250)
     #test10(fpga250)
     #test11(fpga250)
+    test13(fpga250)
 
     bitstream = fpga250.output_column_wise_bitstream()
     comb_output = fpga250.dump_comb_output()

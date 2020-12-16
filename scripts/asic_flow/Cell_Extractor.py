@@ -1,4 +1,6 @@
+import sys
 from pathlib import Path
+import os
 from os import listdir
 from os.path import isfile, join
 
@@ -21,14 +23,14 @@ class Cell_Extractor():
     def parse(self):
         with open(self.log_path, 'r') as f:
             lines = f.readlines()
-        
+
         # search for the first occurrence of the pattern
         start_idx = 0
         for index, item in enumerate(lines):
             if item.strip().startswith('Number of cells:'):
                 start_idx = index
                 break
-        
+
         # start collecting cell info
         if start_idx+1 >= len(lines):
             print("No cell exist in the report, please check the log")
@@ -44,11 +46,11 @@ class Cell_Extractor():
             cell_name, *_, cell_count = components.strip().split(' ')
             # add this entry to the cell_map
             self.cell_map[cell_name] = ''
-        
+
         print('parse complete')
 
     # trace the location for the cells
-    def extract(self):  
+    def extract(self):
         # populate the cell_map
         for cell_name in self.cell_map.keys():
             # foundry
@@ -70,9 +72,13 @@ class Cell_Extractor():
                 # choose the cell
                 cell_path = cell_path / lib_cell
                 self.result_list.append(str(cell_path))
+                self.cell_map[cell_name] = cell_path
                 if self.debug:
                     print(str(cell_path))
             else:
+                # let's only extract sky130 cells for now
+                continue
+
                 # look for it within self.third_party_root_path
                 cell_path = Path(self.third_party_root_path) / "libraries" / "cells"
                 onlyfiles = [f for f in listdir(cell_path) if isfile(join(cell_path, f))]
@@ -81,14 +87,35 @@ class Cell_Extractor():
                     result = cell_path / i
                     self.result_list.append(str(result))
                     if self.debug:
-                        print(str(result))                
+                        print(str(result))
 
+    def generate_mk(self):
+        sky130_incs = "SKY130_INCS := " + self.result_list[0] + '\n'
+        for cell_path in self.result_list[1:]:
+          sky130_incs += "SKY130_INCS := $(SKY130_INCS)+" + cell_path + '\n'
 
+        sky130_verilogs = "SKY130_CELLS := "
+        for cell_name in self.cell_map.keys():
+          if self.cell_map[cell_name] == '':
+            continue
+          sky130_verilogs += str(self.cell_map[cell_name]) + '/' + cell_name + '.v' + '\\' + '\n'
 
+        sky130_cells_d_mk = open("sky130_cells_dep.mk", "w")
+        sky130_cells_d_mk.write(sky130_incs)
+        sky130_cells_d_mk.write(sky130_verilogs)
+        sky130_cells_d_mk.close()
 
 if __name__ == "__main__":
-    foundry_path = '../skywater-pdk'
+    pdk_root = os.environ.get('PDK_ROOT')
+    assert pdk_root != None, "PDK_ROOT is not set!"
+
+    synthesis_report = sys.argv[1]
+
+    # This is the typical setup
+    foundry_path = pdk_root + '/skywater-pdk'
     third_party_path = '../thirdparty'
-    extractor = Cell_Extractor('./yosys_3.stat.rpt', foundry_path, third_party_path, 'clb_tile', debug=True)
+    extractor = Cell_Extractor(synthesis_report, foundry_path, third_party_path, 'clb_tile', debug=False)
     extractor.parse()
     extractor.extract()
+    extractor.generate_mk()
+
