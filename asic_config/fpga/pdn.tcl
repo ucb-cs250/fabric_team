@@ -47,7 +47,17 @@ pdngen::specify_grid macro {
 }
 
 pdngen::specify_grid macro {
-  macro wishbone_configuratorinator
+  macro wishbone_configuratorinator_00
+  blockages "li1 met1 met2 met3 met4"
+  power_pins VPWR
+  ground_pins VGND
+  straps {
+  }
+  connect {{met4_PIN_ver met5}}
+}
+
+pdngen::specify_grid macro {
+  macro wishbone_configuratorinator_10
   blockages "li1 met1 met2 met3 met4"
   power_pins VPWR
   ground_pins VGND

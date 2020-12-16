@@ -56,8 +56,10 @@ if {$use_debug_products} {
   set clb_gds $gds_root/clb_tile/clb_tile.gds
 
   # wishbone client
-  set wb_lef $gds_root/wishbone_configuratorinator/wishbone_configuratorinator.lef
-  set wb_gds $gds_root/wishbone_configuratorinator/wishbone_configuratorinator.gds
+  set wb_lef_00 $gds_root/wishbone_configuratorinator_00/wishbone_configuratorinator_00.lef
+  set wb_gds_00 $gds_root/wishbone_configuratorinator_00/wishbone_configuratorinator_00.gds
+  set wb_lef_10 $gds_root/wishbone_configuratorinator_10/wishbone_configuratorinator_10.lef
+  set wb_gds_10 $gds_root/wishbone_configuratorinator_10/wishbone_configuratorinator_10.gds
 }
 
 # Verilog files for top level RTL connections. Do not include black boxes!
@@ -65,13 +67,14 @@ set ::env(VERILOG_FILES) [concat \
   $fabric_src/fpga.v \
   $blackbox_src/clb_tile.v \
   $blackbox_src/mac_tile.v \
-  $blackbox_src/wishbone_configuratorinator.v \
+  $blackbox_src/wishbone_configuratorinator_00.v \
+  $blackbox_src/wishbone_configuratorinator_10.v \
 ]
 
 set ::env(TRISTATE_BUFFER_MAP) $src_root/src/tbuf_map.v
 
-set ::env(EXTRA_LEFS) [list $mac_lef $clb_lef $wb_lef]
-set ::env(EXTRA_GDS_FILES) [list $mac_gds $clb_gds $wb_gds]
+set ::env(EXTRA_LEFS) [list $mac_lef $clb_lef $wb_lef_00 $wb_lef_10]
+set ::env(EXTRA_GDS_FILES) [list $mac_gds $clb_gds $wb_gds_00 $wb_gds_10]
 
 set filename $::env(OPENLANE_ROOT)/designs/250/$::env(PDK)_$::env(PDK_VARIANT)_config.tcl
 if { [file exists $filename] == 1} {
@@ -98,13 +101,14 @@ if { $use_absolute_sizing } {
   set ::env(PL_SKIP_INITIAL_PLACEMENT) 1
   set ::env(PL_RANDOM_GLB_PLACEMENT) 0
 
-  set ::env(FP_HORIZONTAL_HALO) 10
-  set ::env(FP_VERTICAL_HALO) 10
+  set ::env(FP_HORIZONTAL_HALO) 15
+  set ::env(FP_VERTICAL_HALO) 15
   set ::env(CLOCK_TREE_SYNTH) 0
 
   # PDN fiddling. Try to reproduce the calculations in
   # openlane/scripts/tcl_commands/floorplan.tcl with some modifications:
   set ::env(FP_PDN_HPITCH) [expr {153.18/2.0}]
+  set ::env(FP_PDN_VPITCH) [expr {380/6.0}]
 } else {
   puts_info {Using relative sizing}
   set ::env(FP_CORE_UTIL) 50

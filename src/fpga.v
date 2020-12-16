@@ -1,6 +1,7 @@
 module fpga #(
-  parameter MX = 6,
-  parameter MY = 7,
+  parameter MX = 7,
+  parameter MY = 8,
+  parameter NUM_CONFIG_REGIONS = 2,
   // There are 38 IO pins in Caravel, so we distribute them around the chip.
   parameter IO_NORTH = 10,  // Actually 9
   parameter IO_SOUTH = 8,   // Actually 0
@@ -34,8 +35,6 @@ module fpga #(
   parameter CLBOS = 4,
   parameter CLBOD = 4,
   parameter CLBX = 1,
-
-  parameter NUM_CONFIG_REGIONS = 2
 )(
   inout [IO_NORTH-1:0] gpio_north,
   inout [IO_SOUTH-1:0] gpio_south,
@@ -197,38 +196,51 @@ wire [3:0] wb_set_out[NUM_CONFIG_REGIONS-1:0];
 wire [3:0] wb_shift_out[NUM_CONFIG_REGIONS-1:0];
 wire wb_cen_out[NUM_CONFIG_REGIONS-1:0];
 wire [31:0] wbs_data_o_internal[NUM_CONFIG_REGIONS-1:0];
-wire [31:0] tmp[NUM_CONFIG_REGIONS:0];
 wire wbs_ack_o_internal[NUM_CONFIG_REGIONS-1:0];
-assign tmp[0] = 0;
-assign wbs_data_o = tmp[NUM_CONFIG_REGIONS];
-assign wbs_ack_o = wbs_ack_o_internal[0] | wbs_ack_o_internal[1];
-genvar i;
 
+assign wbs_data_o = wbs_data_o_internal[0] | wbs_data_o_internal[1];
+assign wbs_ack_o = wbs_ack_o_internal[0] | wbs_ack_o_internal[1];
+
+wishbone_configuratorinator_00 wishbonatron_00 (
+  .wb_clk_i(wb_clk_i),
+  .wb_rst_i(wb_rst_i),
+
+  .wbs_stb_i(wbs_stb_i),
+  .wbs_we_i(wbs_we_i),
+  .wbs_sel_i(wbs_sel_i),
+  .wbs_data_i(wbs_data_i),
+  .wbs_addr_i(wbs_addr_i),
+  .wbs_ack_o(wbs_ack_o_internal[0]),
+  .wbs_data_o(wbs_data_o_internal[0]),
+
+  .cen(wb_cen_out[0]),
+  .set_out(wb_set_out[0]),
+  .shift_out(wb_shift_out[0])
+);
+
+wishbone_configuratorinator_10 wishbonatron_10 (
+  .wb_clk_i(wb_clk_i),
+  .wb_rst_i(wb_rst_i),
+
+  .wbs_stb_i(wbs_stb_i),
+  .wbs_we_i(wbs_we_i),
+  .wbs_sel_i(wbs_sel_i),
+  .wbs_data_i(wbs_data_i),
+  .wbs_addr_i(wbs_addr_i),
+  .wbs_ack_o(wbs_ack_o_internal[1]),
+  .wbs_data_o(wbs_data_o_internal[1]),
+
+  .cen(wb_cen_out[1]),
+  .set_out(wb_set_out[1]),
+  .shift_out(wb_shift_out[1])
+);
+
+genvar i;
 generate
   for (i = 0; i < NUM_CONFIG_REGIONS; i = i + 1) begin:wb
     assign col_set[0][4*i +: 4] = wb_set_out[i][3:0];
     assign col_shift[0][4*i +: 4] = wb_shift_out[i][3:0];
     assign col_cen[4*i +: 4] = {wb_cen_out[i], wb_cen_out[i], wb_cen_out[i], wb_cen_out[i]};
-
-    wishbone_configuratorinator #(
-      .BASE_ADDR(32'h3000_0000 + (i << 24))
-    ) wishbonatron (
-      .wb_clk_i(wb_clk_i),
-      .wb_rst_i(wb_rst_i),
-      .wbs_stb_i(wbs_stb_i),
-      .wbs_cyc_i(wbs_cyc_i),
-      .wbs_we_i(wbs_we_i),
-      .wbs_sel_i(wbs_sel_i),
-      .wbs_data_i(wbs_data_i),
-      .wbs_addr_i(wbs_addr_i),
-      .wbs_ack_o(wbs_ack_o_internal[i]),
-      .wbs_data_o(wbs_data_o_internal[i]),
-      .cen(wb_cen_out[i]),
-      .set_out(wb_set_out[i]),
-      .shift_out(wb_shift_out[i])
-    );
-
-    assign tmp[i + 1] = wbs_ack_o_internal[i] ? wbs_data_o[i] : tmp[i];
   end
 endgenerate
 
