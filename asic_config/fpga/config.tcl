@@ -108,7 +108,8 @@ if { $use_absolute_sizing } {
   # PDN fiddling. Try to reproduce the calculations in
   # openlane/scripts/tcl_commands/floorplan.tcl with some modifications:
   set ::env(FP_PDN_HPITCH) [expr {153.18/2.0}]
-  set ::env(FP_PDN_VPITCH) [expr {380/6.0}]
+  set ::env(FP_PDN_VOFFSET) [expr  {16.32-7.32}]
+  set ::env(FP_PDN_VPITCH) [expr {380/5.5}]
 } else {
   puts_info {Using relative sizing}
   set ::env(FP_CORE_UTIL) 50

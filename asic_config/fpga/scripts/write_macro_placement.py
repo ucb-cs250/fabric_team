@@ -26,7 +26,7 @@ for x in range(MX):
 #for i in range(NUM_WB):
 #    name = WB_INST_NAME.format(i=i)
 add_placement('wishbonatron_00', 700, 50)
-add_placement('wishbonatron_10', 2000, 50)
+add_placement('wishbonatron_10', 2005, 50)
 
 with open(FILE_NAME, 'w') as f:
     for placement in PLACEMENTS:
