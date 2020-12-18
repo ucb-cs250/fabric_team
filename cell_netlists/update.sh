@@ -7,7 +7,7 @@ declare -A run_tags
 declare -A run_dirs
 declare -A dest_dirs
 
-run_tags[fpga]=360_noscope_a
+run_tags[fpga]=final4
 run_tags[clb_tile]=predecode_a_2
 run_tags[wb_00]=360_noscope_a
 run_tags[wb_10]=360_noscope_a
