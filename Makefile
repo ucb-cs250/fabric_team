@@ -12,17 +12,18 @@ SRAM_PATH     = sram_team
 IX_YUKIO_PATH = ix_yukio
 IX_NATE_PATH  = ix_nate
 
-INCS = src+$(MAC_PATH)/src
+INCS = src+$(MAC_PATH)/src+$(PDK_ROOT)/skywater-pdk/libraries/sky130_fd_sc_hd/latest/cells/mux4
 
 COMB_OUTPUT_FILE=comb_output.txt
 SYNC_OUTPUT_FILE=sync_output.txt
+GPIO_OUTPUT_FILE=gpio_output.txt
 BITSTREAM_FILE=bitstream.txt
 UNITTESTS=scripts/new_config/unittests.py
 TEST_SCRIPT=scripts/new_config/main.py
 MK_GEN_SCRIPT=scripts/asic_flow/Cell_Extractor.py
 SYNTHESIS_REPORT=cell_netlists/clb_tile/yosys_3.stat.rpt \
                  cell_netlists/wishbone_configuratorinator_00/yosys_3.stat.rpt \
-                 cell_netlists/wishbone_configuratorinator_10/yosys_0.stat.rpt \
+                 cell_netlists/wishbone_configuratorinator_10/yosys_3.stat.rpt \
                  cell_netlists/fpga/yosys_2.stat.rpt
 
 SRCS = $(CLB_PATH)/src/behavioral/lut.v \
@@ -53,12 +54,15 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        src/baked/baked_connection_block_north.v \
        src/clb_tile.v \
        src/fpga.v \
+       $(PDK_ROOT)/skywater-pdk/libraries/sky130_fd_sc_hd/latest/cells/mux4/sky130_fd_sc_hd__mux4_1.v \
 
 GATE_SRCS = cell_netlists/clb_tile/clb_tile.synthesis.v \
             cell_netlists/wishbone_configuratorinator_00/wishbone_configuratorinator_00.synthesis.v \
             cell_netlists/wishbone_configuratorinator_10/wishbone_configuratorinator_10.synthesis.v \
             cell_netlists/fpga/fpga.synthesis.v \
             $(IX_YUKIO_PATH)/src/transmission_gate_cell.v \
+
+#GATE_SRCS = cell_netlists/wishbone_configuratorinator_00/wishbone_configuratorinator_00.synthesis.v \
 
 OPTS = -notice \
        -line \
@@ -73,7 +77,7 @@ OPTS = -notice \
        -timescale=1ns/1ps \
        -v2005 \
        +vcs+loopdetect \
-       +vcs+vcdpluson
+#       +vcs+vcdpluson
 
 test = path_to_a_test_bench_file
 testname = $(basename $(notdir $(test)))
@@ -87,22 +91,25 @@ $(SIMV): $(SRCS) $(test)
 	$(VCS) $(OPTS) +incdir+$(INCS) $^ -o $@
 
 $(GATE_SIMV): $(GATE_SRCS) $(SKY130_CELLS) $(test)
-	$(VCS) $(OPTS) +incdir+$(INCS)+$(SKY130_INCS) +define+FUNCTIONAL+UNIT_DELAY="#0.5"+GATE_LV $^ -o $@
+	$(VCS) $(OPTS) +incdir+$(INCS)+$(SKY130_INCS) +define+FUNCTIONAL+UNIT_DELAY="#0"+GATE_LV $^ -o $@
 
 $(BITSTREAM_FILE): $(UNITTESTS)
 	python3 $(UNITTESTS)
 
 sim-rtl: $(SIMV) $(BITSTREAM_FILE)
-	$(SIMV) -q +ntb_random_seed_automatic +load_config=$(BITSTREAM_FILE) +load_sync_output=$(SYNC_OUTPUT_FILE) +load_comb_output=$(COMB_OUTPUT_FILE)
+	$(SIMV) -q +ntb_random_seed_automatic +load_config=$(BITSTREAM_FILE) +load_sync_output=$(SYNC_OUTPUT_FILE) +load_comb_output=$(COMB_OUTPUT_FILE) +load_gpio_output=$(GPIO_OUTPUT_FILE)
 
 $(SKY130_CELLS_D_MK): $(MK_GEN_SCRIPT) $(SYNTHESIS_REPORT)
 	python3 $(MK_GEN_SCRIPT) $(SYNTHESIS_REPORT)
 
 sim-gl: $(SKY130_CELLS_D_MK) $(GATE_SIMV) $(BITSTREAM_FILE)
-	$(GATE_SIMV) -q +ntb_random_seed_automatic +load_config=$(BITSTREAM_FILE) +load_sync_output=$(SYNC_OUTPUT_FILE) +load_comb_output=$(COMB_OUTPUT_FILE)
+	$(GATE_SIMV) -q +ntb_random_seed_automatic +load_config=$(BITSTREAM_FILE) +load_sync_output=$(SYNC_OUTPUT_FILE) +load_comb_output=$(COMB_OUTPUT_FILE) +load_gpio_output=$(GPIO_OUTPUT_FILE)
 
-regression: $(SIMV)
-	rm -rf test_files && mkdir -p test_files && python3 $(TEST_SCRIPT)
+regression-rtl: $(SIMV)
+	rm -rf test_files && mkdir -p test_files && python3 $(TEST_SCRIPT) $(SIMV)
+
+regression-gl: $(GATE_SIMV)
+	rm -rf test_files && mkdir -p test_files && python3 $(TEST_SCRIPT) $(GATE_SIMV)
 
 clean:
-	rm -rf *simv* csrc ucli.key *.vcd $(BITSTREAM_FILE) $(SYNC_OUTPUT_FILE) $(COMB_OUTPUT_FILE) test_files/
+	rm -rf *simv* csrc ucli.key *.vcd $(BITSTREAM_FILE) $(SYNC_OUTPUT_FILE) $(COMB_OUTPUT_FILE) $(GPIO_OUTPUT_FILE) test_files/

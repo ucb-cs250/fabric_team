@@ -1,0 +1,25 @@
+
+26. Printing statistics.
+
+=== fpga ===
+
+   Number of wires:               3672
+   Number of wire bits:           3802
+   Number of public wires:        3440
+   Number of public wire bits:    3570
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:                323
+     clb_tile                       56
+     sky130_fd_sc_hd__conb_1       232
+     sky130_fd_sc_hd__or2_4         33
+     wishbone_configuratorinator_00      1
+     wishbone_configuratorinator_10      1
+
+   Area for cell type \wishbone_configuratorinator_00 is unknown!
+   Area for cell type \wishbone_configuratorinator_10 is unknown!
+   Area for cell type \clb_tile is unknown!
+
+   Chip area for module '\fpga': 1159.862400
+
