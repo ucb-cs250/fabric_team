@@ -20,6 +20,8 @@ module fpga_test_harness();
   localparam IO_EAST  = 10;
   localparam IO_WEST  = 10;
 
+  localparam GPIO_BITS = IO_NORTH + IO_SOUTH + IO_WEST + IO_EAST;
+
   // CLB
   localparam S_XX_BASE = 4;
   localparam NUM_LUTS = 4;
@@ -117,19 +119,24 @@ module fpga_test_harness();
   reg [FPGA_BITS-1:0] bitstream[1];
   reg [8*MX*MY-1:0]   gold_sync_output[1];
   reg [8*MX*MY-1:0]   gold_comb_output[1];
+  reg [GPIO_BITS-1:0] gold_gpio_output[1];
 
   reg [1023:0] load_config = 0;
   reg [1023:0] load_sync_output = 0;
   reg [1023:0] load_comb_output = 0;
+  reg [1023:0] load_gpio_output = 0;
 
   initial begin
     $value$plusargs("load_config=%s",      load_config);
     $value$plusargs("load_sync_output=%s", load_sync_output);
     $value$plusargs("load_comb_output=%s", load_comb_output);
+    $value$plusargs("load_gpio_output=%s", load_gpio_output);
 
-    #1 $readmemb(load_config, bitstream);
-    #1 $readmemb(load_sync_output, gold_sync_output);
-    #1 $readmemb(load_comb_output, gold_comb_output);
+    #1;
+    $readmemb(load_config, bitstream);
+    $readmemb(load_sync_output, gold_sync_output);
+    $readmemb(load_comb_output, gold_comb_output);
+    $readmemb(load_gpio_output, gold_gpio_output);
   end
 
   wire [COL_BITS-1:0] col_bitstream [MX-1:0];
@@ -143,24 +150,21 @@ module fpga_test_harness();
 
   wire [8*MX*MY-1:0] fabric_sync_output;
   wire [8*MX*MY-1:0] fabric_comb_output;
+  wire [4*MX*MY-1:0] fabric_clb_south_output;
+  wire [4*MX*MY-1:0] fabric_clb_west_output;
 
-`ifndef GATE_LV
   // Extract the current registers' states from the Fabric
   // They will be compared against the golden registers' states given by a test
   generate
     for (x = 0; x < MX; x = x + 1) begin
       for (y = 0; y < MY; y = y + 1) begin
+`ifndef GATE_LV
         assign fabric_sync_output[x * MY * 8 + y * 8 +: 8] = FPGA.X[MX-1-x].Y[MY-1-y].clb.slice.sync_output;
         assign fabric_comb_output[x * MY * 8 + y * 8 +: 8] = FPGA.X[MX-1-x].Y[MY-1-y].clb.slice.comb_output;
+`endif
       end
     end
   endgenerate
-`endif
-
-  always @(posedge clk) begin
-    //$display("TEST 0: %b %b, 1: %b %b", FPGA.col_shift[0], FPGA.col_set[0],
-    //  FPGA.col_shift[1], FPGA.col_set[1]);
-  end
 
   reg debug_config = 0;
   reg failed_tests = 0;
@@ -169,8 +173,8 @@ module fpga_test_harness();
   localparam REM_BITS  = COL_BITS - NUM_BYTES * 8;
   integer i, j, z, wb;
   initial begin
-    $dumpfile("fpga_test_harness.vcd");
-    $dumpvars;
+    //$dumpfile("fpga_test_harness.vcd");
+    //$dumpvars;
 
     rst = 1'b1;
     fabric_reset= 1'b1;
@@ -306,7 +310,22 @@ module fpga_test_harness();
     $display("GPIO_EAST=%b", gpio_east);
     $display("GPIO_WEST=%b", gpio_west);
 
+    $display("fabric_gpio_output = %b",
+      {gpio_north, gpio_south, gpio_east, gpio_west});
+    $display("gold_gpio_output   = %b", gold_gpio_output[0]);
+
+    if ({gpio_north, gpio_south, gpio_east, gpio_west} === gold_gpio_output[0])
+       $display("[gpio test] PASSED!");
+    else begin
+       $display("[gpio test] FAILED: gpio_output mismatch!");
+       failed_tests = failed_tests + 1;
+    end
+
 `ifndef GATE_LV
+    $display("TEST %b %b",
+      FPGA.X[0].Y[0].clb.cb_north_out,
+      FPGA.X[0].Y[1].clb.clb_south_in);
+
     $display("fabric_sync_output = %b", fabric_sync_output);
     $display("gold_sync_output   = %b", gold_sync_output[0]);
 

@@ -7,17 +7,24 @@ import subprocess
 class Tester():
 
     # init
-    def __init__(self, fabric, cmd_dir):
+    def __init__(self, fabric, exec_sim_file, cmd_dir):
         self.fabric = fabric
         self.test_list = list()
         self.result_list = list()
-        self.cmd = "make sim test=testbench/fpga_test_harness.v"
+        self.exec_sim_file = exec_sim_file
         self.cmd_dir = cmd_dir
 
     # create a test
     def create_test(self, test_name, configure_func, *args):
         # create a replicated fabric
-        test_fabric = Fabric(self.fabric.num_rows, self.fabric.num_cols, self.fabric.WS, self.fabric.WD, self.fabric.S_XX_BASE, self.fabric.debug, self.fabric.top_level_debug)
+        test_fabric = Fabric(self.fabric.num_rows, self.fabric.num_cols,
+            self.fabric.WS, self.fabric.WD,
+            self.fabric.S_XX_BASE,
+            self.fabric.num_gpio_north,
+            self.fabric.num_gpio_south,
+            self.fabric.num_gpio_east,
+            self.fabric.num_gpio_west,
+            self.fabric.debug, self.fabric.top_level_debug)
         # configure the test_fabric
         configure_func(test_fabric, *args)
         # once the test has been configured, put it into the test_list as a tuple
@@ -31,6 +38,7 @@ class Tester():
             bitstream   = i[1].output_column_wise_bitstream()
             golden_comb_output = i[1].dump_comb_output()
             golden_sync_output = i[1].dump_sync_output()
+            golden_gpio_output = i[1].dump_gpio_output()
 
             bitstream_file = open("test_files/bitstream.%s.txt" % i[0], "w")
             bitstream_file.write(bitstream)
@@ -38,19 +46,22 @@ class Tester():
             comb_output_file.write(golden_comb_output)
             sync_output_file = open("test_files/sync_output.%s.txt" % i[0], "w")
             sync_output_file.write(golden_sync_output)
+            gpio_output_file = open("test_files/gpio_output.%s.txt" % i[0], "w")
+            gpio_output_file.write(golden_gpio_output)
 
             bitstream_file.close()
             comb_output_file.close()
             sync_output_file.close()
+            gpio_output_file.close()
 
-            #process = subprocess.Popen(["make", "sim", "test=testbench/fpga_test_harness.v"], stdout=subprocess.PIPE, cwd="../../")
             process = subprocess.Popen([
-              "./fpga_test_harness.simv",
+              self.exec_sim_file,
               "-q",
               "+ntb_random_seed_automatic",
               "+load_config=test_files/bitstream.%s.txt" % i[0],
               "+load_sync_output=test_files/sync_output.%s.txt" % i[0],
-              "+load_comb_output=test_files/comb_output.%s.txt" % i[0]], stdout=subprocess.PIPE, cwd="./")
+              "+load_comb_output=test_files/comb_output.%s.txt" % i[0],
+              "+load_gpio_output=test_files/gpio_output.%s.txt" % i[0]], stdout=subprocess.PIPE, cwd="./")
 
             process.wait()
 
@@ -66,13 +77,19 @@ class Tester():
             else:
                 sync_flag = False
                 comb_flag = False
+                gpio_flag = False
+
                 fabric_comb_output = ""
                 fabric_sync_output = ""
+                fabric_gpio_output = ""
+
                 for line in storage:
                     if line.startswith("fabric_comb_output ="):
                         fabric_comb_output = line.strip('\n').split(" = ")[-1]
                     if line.startswith("fabric_sync_output ="):
                         fabric_sync_output = line.strip('\n').split(" = ")[-1]
+                    if line.startswith("fabric_gpio_output ="):
+                        fabric_gpio_output = line.strip('\n').split(" = ")[-1]
 
                     if line.startswith("[sync test]"):
                         sync_flag = True
@@ -91,28 +108,38 @@ class Tester():
                         else:
                             comb_reason = "the testbench result differs from the golden output"
                             comb_result = "comb failed"
+                    elif line.startswith("[gpio test]"):
+                        gpio_flag = True
+                        if line.strip('\n').split(' ')[-1] == "PASSED!":
+                            gpio_reason = "Success"
+                            gpio_result = "gpio passed"
+                        else:
+                            gpio_reason = "the testbench result differs from the golden output"
+                            gpio_result = "gpio failed"
 
                 # check the flag
-                if sync_flag and (not comb_flag):
-                    comb_reason = "failed to find the line that starts with [comb test]"
-                    comb_result = "comb failed"
-                elif (not sync_flag) and comb_flag:
-                    sync_reason = "failed to find the line that starts with [sync test]"
-                    sync_result = "sync failed"
-                elif (not sync_flag) and (not comb_flag):
-                    sync_reason = "failed to find the line that starts with [sync test]"
-                    sync_result = "sync failed"
-                    comb_reason = "failed to find the line that starts with [comb test]"
-                    comb_result = "comb failed"
+                if not comb_flag:
+                    comb_reason = ""
+                    comb_result = "comb skipped"
+                if not sync_flag:
+                    sync_reason = ""
+                    sync_result = "sync skipped"
+                if not gpio_flag:
+                    gpio_reason = ""
+                    gpio_result = "gpio skipped"
 
                 # update the result_list
-                self.result_list.append((i[0], sync_result, sync_reason, comb_result, comb_reason, fabric_sync_output, fabric_comb_output, golden_sync_output, golden_comb_output))
+                self.result_list.append((i[0], sync_result, sync_reason,
+                    comb_result, comb_reason,
+                    gpio_result, gpio_reason,
+                    fabric_sync_output, fabric_comb_output, fabric_gpio_output,
+                    golden_sync_output, golden_comb_output, golden_gpio_output))
         print("run complete")
         print()
 
     # report
     def report(self):
-        total_tests = 2 * len(self.result_list)
+        total_tests = 3 * len(self.result_list)
         num_failed_tests = 0
         print("generating report for the below test cases:")
         for i in self.result_list:
@@ -121,23 +148,48 @@ class Tester():
             sync_reason = i[2]
             comb_result = i[3]
             comb_reason = i[4]
-            fabric_sync_output = i[5]
-            fabric_comb_output = i[6]
-            golden_sync_output = i[7]
-            golden_comb_output = i[8]
+            gpio_result = i[5]
+            gpio_reason = i[6]
+
+            fabric_sync_output = i[7]
+            fabric_comb_output = i[8]
+            fabric_gpio_output = i[9]
+
+            golden_sync_output = i[10]
+            golden_comb_output = i[11]
+            golden_gpio_output = i[12]
+
             print("    test name: %s" % test_name)
-            print("      %s" % sync_result)
             if sync_result == "sync failed":
                 num_failed_tests += 1
                 print("      fail reason: %s" % sync_reason)
                 print("fabric_sync_output %s" % fabric_sync_output)
                 print("golden_sync_output %s" % golden_sync_output)
-            print("      %s" % comb_result)
+            elif sync_result == "sync skipped":
+                total_tests -= 1
+            else:
+                print("      %s" % sync_result)
+
             if comb_result == "comb failed":
                 num_failed_tests += 1
                 print("      fail reason: %s" % comb_reason)
                 print("fabric_comb_output %s" % fabric_comb_output)
                 print("golden_comb_output %s" % golden_comb_output)
+            elif comb_result == "comb skipped":
+                total_tests -= 1
+            else:
+                print("      %s" % comb_result)
+
+            if gpio_result == "gpio failed":
+                num_failed_tests += 1
+                print("      fail reason: %s" % gpio_reason)
+                print("fabric_gpio_output %s" % fabric_gpio_output)
+                print("golden_gpio_output %s" % golden_gpio_output)
+            elif gpio_result == "gpio skipped":
+                total_tests -= 1
+            else:
+                print("      %s" % gpio_result)
+
             print()
 
         print("report complete. Passed %d/%d" % (total_tests - num_failed_tests, total_tests))

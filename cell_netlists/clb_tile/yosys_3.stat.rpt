@@ -1,0 +1,43 @@
+
+48. Printing statistics.
+
+=== clb_tile ===
+
+   Number of wires:               6815
+   Number of wire bits:           6907
+   Number of public wires:        2008
+   Number of public wire bits:    2100
+   Number of memories:               0
+   Number of memory bits:            0
+   Number of processes:              0
+   Number of cells:               7703
+     sky130_fd_sc_hd__a2111o_4       1
+     sky130_fd_sc_hd__a211o_4        9
+     sky130_fd_sc_hd__a21bo_4        2
+     sky130_fd_sc_hd__a21o_4        13
+     sky130_fd_sc_hd__a21oi_4        5
+     sky130_fd_sc_hd__a2bb2o_4       1
+     sky130_fd_sc_hd__a32o_4         1
+     sky130_fd_sc_hd__and2_4        25
+     sky130_fd_sc_hd__and3_4      1043
+     sky130_fd_sc_hd__buf_2        502
+     sky130_fd_sc_hd__dfxtp_4     1056
+     sky130_fd_sc_hd__dlxtp_1     1016
+     sky130_fd_sc_hd__ebufn_4      840
+     sky130_fd_sc_hd__inv_2        943
+     sky130_fd_sc_hd__mux4_1        32
+     sky130_fd_sc_hd__nand2_4       12
+     sky130_fd_sc_hd__nor2_4         4
+     sky130_fd_sc_hd__o21a_4         4
+     sky130_fd_sc_hd__o22a_4         3
+     sky130_fd_sc_hd__or2_4       2106
+     sky130_fd_sc_hd__or3_4          3
+     sky130_fd_sc_hd__xnor2_4        2
+     transmission_gate_cell         80
+     sky130_fd_sc_hd__mux2_1        ?
+     sky130_fd_sc_hd__xor2_4        ?
+
+   Area for cell type \transmission_gate_cell is unknown!
+
+   Chip area for module '\clb_tile': 92234.710400
+
