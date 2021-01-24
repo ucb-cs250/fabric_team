@@ -73,7 +73,7 @@ assign en = gpio_north[8];
 
 /* This FPGA lays out tiles in the following fixed configuration (not to
 * scale).
-* 
+*
 *         +-----------++-----------++-----------+
 *     5   | clb_tile  || clb_tile  || clb_tile  |
 *         +-----------++-----------++-----------+
@@ -97,6 +97,8 @@ assign en = gpio_north[8];
 *
 */
 
+localparam CONFIG_COL_WIDTH = 4;
+
 // Interconnect wires go between switch boxes and connection boxes.
 wire [WS-1:0] ix_single_n_in  [MY:0][MX:0];
 wire [WS-1:0] ix_single_n_out [MY:0][MX:0];
@@ -107,14 +109,14 @@ wire [WS-1:0] ix_single_e_out [MY:0][MX:0];
 wire [WS-1:0] ix_single_w_in  [MY:0][MX:0];
 wire [WS-1:0] ix_single_w_out [MY:0][MX:0];
 
-wire [WS-1:0] ix_double_n_in  [MY:0][MX:0];
-wire [WS-1:0] ix_double_n_out [MY:0][MX:0];
-wire [WS-1:0] ix_double_s_in  [MY:0][MX:0];
-wire [WS-1:0] ix_double_s_out [MY:0][MX:0];
-wire [WS-1:0] ix_double_e_in  [MY:0][MX:0];
-wire [WS-1:0] ix_double_e_out [MY:0][MX:0];
-wire [WS-1:0] ix_double_w_in  [MY:0][MX:0];
-wire [WS-1:0] ix_double_w_out [MY:0][MX:0];
+wire [WD-1:0] ix_double_n_in  [MY:0][MX:0];
+wire [WD-1:0] ix_double_n_out [MY:0][MX:0];
+wire [WD-1:0] ix_double_s_in  [MY:0][MX:0];
+wire [WD-1:0] ix_double_s_out [MY:0][MX:0];
+wire [WD-1:0] ix_double_e_in  [MY:0][MX:0];
+wire [WD-1:0] ix_double_e_out [MY:0][MX:0];
+wire [WD-1:0] ix_double_w_in  [MY:0][MX:0];
+wire [WD-1:0] ix_double_w_out [MY:0][MX:0];
 
 // Direct connection wires go between connection boxes and CLBs.
 wire [CLBIN_EACH_SIDE-1:0] clb_n_in [MY:0][MX:0];
@@ -128,11 +130,11 @@ wire [CLBOUT_EACH_SIDE-1:0] clb_e_out [MY:0][MX:0];
 wire [CLBOUT_EACH_SIDE-1:0] clb_w_out [MY:0][MX:0];
 
 // Configuration enable signals, one per column.
-wire [MX-1:0] col_cen;
-wire [MX-1:0] col_set[MY:0];
-wire [MX-1:0] col_shift[MY:0];
+wire [CONFIG_COL_WIDTH*NUM_CONFIG_REGIONS-1:0] col_cen;
+wire [CONFIG_COL_WIDTH*NUM_CONFIG_REGIONS-1:0] col_set   [MY:0];
+wire [CONFIG_COL_WIDTH*NUM_CONFIG_REGIONS-1:0] col_shift [MY:0];
 
-wire [MX-1:0] carry[MY:0];
+wire [MX-1:0] carry [MY:0];
 
 genvar x;
 genvar y;
@@ -241,8 +243,8 @@ endgenerate
 //  .west()
 //);
 
-wire [3:0] wb_set_out[NUM_CONFIG_REGIONS-1:0];
-wire [3:0] wb_shift_out[NUM_CONFIG_REGIONS-1:0];
+wire [CONFIG_COL_WIDTH-1:0] wb_set_out[NUM_CONFIG_REGIONS-1:0];
+wire [CONFIG_COL_WIDTH-1:0] wb_shift_out[NUM_CONFIG_REGIONS-1:0];
 wire wb_cen_out[NUM_CONFIG_REGIONS-1:0];
 wire [31:0] wbs_data_o_internal[NUM_CONFIG_REGIONS-1:0];
 wire wbs_ack_o_internal[NUM_CONFIG_REGIONS-1:0];
@@ -287,20 +289,23 @@ wishbone_configuratorinator_10 wishbonatron_10 (
 genvar i;
 generate
   for (i = 0; i < NUM_CONFIG_REGIONS; i = i + 1) begin:wb
-    assign col_set[0][4*i +: 4] = wb_set_out[i][3:0];
-    assign col_shift[0][4*i +: 4] = wb_shift_out[i][3:0];
-    assign col_cen[4*i +: 4] = {wb_cen_out[i], wb_cen_out[i], wb_cen_out[i], wb_cen_out[i]};
+    assign col_set[0][CONFIG_COL_WIDTH*i +: CONFIG_COL_WIDTH]   = wb_set_out[i][CONFIG_COL_WIDTH-1:0];
+    assign col_shift[0][CONFIG_COL_WIDTH*i +: CONFIG_COL_WIDTH] = wb_shift_out[i][CONFIG_COL_WIDTH-1:0];
+    assign col_cen[CONFIG_COL_WIDTH*i +: CONFIG_COL_WIDTH] = {wb_cen_out[i],
+                                                              wb_cen_out[i],
+                                                              wb_cen_out[i],
+                                                              wb_cen_out[i]};
   end
 endgenerate
 
 generate
   for (x = 0; x < MX; x = x + 1) begin
-    assign gpio_north[x] = 0;
-    assign gpio_south[x] = 0;
+    assign gpio_north[x] = ix_single_n_out[MY-1][x][0];
+    assign gpio_south[x] = ix_single_s_out[0][x][0];
   end
   for (y = 0; y < MY; y = y + 1) begin
-    assign gpio_east[y] = 0;
-    assign gpio_west[y] = 0;
+    assign gpio_east[y] = ix_single_e_out[y][MX-1][0];
+    assign gpio_west[y] = ix_single_w_out[y][0][0];
   end
 endgenerate
 

@@ -48,7 +48,7 @@ module baked_connection_block_east #(
   output [CARRY-1:0] clb1_cin
 );
 
-baked_connection_block #(
+baked_connection_block_unidir #(
   .WS(WS),
   .WD(WD),
   .WG(WG),

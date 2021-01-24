@@ -1,7 +1,6 @@
 module clb_tile_unidir #(
   parameter S_XX_BASE = 4,
   parameter NUM_LUTS = 4,
-  
   parameter WS = 4,
   parameter WD = 8,
   parameter WG = 0,
@@ -54,6 +53,16 @@ wire set;
 assign set_out_hard = set;
 
 wire set_in_soft, shift_in_soft;
+
+wire [WS-1:0] sb_north_single_in, sb_south_single_in, sb_east_single_in, sb_west_single_in;
+wire [WS-1:0] sb_north_single_out, sb_south_single_out, sb_east_single_out, sb_west_single_out;
+wire [WS-1:0] cb_north_single0_in, cb_north_single0_out, cb_north_single1_in, cb_north_single1_out;
+wire [WS-1:0] cb_east_single0_in, cb_east_single0_out, cb_east_single1_in, cb_east_single1_out;
+
+wire [WD-1:0] sb_north_double_in, sb_south_double_in, sb_east_double_in, sb_west_double_in;
+wire [WD-1:0] sb_north_double_out, sb_south_double_out, sb_east_double_out, sb_west_double_out;
+wire [WD-1:0] cb_north_double0_in, cb_north_double0_out, cb_north_double1_in, cb_north_double1_out;
+wire [WD-1:0] cb_east_double0_in, cb_east_double0_out, cb_east_double1_in, cb_east_double1_out;
 
 wire [1:0] north_comb_out, east_comb_out, south_comb_out, west_comb_out;
 wire [1:0] north_sync_out, east_sync_out, south_sync_out, west_sync_out;
@@ -127,17 +136,17 @@ baked_connection_block_north_unidir #(
   .shift_in(slice_so),
   .shift_out(cb_north_so),
 
-  .single0_in(west_single_in),
-  .single0_out(west_single_out),
+  .single0_in(cb_north_single0_in),
+  .single0_out(cb_north_single0_out),
 
-  .double0_in(west_double_in),
-  .double0_out(west_double_out),
+  .double0_in(cb_north_double0_in),
+  .double0_out(cb_north_double0_out),
 
-  .single1_in(east_single_in),
-  .single1_out(east_single_out),
+  .single1_in(cb_north_single1_in),
+  .single1_out(cb_north_single1_out),
 
-  .double1_in(east_double_in),
-  .double1_out(east_double_out),
+  .double1_in(cb_north_double1_in),
+  .double1_out(cb_north_double1_out),
 
   // no global wire for now
   // carry signals go directly to top-level interface
@@ -175,17 +184,17 @@ baked_connection_block_east_unidir #(
   .shift_in(sb_so),
   .shift_out(cb_east_so),
 
-  .single0_in(south_single_in),
-  .single0_out(south_single_out),
+  .single0_in(cb_east_single0_in),
+  .single0_out(cb_east_single0_out),
 
-  .double0_in(south_double_in),
-  .double0_out(south_double_out),
+  .double0_in(cb_east_double0_in),
+  .double0_out(cb_east_double0_out),
 
-  .single1_in(north_single_in),
-  .single1_out(north_single_out),
+  .single1_in(cb_east_single1_in),
+  .single1_out(cb_east_single1_out),
 
-  .double1_in(north_double_in),
-  .double1_out(north_double_out),
+  .double1_in(cb_east_double1_in),
+  .double1_out(cb_east_double1_out),
 
   // no global wire for now
   // carry signals go directly to top-level interface
@@ -212,23 +221,53 @@ baked_clb_switch_box_unidir #(
   .shift_in(cb_north_so),
   .shift_out(sb_so),
 
-  .north_single_in(north_single_in),
-  .north_single_out(north_single_out),
-  .south_single_in(south_single_in),
-  .south_single_out(south_single_out),
-  .east_single_in(east_single_in),
-  .east_single_out(east_single_out),
-  .west_single_in(west_single_in),
-  .west_single_out(west_single_out),
+  .north_single_in(sb_north_single_in),
+  .north_single_out(sb_north_single_out),
+  .south_single_in(sb_south_single_in),
+  .south_single_out(sb_south_single_out),
+  .east_single_in(sb_east_single_in),
+  .east_single_out(sb_east_single_out),
+  .west_single_in(sb_west_single_in),
+  .west_single_out(sb_west_single_out),
 
-  .north_double_in(north_double_in),
-  .north_double_out(north_double_out),
-  .south_double_in(south_double_in),
-  .south_double_out(south_double_out),
-  .east_double_in(east_double_in),
-  .east_double_out(east_double_out),
-  .west_double_in(west_double_in),
-  .west_double_out(west_double_out)
+  .north_double_in(sb_north_double_in),
+  .north_double_out(sb_north_double_out),
+  .south_double_in(sb_south_double_in),
+  .south_double_out(sb_south_double_out),
+  .east_double_in(sb_east_double_in),
+  .east_double_out(sb_east_double_out),
+  .west_double_in(sb_west_double_in),
+  .west_double_out(sb_west_double_out)
 );
+
+assign cb_north_single0_in = west_single_in;
+assign west_single_out = cb_north_single0_out;
+assign cb_north_single1_in = sb_west_single_out;
+assign sb_west_single_in = cb_north_single1_out;
+
+assign cb_east_single0_in = south_single_in;
+assign south_single_out = cb_east_single0_out;
+assign cb_east_single1_in = sb_south_single_out;
+assign sb_south_single_in = cb_east_single1_out;
+
+assign sb_north_single_in = north_single_in;
+assign north_single_out = sb_north_single_out;
+assign east_single_out = sb_east_single_out;
+assign sb_east_single_in = east_single_in;
+
+assign cb_north_double0_in = west_double_in;
+assign west_double_out = cb_north_double0_out;
+assign cb_north_double1_in = sb_west_double_out;
+assign sb_west_double_in = cb_north_double1_out;
+
+assign cb_east_double0_in = south_double_in;
+assign south_double_out = cb_east_double0_out;
+assign cb_east_double1_in = sb_south_double_out;
+assign sb_south_double_in = cb_east_double1_out;
+
+assign sb_north_double_in = north_double_in;
+assign north_double_out = sb_north_double_out;
+assign east_double_out = sb_east_double_out;
+assign sb_east_double_in = east_double_in;
 
 endmodule

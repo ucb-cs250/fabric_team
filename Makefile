@@ -12,7 +12,7 @@ SRAM_PATH     = sram_team
 IX_YUKIO_PATH = ix_yukio
 IX_NATE_PATH  = ix_nate
 
-INCS = src+$(MAC_PATH)/src+$(PDK_ROOT)/skywater-pdk/libraries/sky130_fd_sc_hd/latest/cells/mux4
+INCS = src+$(MAC_PATH)/src
 
 COMB_OUTPUT_FILE=comb_output.txt
 SYNC_OUTPUT_FILE=sync_output.txt
@@ -37,32 +37,29 @@ SRCS = $(CLB_PATH)/src/behavioral/lut.v \
        $(CFG_PATH)/src/behavioral/config_tile.v \
        $(CFG_PATH)/src/behavioral/shift_chain.v \
        $(CFG_PATH)/src/behavioral/wishbone_configuratorinator.v \
-       $(IX_YUKIO_PATH)/src/clb_switch_box.v \
-       $(IX_YUKIO_PATH)/src/universal_switch_box.v \
-       $(IX_YUKIO_PATH)/src/switch_box_element_one.v \
-       $(IX_YUKIO_PATH)/src/switch_box_element_two.v \
-       $(IX_YUKIO_PATH)/src/transmission_gate.v \
-       $(IX_YUKIO_PATH)/src/transmission_gate_oneway.v \
-       $(IX_YUKIO_PATH)/src/connection_block.v \
-       $(IX_YUKIO_PATH)/src/transmission_gate_cell.v \
+       $(IX_YUKIO_PATH)/unidir_src/clb_switch_box.v \
+       $(IX_YUKIO_PATH)/unidir_src/connection_block.v \
+       $(IX_YUKIO_PATH)/unidir_src/universal_switch_box.v \
+       $(IX_YUKIO_PATH)/unidir_src/switch_box_element_one.v \
+       $(IX_YUKIO_PATH)/unidir_src/switch_box_element_two.v \
+       $(IX_YUKIO_PATH)/util/mux2.v \
+       $(IX_YUKIO_PATH)/util/mux4.v \
+       $(IX_YUKIO_PATH)/util/muxn.v \
        $(CFG_PATH)/src/wrapped/wishbone_configuratorinator_00.v \
        $(CFG_PATH)/src/wrapped/wishbone_configuratorinator_10.v \
        src/baked/baked_slicel.v \
-       src/baked/baked_clb_switch_box.v \
-       src/baked/baked_connection_block.v \
-       src/baked/baked_connection_block_east.v \
-       src/baked/baked_connection_block_north.v \
-       src/clb_tile.v \
-       src/fpga.v \
-       $(PDK_ROOT)/skywater-pdk/libraries/sky130_fd_sc_hd/latest/cells/mux4/sky130_fd_sc_hd__mux4_1.v \
+       src/baked/baked_clb_switch_box_unidir.v \
+       src/baked/baked_connection_block_unidir.v \
+       src/baked/baked_connection_block_east_unidir.v \
+       src/baked/baked_connection_block_north_unidir.v \
+       src/clb_tile_unidir.v \
+       src/fpga_unidir.v \
 
 GATE_SRCS = cell_netlists/clb_tile/clb_tile.synthesis.v \
             cell_netlists/wishbone_configuratorinator_00/wishbone_configuratorinator_00.synthesis.v \
             cell_netlists/wishbone_configuratorinator_10/wishbone_configuratorinator_10.synthesis.v \
             cell_netlists/fpga/fpga.synthesis.v \
             $(IX_YUKIO_PATH)/src/transmission_gate_cell.v \
-
-#GATE_SRCS = cell_netlists/wishbone_configuratorinator_00/wishbone_configuratorinator_00.synthesis.v \
 
 OPTS = -notice \
        -line \
@@ -112,4 +109,4 @@ regression-gl: $(GATE_SIMV)
 	rm -rf test_files && mkdir -p test_files && python3 $(TEST_SCRIPT) $(GATE_SIMV)
 
 clean:
-	rm -rf *simv* csrc ucli.key *.vcd $(BITSTREAM_FILE) $(SYNC_OUTPUT_FILE) $(COMB_OUTPUT_FILE) $(GPIO_OUTPUT_FILE) test_files/
+	rm -rf *simv* csrc ucli.key *.vcd *.vpd $(BITSTREAM_FILE) $(SYNC_OUTPUT_FILE) $(COMB_OUTPUT_FILE) $(GPIO_OUTPUT_FILE) test_files/
