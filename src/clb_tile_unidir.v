@@ -26,7 +26,7 @@ module clb_tile_unidir #(
   output [WS-1:0] north_single_out, east_single_out, south_single_out, west_single_out,
 
   input [WD-1:0] north_double_in, east_double_in, south_double_in, west_double_in,
-  input [WD-1:0] north_double_out, east_double_out, south_double_out, west_double_out,
+  output [WD-1:0] north_double_out, east_double_out, south_double_out, west_double_out,
 
   // Connections from the CLBs in the N/E tiles to the N/E CBs in this tile
   output [CLBIN_EACH_SIDE-1:0]  cb_north_out, cb_east_out,
