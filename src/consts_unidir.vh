@@ -41,12 +41,12 @@
 // 2x Comb. outputs, Sync. outputs
 `define NUM_CLB_OUTS 5 // (2 * 2)
 
-`define SEL_PER_IN  $clog2((`WS + `WD) * 2 + `WG + `CLBX * `NUM_CLB_OUTS)
-`define SEL_PER_OUT $clog2(`NUM_CLB_OUTS + `NUM_CLB_OUTS + 1)
+`define SEL_PER_IN  $clog2((`WS + `WD) * 2 + `WG + `CLBX * `NUM_CLB_OUTS + 1)
+`define SEL_PER_OUT $clog2(`NUM_CLB_OUTS + `NUM_CLB_OUTS + 1 + 1)
 
 `define CLB_COMB_CFG_SIZE      (`LUT_CFG_SIZE * `NUM_LUTS + `MUX_LVLS + 1)
 `define CLB_MEM_CFG_SIZE       (2 * `NUM_LUTS)
-`define CB_CFG_SIZE `SEL_PER_OUT*2*(`CLBOS+`CLBOD)+`SEL_PER_IN*`NUM_CLB_INS+`SEL_PER_IN*`NUM_CLB_INS
+`define CB_CFG_SIZE            (`SEL_PER_OUT*2*(`CLBOS+`CLBOD)+`SEL_PER_IN*`NUM_CLB_INS+`SEL_PER_IN*`NUM_CLB_INS)
 
 `define SB_CFG_SIZE            (`WS + `WD / 2) * 8
 `define CLB_TILE_COMB_CFG_SIZE (`CLB_COMB_CFG_SIZE + `SB_CFG_SIZE + `CB_CFG_SIZE * 2)
@@ -93,6 +93,7 @@
 
 `define C_FROM_CB_DOUBLE0(m)  (m + `WS + `WS)
 `define C_FROM_CB_DOUBLE1(m)  (m + `WD + `WS + `WS)
+`define C_FROM_CLB0_OUT(m)    (m + `WD + `WD + `WS + `WS)
 `define C_FROM_CLB1_OUT(m)    (m + `WD + `WD + `WS + `WS)
 
 `define TO_CB_SINGLE1_L(n) (`CB_OFFSET1 + `SEL_PER_OUT * n)
@@ -101,11 +102,11 @@
 `define TO_CB_SINGLE0_L(n) (`CB_OFFSET2 + `SEL_PER_OUT * n)
 `define TO_CB_SINGLE0_H(n) (`CB_OFFSET2 + `SEL_PER_OUT * (n + 1))
 
-`define TO_CB_DOUBLE0_L(n) (`CB_OFFSET3 + `SEL_PER_OUT * n)
-`define TO_CB_DOUBLE0_H(n) (`CB_OFFSET3 + `SEL_PER_OUT * (n + 1))
+`define TO_CB_DOUBLE1_L(n) (`CB_OFFSET3 + `SEL_PER_OUT * n)
+`define TO_CB_DOUBLE1_H(n) (`CB_OFFSET3 + `SEL_PER_OUT * (n + 1))
 
-`define TO_CB_DOUBLE1_L(n) (`CB_OFFSET4 + `SEL_PER_OUT * n)
-`define TO_CB_DOUBLE1_H(n) (`CB_OFFSET4 + `SEL_PER_OUT * (n + 1))
+`define TO_CB_DOUBLE0_L(n) (`CB_OFFSET4 + `SEL_PER_OUT * n)
+`define TO_CB_DOUBLE0_H(n) (`CB_OFFSET4 + `SEL_PER_OUT * (n + 1))
 
 `define S_FROM_CB_SINGLE(m) (m)
 `define S_FROM_CLB0_OUT(m)  (m + 1)
@@ -136,9 +137,9 @@
 `define SINGLE_S0E1_H(x) (`SINGLE_S0E1_L(x) + 1)
 `define SINGLE_S0E1_VAL 1
 
-`define SINGLE_W1E1_L(x) (`NUM_SBE2_PIPS * x + 2)
-`define SINGLE_W1E1_H(x) (`SINGLE_W1E1_L(x) + 1)
-`define SINGLE_W1E1_VAL 2
+`define SINGLE_W0E1_L(x) (`NUM_SBE2_PIPS * x + 2)
+`define SINGLE_W0E1_H(x) (`SINGLE_W1E1_L(x) + 1)
+`define SINGLE_W0E1_VAL 2
 
 `define SINGLE_N1E1_L(x) (`NUM_SBE2_PIPS * x + 2)
 `define SINGLE_N1E1_H(x) (`SINGLE_N1E1_L(x) + 1)

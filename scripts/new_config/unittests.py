@@ -893,6 +893,87 @@ def test22(fpga250):
     # Expect GPIO_NORTH[0] == 1
     fpga250.set_gpio_output("N", 0, "1")
 
+def test23(fpga250):
+    description = '''
+    GPIO_SOUTH[0] = AND4(GPIO_NORTH[0], GPIO_NORTH[1], GPIO_EAST[0], GPIO_EAST[1])
+    '''
+
+    num_cols = fpga250.num_cols
+    num_rows = fpga250.num_rows
+
+    fpga250.get_slicel(num_rows - 1, 0).set_reg_init_val("00000001")
+    fpga250.get_cb_east(num_rows - 1, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 0)
+
+    fpga250.get_slicel(num_rows - 1, 1).set_reg_init_val("00000001")
+    fpga250.get_cb_east(num_rows - 1, 1).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 0)
+
+    # Route GPIO_NORTH[0] to CLB(1, 1) (North side)
+    for i in range(num_rows - 2):
+      fpga250.get_sb(num_rows - 2 - i, 0).set_pip("SINGLE", "N", 0, "S", 0)
+
+    fpga250.get_sb(1, 0).set_pip("SINGLE", "N", 0, "E", 0)
+
+    fpga250.get_cb_north(1, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 0)
+    fpga250.get_cb_north(1, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 2)
+
+    # Route GPIO_NORTH[1] to CLB(1, 1) (North side)
+    for i in range(num_rows - 3):
+      fpga250.get_sb(num_rows - 2 - i, 1).set_pip("SINGLE", "N", 0, "S", 0)
+    fpga250.get_sb(1, 1).set_pip("SINGLE", "N", 0, "W", 1)
+
+    fpga250.get_cb_north(1, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 1)
+    fpga250.get_cb_north(1, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 3)
+
+    # Route LUT7 output of CLB(1, 1) to CLB(0, 0) (East side)
+    fpga250.get_cb_north(1, 1).set_pip("CLB0_OUT_TO_CB_SINGLE0", 0, 2)
+    fpga250.get_sb(1, 0).set_pip("SINGLE", "E", 2, "S", 3)
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "N", 3, "S", 3)
+
+    fpga250.get_cb_east(0, 0).set_pip("CB_SINGLE0_TO_CLB0_IN", 3, 0)
+    fpga250.get_cb_east(0, 0).set_pip("CB_SINGLE0_TO_CLB0_IN", 3, 2)
+
+    fpga250.get_slicel(0, num_cols - 1).set_reg_init_val("01000000")
+    fpga250.get_cb_north(0, num_cols - 1).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 0)
+
+    fpga250.get_slicel(1, num_cols - 1).set_reg_init_val("01000000")
+    fpga250.get_cb_north(1, num_cols - 1).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 0)
+
+    # Route GPIO_EAST[0] to CLB(1, 1) (East side)
+    for i in range(num_cols - 2):
+      fpga250.get_sb(0, num_cols - 2 - i).set_pip("SINGLE", "E", 0, "W", 0)
+    fpga250.get_sb(0, 1).set_pip("SINGLE", "E", 0, "N", 0)
+
+    fpga250.get_cb_east(1, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 0)
+    fpga250.get_cb_east(1, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 2)
+
+    # Route GPIO_EAST[1] to CLB(1, 1) (East side)
+    for i in range(num_cols - 3):
+      fpga250.get_sb(1, num_cols - 2 - i).set_pip("SINGLE", "E", 0, "W", 0)
+    fpga250.get_sb(1, 1).set_pip("SINGLE", "E", 0, "S", 1)
+
+    fpga250.get_cb_east(1, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 1)
+    fpga250.get_cb_east(1, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 3)
+
+    # Route LUT1 output of CLB(1, 1) to CLB(0, 0) (East side)
+    fpga250.get_cb_east(1, 1).set_pip("CLB0_OUT_TO_CB_SINGLE0", 0, 2)
+    fpga250.get_sb(0, 1).set_pip("SINGLE", "N", 2, "W", 3)
+    fpga250.get_sb(0, 0).set_pip("SINGLE", "E", 3, "S", 2)
+
+    fpga250.get_cb_east(0, 0).set_pip("CB_SINGLE0_TO_CLB0_IN", 2, 1)
+    fpga250.get_cb_east(0, 0).set_pip("CB_SINGLE0_TO_CLB0_IN", 2, 3)
+
+    # Finally, route the result of LUT1 of CLB(0, 0) to single[0] (GPIO_SOUTH[0])
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 0, 0)
+
+    fpga250.get_slicel(1, 1).set_lut_config("LUT1", hex_to_bin("8888", 16)) # 2-AND
+    fpga250.get_slicel(1, 1).set_lut_config("LUT7", hex_to_bin("8888", 16)) # 2-AND
+    fpga250.get_slicel(0, 0).set_lut_config("LUT1", hex_to_bin("8888", 16)) # 2-AND
+
+    fpga250.get_slicel(1, 1).set_split("S44_0", "1")
+    fpga250.get_slicel(1, 1).set_split("S44_3", "1")
+    fpga250.get_slicel(0, 0).set_split("S44_0", "1")
+
+
 def main():
     MX = 7
     MY = 8
@@ -911,7 +992,7 @@ def main():
         num_gpio_north, num_gpio_south, num_gpio_east, num_gpio_west,
         debug=debug, top_level_debug=debug)
 
-    #test1(fpga250, 0, 0)
+    test1(fpga250, 0, 0)
     #test2(fpga250, 1, 1)
     #test3(fpga250, 1, 1)
     #test4(fpga250, 1, 1)
@@ -926,7 +1007,7 @@ def main():
 
     #test11(fpga250) # GPIO test
     #test14(fpga250)
-    test15(fpga250)
+    #test15(fpga250)
     #test16(fpga250)
     #test17(fpga250)
     #test18(fpga250)
@@ -934,6 +1015,7 @@ def main():
     #test20(fpga250)
     #test21(fpga250)
     #test22(fpga250)
+    #test23(fpga250)
 
     bitstream = fpga250.output_column_wise_bitstream()
     comb_output = fpga250.dump_comb_output()

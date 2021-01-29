@@ -119,14 +119,14 @@ wire [WD-1:0] ix_double_w_in  [MY:0][MX:0];
 wire [WD-1:0] ix_double_w_out [MY:0][MX:0];
 
 // Direct connection wires go between connection boxes and CLBs.
-wire [CLBIN_EACH_SIDE-1:0] clb_n_in [MY:0][MX:0];
+wire [CLBOUT_EACH_SIDE-1:0] cb_n_in [MY:0][MX:0];
 wire [CLBIN_EACH_SIDE-1:0] clb_s_in [MY:0][MX:0];
-wire [CLBIN_EACH_SIDE-1:0] clb_e_in [MY:0][MX:0];
+wire [CLBOUT_EACH_SIDE-1:0] cb_e_in [MY:0][MX:0];
 wire [CLBIN_EACH_SIDE-1:0] clb_w_in [MY:0][MX:0];
 
-wire [CLBOUT_EACH_SIDE-1:0] clb_n_out [MY:0][MX:0];
+wire [CLBIN_EACH_SIDE-1:0] cb_n_out [MY:0][MX:0];
 wire [CLBOUT_EACH_SIDE-1:0] clb_s_out [MY:0][MX:0];
-wire [CLBOUT_EACH_SIDE-1:0] clb_e_out [MY:0][MX:0];
+wire [CLBIN_EACH_SIDE-1:0] cb_e_out [MY:0][MX:0];
 wire [CLBOUT_EACH_SIDE-1:0] clb_w_out [MY:0][MX:0];
 
 // Configuration enable signals, one per column.
@@ -144,22 +144,22 @@ generate
 
       if (y + 1 < MY) begin
         assign ix_single_n_in[y][x] = ix_single_s_out[y+1][x];
-        assign clb_n_in[y][x] = clb_s_out[y+1][x];
+        assign cb_n_in[y][x] = clb_s_out[y+1][x];
       end
 
       if (y - 1 >= 0) begin
         assign ix_single_s_in[y][x] = ix_single_n_out[y-1][x];
-        assign clb_s_in[y][x] = clb_n_out[y-1][x];
+        assign clb_s_in[y][x] = cb_n_out[y-1][x];
       end
 
       if (x + 1 < MX) begin
         assign ix_single_e_in[y][x] = ix_single_w_out[y][x+1];
-        assign clb_e_in[y][x] = clb_w_out[y][x+1];
+        assign cb_e_in[y][x] = clb_w_out[y][x+1];
       end
 
       if (x - 1 >= 0) begin
         assign ix_single_w_in[y][x] = ix_single_e_out[y][x-1];
-        assign clb_w_in[y][x] = clb_e_out[y][x-1];
+        assign clb_w_in[y][x] = cb_e_out[y][x-1];
       end
 
       clb_tile_unidir #(
@@ -201,16 +201,16 @@ generate
         .west_double_out(ix_double_w_out[y][x]),
 
         // The names are made up and the points don't matter!
-        .cb_north_in(clb_n_out[y][x]),
+        .cb_north_in(cb_n_in[y][x]),
         .clb_south_out(clb_s_out[y][x]),
 
         .clb_south_in(clb_s_in[y][x]),
-        .cb_north_out(clb_n_in[y][x]),
+        .cb_north_out(cb_n_out[y][x]),
 
         .clb_west_in(clb_w_in[y][x]),
-        .cb_east_out(clb_e_in[y][x]),
+        .cb_east_out(cb_e_out[y][x]),
 
-        .cb_east_in(clb_e_out[y][x]),
+        .cb_east_in(cb_e_in[y][x]),
         .clb_west_out(clb_w_out[y][x]),
 
         .carry_in(  carry[y  ][  x]),
