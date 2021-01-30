@@ -53,7 +53,7 @@ class CB():
                 self.config_bits[self.sel_per_in * n + x] = val[x]
 
         elif cmd == "CB_SINGLE0_TO_CLB1_IN":
-            val = format(m, '0' + str(self.sel_per_in) + 'b')[::-1]
+            val = format(m + 1, '0' + str(self.sel_per_in) + 'b')[::-1]
             for x in range(self.sel_per_in):
                 self.config_bits[self.cb_offset0 + self.sel_per_in * n + x] = val[x]
         elif cmd == "CB_SINGLE1_TO_CLB1_IN":
@@ -76,54 +76,54 @@ class CB():
         elif cmd == "CB_SINGLE_TO_CB_SINGLE1":
             val = format(m + 1, '0' + str(self.sel_per_out) + 'b')[::-1]
             for x in range(self.sel_per_out):
-                self.config_bits[self.cb_offset1 + self.sel_per_out + x] = val[x]
+                self.config_bits[self.cb_offset1 + self.sel_per_out * n + x] = val[x]
         elif cmd == "CLB0_OUT_TO_CB_SINGLE1":
             val = format(m + 1 + 1, '0' + str(self.sel_per_out) + 'b')[::-1]
             for x in range(self.sel_per_out):
-                self.config_bits[self.cb_offset1 + self.sel_per_out + x] = val[x]
+                self.config_bits[self.cb_offset1 + self.sel_per_out * n + x] = val[x]
         elif cmd == "CLB1_OUT_TO_CB_SINGLE1":
             val = format(m + self.CLBOUT + 1 + 1, '0' + str(self.sel_per_out) + 'b')[::-1]
             for x in range(self.sel_per_out):
-                self.config_bits[self.cb_offset1 + self.sel_per_out + x] = val[x]
+                self.config_bits[self.cb_offset1 + self.sel_per_out * n + x] = val[x]
 
         elif cmd == "CB_SINGLE_TO_CB_SINGLE0":
             val = format(m + 1, '0' + str(self.sel_per_out) + 'b')[::-1]
             for x in range(self.sel_per_out * n):
-                self.config_bits[self.cb_offset2 + self.sel_per_out + x] = val[x]
+                self.config_bits[self.cb_offset2 + self.sel_per_out * n + x] = val[x]
         elif cmd == "CLB0_OUT_TO_CB_SINGLE0":
             val = format(m + 1 + 1, '0' + str(self.sel_per_out) + 'b')[::-1]
             for x in range(self.sel_per_out):
-                self.config_bits[self.cb_offset2 + self.sel_per_out + x] = val[x]
+                self.config_bits[self.cb_offset2 + self.sel_per_out * n + x] = val[x]
         elif cmd == "CLB1_OUT_TO_CB_SINGLE0":
             val = format(m + self.CLBOUT + 1 + 1, '0' + str(self.sel_per_out) + 'b')[::-1]
             for x in range(self.sel_per_out):
-                self.config_bits[self.cb_offset2 + self.sel_per_out + x] = val[x]
+                self.config_bits[self.cb_offset2 + self.sel_per_out * n + x] = val[x]
 
         elif cmd == "CB_DOUBLE_TO_CB_DOUBLE1":
             val = format(m + 1, '0' + str(self.sel_per_out) + 'b')[::-1]
             for x in range(self.sel_per_out):
-                self.config_bits[self.cb_offset3 + self.sel_per_out + x] = val[x]
+                self.config_bits[self.cb_offset3 + self.sel_per_out * n + x] = val[x]
         elif cmd == "CLB0_OUT_TO_CB_DOUBLE1":
             val = format(m + 1 + 1, '0' + str(self.sel_per_out) + 'b')[::-1]
             for x in range(self.sel_per_out):
-                self.config_bits[self.cb_offset3 + self.sel_per_out + x] = val[x]
+                self.config_bits[self.cb_offset3 + self.sel_per_out * n + x] = val[x]
         elif cmd == "CLB1_OUT_TO_CB_DOUBLE1":
             val = format(m + self.CLBOUT + 1 + 1, '0' + str(self.sel_per_out) + 'b')[::-1]
             for x in range(self.sel_per_out):
-                self.config_bits[self.cb_offset3 + self.sel_per_out + x] = val[x]
+                self.config_bits[self.cb_offset3 + self.sel_per_out * n + x] = val[x]
 
         elif cmd == "CB_DOUBLE_TO_CB_DOUBLE0":
             val = format(m + 1, '0' + str(self.sel_per_out) + 'b')[::-1]
             for x in range(self.sel_per_out):
-                self.config_bits[self.cb_offset4 + self.sel_per_out + x] = val[x]
+                self.config_bits[self.cb_offset4 + self.sel_per_out * n + x] = val[x]
         elif cmd == "CLB0_OUT_TO_CB_DOUBLE0":
             val = format(m + 1 + 1, '0' + str(self.sel_per_out) + 'b')[::-1]
             for x in range(self.sel_per_out):
-                self.config_bits[self.cb_offset4 + self.sel_per_out + x] = val[x]
+                self.config_bits[self.cb_offset4 + self.sel_per_out * n + x] = val[x]
         elif cmd == "CLB1_OUT_TO_CB_DOUBLE0":
             val = format(m + self.CLBOUT + 1 + 1, '0' + str(self.sel_per_out) + 'b')[::-1]
             for x in range(self.sel_per_out):
-                self.config_bits[self.cb_offset4 + self.sel_per_out + x] = val[x]
+                self.config_bits[self.cb_offset4 + self.sel_per_out * n + x] = val[x]
 
         else:
             assert False, "invalid cmd for CB"

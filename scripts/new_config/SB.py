@@ -25,6 +25,9 @@ class SB():
         pair_no = int(start_port_num / 2)
         wire_s = start_port_num % 2
         wire_e = end_port_num % 2
+
+        print(wire_type, sdl, edl, wire_s, wire_e, pair_no)
+
         if wire_type == "SINGLE":
             if sdl == 'e':
                 if wire_s == 0:
@@ -300,8 +303,7 @@ class SB():
                 assert False, "invalid cmd for SB"
 
         else:
-            if self.debug:
-                print("invalid wire type")
+            assert False, "invalid wire type"
 
 
     # get all end locations from a location; valid direction: N, E, W, S

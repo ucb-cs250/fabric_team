@@ -40,75 +40,8 @@ def test1(fpga250, y_offset, x_offset):
     fpga250.get_slicel(0+y_offset, 1+x_offset).set_comb_output("LUT4", "1")
     fpga250.get_slicel(0+y_offset, 1+x_offset).set_comb_output("LUT5", "1")
 
-def test2(fpga250, y_offset, x_offset):
-    description = '''
-      East(0, 0) to West(0, 1) through CB_EAST(0, 0)
-      Route DFF1(0, 0) to LUT4(0, 1) and LUT5(0, 1) using a single wire of CB_EAST(0, 0)
-    '''
-
-    # Init "1" to DFF1
-    fpga250.get_slicel(0+y_offset, 0+x_offset).set_reg_init_val("00000001")
-    fpga250.get_slicel(0+y_offset, 0+x_offset).set_memset_bit("1")
-
-    # Route DFF1(0+y_offset, 0) output to single[0] of CB_EAST(0+y_offset, 0)
-    fpga250.get_cb_east(0+y_offset, 0+x_offset).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 0)
-
-    # Route single[0] of CB_EAST(0+y_offset, 0) output to SLICEL(0+y_offset, 1) LUT5's input
-    fpga250.get_cb_east(0+y_offset, 0+x_offset).set_pip("CB_SINGLE0_TO_CLB1_IN", 0, 0)
-    fpga250.get_cb_east(0+y_offset, 0+x_offset).set_pip("CB_SINGLE0_TO_CLB1_IN", 0, 1)
-    fpga250.get_cb_east(0+y_offset, 0+x_offset).set_pip("CB_SINGLE0_TO_CLB1_IN", 0, 2)
-    fpga250.get_cb_east(0+y_offset, 0+x_offset).set_pip("CB_SINGLE0_TO_CLB1_IN", 0, 3)
-
-    # Don't route inputs to SLICEL(0+y_offset, 1) LUT4
-
-    # Setup the logic functions for LUT4(0+y_offset, 1) and LUT5(0+y_offset, 1)
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_lut_config("LUT4", hex_to_bin("8000", 16)) # 4-AND
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_lut_config("LUT5", hex_to_bin("8000", 16)) # 4-AND
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_split("S44_3", "1")
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_split("S44_2", "1")
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_split("S44_1", "1")
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_split("S44_0", "1")
-
-    # Set the expected outputs
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_comb_output("LUT4", "x")
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_comb_output("LUT5", "1")
-
-def test3(fpga250, y_offset, x_offset):
-    description = '''
-      East(0, 0) to West(0, 1) through CB_EAST(0, 0)
-      Route DFF1(0, 0) to LUT4(0, 1) and LUT5(0, 1) using a double wire of CB_EAST(0, 0)
-    '''
-
-    # Init "1" to DFF1
-    fpga250.get_slicel(0+y_offset, 0+x_offset).set_reg_init_val("00000001")
-    fpga250.get_slicel(0+y_offset, 0+x_offset).set_memset_bit("1")
-
-    # Route DFF1(0+y_offset, 0) output to double[0] of CB_EAST(0+y_offset, 0)
-    fpga250.get_cb_east(0+y_offset, 0+x_offset).set_pip("CLB0_OUT_TO_CB_DOUBLE0", 2, 0)
-
-    # Route double[0] of CB_EAST(0+y_offset, 0) output to SLICEL(0+y_offset, 1) LUT4's input
-    fpga250.get_cb_east(0+y_offset, 0+x_offset).set_pip("CB_DOUBLE0_TO_CLB1_IN", 0, 4)
-    fpga250.get_cb_east(0+y_offset, 0+x_offset).set_pip("CB_DOUBLE0_TO_CLB1_IN", 0, 5)
-    fpga250.get_cb_east(0+y_offset, 0+x_offset).set_pip("CB_DOUBLE0_TO_CLB1_IN", 0, 6)
-    fpga250.get_cb_east(0+y_offset, 0+x_offset).set_pip("CB_DOUBLE0_TO_CLB1_IN", 0, 7)
-
-    # Don't route inputs to SLICEL(0+y_offset, 1) LUT5
-
-    # Setup the logic functions for LUT4(0+y_offset, 1) and LUT5(0+y_offset, 1)
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_lut_config("LUT4", hex_to_bin("8000", 16)) # 4-AND
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_lut_config("LUT5", hex_to_bin("8000", 16)) # 4-AND
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_split("S44_3", "1")
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_split("S44_2", "1")
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_split("S44_1", "1")
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_split("S44_0", "1")
-
-    # Set the expected outputs
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_comb_output("LUT4", "1")
-    fpga250.get_slicel(0+y_offset, 1+x_offset).set_comb_output("LUT5", "x")
-
 def test4(fpga250, y_offset, x_offset):
     description = '''
-      East(0, 0) to North(0, 1) through CB_EAST(0, 0) and SB(0, 0)
       Route DFF0(0, 0) to LUT6(0, 1) and LUT7(0, 1)
     '''
 
@@ -117,22 +50,22 @@ def test4(fpga250, y_offset, x_offset):
     fpga250.get_slicel(0+y_offset, 0+x_offset).set_memset_bit("1")
 
     # Route DFF0(0+y_offset, 0) output to single[2] of CB_EAST(0+y_offset, 0)
-    fpga250.get_cb_east(0+y_offset, 0+x_offset).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 2)
+    fpga250.get_cb_east(0+y_offset, 0+x_offset).set_pip("CLB0_OUT_TO_CB_SINGLE1", 3, 0)
 
     # Route single[2] of CB_EAST(0+y_offset, 0) to SB(0+y_offset, 0) and turn East to single[3] of CB_NORTH(0+y_offset, 1)
-    fpga250.get_sb(0+y_offset, 0+x_offset).set_pip("SINGLE", "S", 2, "E", 3)
+    fpga250.get_sb(0+y_offset, 0+x_offset).set_pip("SINGLE", "S", 0, "E", 1)
 
     # Route single[3] of CB_NORTH(0+y_offset, 1) to SLICEL(0+y_offset, 1) LUT7's input
-    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 3, 0)
-    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 3, 1)
-    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 3, 2)
-    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 3, 3)
+    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 0)
+    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 1)
+    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 2)
+    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 3)
 
     # Route single[3] of CB_NORTH(0+y_offset, 1) to SLICEL(0+y_offset, 1) LUT6's input
-    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 3, 4)
-    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 3, 5)
-    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 3, 6)
-    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 3, 7)
+    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 4)
+    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 5)
+    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 6)
+    fpga250.get_cb_north(0+y_offset, 1+x_offset).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 7)
 
     # Setup the logic functions for LUT6(0+y_offset, 1) and LUT7(0+y_offset, 1)
     fpga250.get_slicel(0+y_offset, 1+x_offset).set_lut_config("LUT6", hex_to_bin("8000", 16)) # 4-AND
@@ -992,10 +925,8 @@ def main():
         num_gpio_north, num_gpio_south, num_gpio_east, num_gpio_west,
         debug=debug, top_level_debug=debug)
 
-    test1(fpga250, 0, 0)
-    #test2(fpga250, 1, 1)
-    #test3(fpga250, 1, 1)
-    #test4(fpga250, 1, 1)
+    #test1(fpga250, 0, 0)
+    test4(fpga250, 0, 0)
     #test5(fpga250)
     #test6(fpga250)
     #test7(fpga250)
