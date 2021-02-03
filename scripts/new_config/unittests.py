@@ -91,25 +91,28 @@ def test5(fpga250):
     fpga250.get_slicel(0, 0).set_memset_bit("1")
 
     # Route DFF0(0, 0) output to single[1] of CB_EAST(0, 0)
-    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 1)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE1", 3, 1)
 
     # Route single[1] of CB_EAST(0, 0) to SB(0, 0) and turn East to single[0] of CB_NORTH(0, 1)
     fpga250.get_sb(0, 0).set_pip("SINGLE", "S", 1, "E", 0)
+
+    # Route single0[0] in to single1[0] out of CB_NORTH(0, 1) to SB(0, 1)
+    fpga250.get_cb_north(0, 1).set_pip("CB_SINGLE_TO_CB_SINGLE1", 0, 0)
 
     # Route single[0] of CB_EAST(0, 1) to SB(0, 1) and turn South to single[0] of CB_EAST(0, 1)
     fpga250.get_sb(0, 1).set_pip("SINGLE", "W", 0, "S", 0)
 
     # Route single[0] of CB_EAST(0, 1) to SLICEL(0, 1) LUT1's input
-    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 0)
-    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 1)
-    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 2)
-    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 3)
+    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE1_TO_CLB0_IN", 0, 0)
+    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE1_TO_CLB0_IN", 0, 1)
+    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE1_TO_CLB0_IN", 0, 2)
+    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE1_TO_CLB0_IN", 0, 3)
 
     # Route single[0] of CB_EAST(0, 1) to SLICEL(0, 1) LUT0's input
-    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 4)
-    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 5)
-    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 6)
-    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 7)
+    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE1_TO_CLB0_IN", 0, 4)
+    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE1_TO_CLB0_IN", 0, 5)
+    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE1_TO_CLB0_IN", 0, 6)
+    fpga250.get_cb_east(0, 1).set_pip("CB_SINGLE1_TO_CLB0_IN", 0, 7)
 
     # Setup the logic functions for LUT0(0, 1) and LUT1(0, 1)
     fpga250.get_slicel(0, 1).set_lut_config("LUT0", hex_to_bin("8000", 16)) # 4-AND
@@ -133,7 +136,7 @@ def test6(fpga250):
     fpga250.get_slicel(0, 0).set_memset_bit("1")
 
     # Route DFF0(0, 0) to single[0] of CB_EAST(0, 0)
-    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 0)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE1", 3, 0)
 
     # Route single[0] of CB_EAST(0, 0) to single[1] of CB_NORTH(0, 1) through SB(0, 0)
     fpga250.get_sb(0, 0).set_pip("SINGLE", "S", 0, "E", 1)
@@ -173,7 +176,7 @@ def test7(fpga250):
     fpga250.get_slicel(0, 0).set_memset_bit("1")
 
     # Route DFF0(0, 0) to double[0] of CB_EAST(0, 0)
-    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_DOUBLE0", 3, 0)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_DOUBLE1", 3, 0)
 
     # double[0] of CB_EAST(0, 0) directly connects to double[4] of CB_EAST(1, 0)
     # (skipping SB(0, 0))
@@ -308,30 +311,30 @@ def test10(fpga250):
 
 
     # Route DFF0(0, 0) and DFF0(0, 1) to LUT1(2, 2) and LUT0(2, 2)
-    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 0)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE1", 3, 0)
     fpga250.get_sb(0, 0).set_pip("SINGLE", "S", 0, "N", 0)
     fpga250.get_sb(1, 0).set_pip("SINGLE", "S", 0, "N", 0)
     fpga250.get_sb(2, 0).set_pip("SINGLE", "S", 0, "E", 1)
     fpga250.get_sb(2, 1).set_pip("SINGLE", "W", 1, "E", 1)
     fpga250.get_sb(2, 2).set_pip("SINGLE", "W", 1, "S", 1)
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 0)
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 4)
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE1_TO_CLB0_IN", 1, 0)
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE1_TO_CLB0_IN", 1, 4)
 
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 2) # this is actually "dont-care"
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 3) # this is actually "dont-care"
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 6) # this is actually "dont-care"
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 1, 7) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE1_TO_CLB0_IN", 1, 2) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE1_TO_CLB0_IN", 1, 3) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE1_TO_CLB0_IN", 1, 6) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE1_TO_CLB0_IN", 1, 7) # this is actually "dont-care"
 
-    fpga250.get_cb_east(0, 1).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 1)
+    fpga250.get_cb_east(0, 1).set_pip("CLB0_OUT_TO_CB_SINGLE1", 3, 1)
     fpga250.get_sb(0, 1).set_pip("SINGLE", "S", 1, "N", 1)
     fpga250.get_sb(1, 1).set_pip("SINGLE", "S", 1, "N", 1)
     fpga250.get_sb(2, 1).set_pip("SINGLE", "S", 1, "E", 0)
     fpga250.get_sb(2, 2).set_pip("SINGLE", "W", 0, "S", 0)
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 1)
-    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE0_TO_CLB0_IN", 0, 5)
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE1_TO_CLB0_IN", 0, 1)
+    fpga250.get_cb_east(2, 2).set_pip("CB_SINGLE1_TO_CLB0_IN", 0, 5)
 
     # Route DFF1(0, 0) and DFF1(0, 1) to LUT3(2, 2) and LUT2(2, 2)
-    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 2)
+    fpga250.get_cb_east(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE1", 2, 2)
     fpga250.get_sb(0, 0).set_pip("SINGLE", "S", 2, "N", 2)
     fpga250.get_sb(1, 0).set_pip("SINGLE", "S", 2, "E", 3)
     fpga250.get_sb(1, 1).set_pip("SINGLE", "W", 3, "E", 3)
@@ -343,34 +346,34 @@ def test10(fpga250):
     fpga250.get_cb_north(1, 2).set_pip("CB_SINGLE0_TO_CLB1_IN", 3, 6) # this is actually "dont-care"
     fpga250.get_cb_north(1, 2).set_pip("CB_SINGLE0_TO_CLB1_IN", 3, 7) # this is actually "dont-care"
 
-    fpga250.get_cb_east(0, 1).set_pip("CLB0_OUT_TO_CB_SINGLE0", 2, 3)
+    fpga250.get_cb_east(0, 1).set_pip("CLB0_OUT_TO_CB_SINGLE1", 2, 3)
     fpga250.get_sb(0, 1).set_pip("SINGLE", "S", 3, "N", 3)
     fpga250.get_sb(1, 1).set_pip("SINGLE", "S", 3, "E", 2)
     fpga250.get_cb_north(1, 2).set_pip("CB_SINGLE0_TO_CLB1_IN", 2, 1)
     fpga250.get_cb_north(1, 2).set_pip("CB_SINGLE0_TO_CLB1_IN", 2, 5)
 
     # Route DFF6(0, 0) and DFF6(0, 1) to LUT5(2, 2) and LUT4(2, 2)
-    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 2)
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CB_SINGLE1", 3, 2)
     fpga250.get_sb(0, 0).set_pip("SINGLE", "W", 2, "N", 3)
     fpga250.get_sb(1, 0).set_pip("SINGLE", "S", 3, "N", 3)
     fpga250.get_sb(2, 0).set_pip("SINGLE", "S", 3, "E", 2)
     fpga250.get_sb(2, 1).set_pip("SINGLE", "W", 2, "S", 2)
-    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 2, 0)
-    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 2, 4)
+    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE1_TO_CLB1_IN", 2, 0)
+    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE1_TO_CLB1_IN", 2, 4)
 
-    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 2, 2) # this is actually "dont-care"
-    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 2, 3) # this is actually "dont-care"
-    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 2, 6) # this is actually "dont-care"
-    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 2, 7) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE1_TO_CLB1_IN", 2, 2) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE1_TO_CLB1_IN", 2, 3) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE1_TO_CLB1_IN", 2, 6) # this is actually "dont-care"
+    fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE1_TO_CLB1_IN", 2, 7) # this is actually "dont-care"
 
-    fpga250.get_cb_north(0, 1).set_pip("CLB0_OUT_TO_CB_SINGLE0", 3, 1)
+    fpga250.get_cb_north(0, 1).set_pip("CLB0_OUT_TO_CB_SINGLE1", 3, 1)
     fpga250.get_sb(0, 1).set_pip("SINGLE", "W", 1, "N", 0)
     fpga250.get_sb(1, 1).set_pip("SINGLE", "S", 0, "N", 0)
     fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 0, 1)
     fpga250.get_cb_east(2, 1).set_pip("CB_SINGLE0_TO_CLB1_IN", 0, 5)
 
     # Route DFF7(0, 0) and DFF7(0, 1) to LUT7(2, 2) and LUT6(2, 2)
-    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CB_DOUBLE0", 2, 0)
+    fpga250.get_cb_north(0, 0).set_pip("CLB0_OUT_TO_CB_DOUBLE1", 2, 0)
     fpga250.get_sb(0, 0).set_pip("DOUBLE", "W", 0, "N", 1)
     # skip SB(1, 0)
     fpga250.get_sb(2, 0).set_pip("DOUBLE", "S", 1, "E", 0)
@@ -383,7 +386,7 @@ def test10(fpga250):
     fpga250.get_cb_north(2, 2).set_pip("CB_DOUBLE0_TO_CLB0_IN", 0, 6) # this is actually "dont-care"
     fpga250.get_cb_north(2, 2).set_pip("CB_DOUBLE0_TO_CLB0_IN", 0, 7) # this is actually "dont-care"
 
-    fpga250.get_cb_north(0, 1).set_pip("CLB0_OUT_TO_CB_DOUBLE0", 2, 1)
+    fpga250.get_cb_north(0, 1).set_pip("CLB0_OUT_TO_CB_DOUBLE1", 2, 1)
     fpga250.get_sb(0, 1).set_pip("DOUBLE", "W", 1, "N", 0)
     # skip SB(1, 1)
     fpga250.get_sb(2, 1).set_pip("DOUBLE", "S", 0, "E", 1)
@@ -925,13 +928,13 @@ def main():
         num_gpio_north, num_gpio_south, num_gpio_east, num_gpio_west,
         debug=debug, top_level_debug=debug)
 
-    #test1(fpga250, 0, 0)
-    test4(fpga250, 0, 0)
+    test1(fpga250, 0, 0)
+    #test4(fpga250, 0, 0)
     #test5(fpga250)
     #test6(fpga250)
     #test7(fpga250)
     #test8(fpga250)
-    #test9(fpga250)
+    #test9(fpga250) #x
     #test10(fpga250)
     #test12(fpga250)
     #test13(fpga250)

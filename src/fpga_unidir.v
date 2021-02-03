@@ -144,21 +144,25 @@ generate
 
       if (y + 1 < MY) begin
         assign ix_single_n_in[y][x] = ix_single_s_out[y+1][x];
+        assign ix_double_n_in[y][x] = ix_double_s_out[y+1][x];
         assign cb_n_in[y][x] = clb_s_out[y+1][x];
       end
 
       if (y - 1 >= 0) begin
         assign ix_single_s_in[y][x] = ix_single_n_out[y-1][x];
+        assign ix_double_s_in[y][x] = ix_double_n_out[y-1][x];
         assign clb_s_in[y][x] = cb_n_out[y-1][x];
       end
 
       if (x + 1 < MX) begin
         assign ix_single_e_in[y][x] = ix_single_w_out[y][x+1];
+        assign ix_double_e_in[y][x] = ix_double_w_out[y][x+1];
         assign cb_e_in[y][x] = clb_w_out[y][x+1];
       end
 
       if (x - 1 >= 0) begin
         assign ix_single_w_in[y][x] = ix_single_e_out[y][x-1];
+        assign ix_double_w_in[y][x] = ix_double_e_out[y][x-1];
         assign clb_w_in[y][x] = cb_e_out[y][x-1];
       end
 

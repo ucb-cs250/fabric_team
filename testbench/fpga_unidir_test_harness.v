@@ -322,18 +322,20 @@ module fpga_unidir_test_harness();
        failed_tests = failed_tests + 1;
     end
 
-    $display("X[0]Y[0] slicel_e_out=%b, cb_east_clb1_output=%b, cb_east_clb0_output=%b, cb_east_clb1_input=%b, cb_east_clb0_input=%b, cb_east_out=%b",
+    $display("X[0]Y[0] slicel_e_out=%b, cb_east_clb1_output=%b, cb_east_clb0_output=%b, cb_east_clb1_input=%b, cb_east_clb0_input=%b, single0_out=%b, single1_out=%b",
       FPGA.X[0].Y[0].clb.slicel_e_out,
       FPGA.X[0].Y[0].clb.cb_east.clb1_output,
       FPGA.X[0].Y[0].clb.cb_east.clb0_output,
       FPGA.X[0].Y[0].clb.cb_east.clb1_input,
       FPGA.X[0].Y[0].clb.cb_east.clb0_input,
-      FPGA.X[0].Y[0].clb.cb_east_out
+      FPGA.X[0].Y[0].clb.cb_east.single0_out,
+      FPGA.X[0].Y[0].clb.cb_east.single1_out
     );
 
-    $display("X[1]Y[0] slicel_w_in=%b, clb_west_in=%b",
-      FPGA.X[1].Y[0].clb.slicel_w_in,
-      FPGA.X[1].Y[0].clb.clb_west_in
+    $display("X[0]Y[0] sb south_single_in = %b, east_single_out = %b, west_single_out = %b",
+      FPGA.X[0].Y[0].clb.sb.south_single_in,
+      FPGA.X[0].Y[0].clb.sb.east_single_out,
+      FPGA.X[0].Y[0].clb.sb.west_single_out
     );
 
 `ifndef GATE_LV
@@ -370,7 +372,7 @@ module fpga_unidir_test_harness();
 `ifdef DEBUG_CONFIG
   // Print the config states of all the tiles for debuggging
   generate
-    for (x = 1; x < 2; x = x + 1) begin
+    for (x = 0; x < 1; x = x + 1) begin
       for (y = 0; y < 1; y = y + 1) begin
         always @(posedge clk) begin
           if (debug_config === 1'b1) begin

@@ -137,9 +137,9 @@
 `define SINGLE_S0E1_H(x) (`SINGLE_S0E1_L(x) + 1)
 `define SINGLE_S0E1_VAL 1
 
-`define SINGLE_W0E1_L(x) (`NUM_SBE2_PIPS * x + 2)
-`define SINGLE_W0E1_H(x) (`SINGLE_W1E1_L(x) + 1)
-`define SINGLE_W0E1_VAL 2
+`define SINGLE_W1E1_L(x) (`NUM_SBE2_PIPS * x + 2)
+`define SINGLE_W1E1_H(x) (`SINGLE_W1E1_L(x) + 1)
+`define SINGLE_W1E1_VAL 2
 
 `define SINGLE_N1E1_L(x) (`NUM_SBE2_PIPS * x + 2)
 `define SINGLE_N1E1_H(x) (`SINGLE_N1E1_L(x) + 1)
@@ -185,9 +185,9 @@
 `define SINGLE_S1E0_H(x) (`SINGLE_S1E0_L(x) + 1)
 `define SINGLE_S1E0_VAL 1
 
-`define SINGLE_W1E0_L(x) (`NUM_SBE2_PIPS * x + 10)
-`define SINGLE_W1E0_H(x) (`SINGLE_W1E0_L(x) + 1)
-`define SINGLE_W1E0_VAL 2
+`define SINGLE_W0E0_L(x) (`NUM_SBE2_PIPS * x + 10)
+`define SINGLE_W0E0_H(x) (`SINGLE_W0E0_L(x) + 1)
+`define SINGLE_W0E0_VAL 2
 
 `define SINGLE_N0E0_L(x) (`NUM_SBE2_PIPS * x + 10)
 `define SINGLE_N0E0_H(x) (`SINGLE_N0E0_L(x) + 1)
