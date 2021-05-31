@@ -1,0 +1,45 @@
+
+module config_block #(
+  parameter WIDTH = 16
+) (
+  input  wire clk,
+  input  wire cfg_bit_in_valid,
+  input  wire cfg_bit_in,
+  output wire cfg_bit_out_valid,
+  output wire cfg_bit_out,
+  output wire [WIDTH-1:0] cfg
+);
+
+  wire [WIDTH-1:0] l_next, l_value, r_next, r_value, r_ce;
+
+  genvar i;
+  generate
+    for (i = 0; i < WIDTH; i = i + 1) begin: GEN_LATCH
+      LATCH l (
+        .CLK(clk),
+        .D(l_next[i]),
+        .Q(l_value[i])
+      );
+
+      REGISTER_CE #(.N(1)) r (
+        .clk(clk),
+        .d(r_next[i]),
+        .q(r_value[i]),
+        .ce(r_ce[i])
+      );
+
+      if (i == 0) begin
+        assign r_next[i] = cfg_bit_in;
+      end
+      else begin
+        assign r_next[i] = r_value[i - 1];
+      end
+
+      assign r_ce[i] = cfg_bit_in_valid;
+
+      assign l_next[i] = r_value[i];
+      assign cfg[i]    = l_value[i];
+    end
+  endgenerate
+
+endmodule
