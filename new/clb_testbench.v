@@ -88,14 +88,29 @@ module clb_testbench();
     cfg_bits = 0;
 
     #1;
-    cfg_bits[LUT0_END:LUT0_BEGIN] = 16'h8000; // AND
-    cfg_bits[LUT1_END:LUT1_BEGIN] = 16'h0001; // AND
-    cfg_bits[LUT2_END:LUT2_BEGIN] = 16'h8000; // AND
-    cfg_bits[LUT3_END:LUT3_BEGIN] = 16'h0001; // AND
-    cfg_bits[LUT4_END:LUT4_BEGIN] = 16'h8000; // AND
-    cfg_bits[LUT5_END:LUT5_BEGIN] = 16'h0001; // AND
-    cfg_bits[LUT6_END:LUT6_BEGIN] = 16'h8000; // AND
-    cfg_bits[LUT7_END:LUT7_BEGIN] = 16'h0001; // AND
+    cfg_bits[LUT0_END:LUT0_BEGIN] = 16'h6688; // XOR-AND
+    cfg_bits[LUT1_END:LUT1_BEGIN] = 16'h6688; // XOR-AND
+    cfg_bits[LUT2_END:LUT2_BEGIN] = 16'h6688; // XOR-AND
+    cfg_bits[LUT3_END:LUT3_BEGIN] = 16'h6688; // XOR-AND
+    cfg_bits[LUT4_END:LUT4_BEGIN] = 16'h6688; // XOR-AND
+    cfg_bits[LUT5_END:LUT5_BEGIN] = 16'h6688; // XOR-AND
+    cfg_bits[LUT6_END:LUT6_BEGIN] = 16'h6688; // XOR-AND
+    cfg_bits[LUT7_END:LUT7_BEGIN] = 16'h6688; // XOR-AND
+
+    cfg_bits[ISEL0_END:ISEL0_BEGIN] = 1'b0; // turn on/off Input Select of S44_0
+    cfg_bits[ISEL1_END:ISEL1_BEGIN] = 1'b0; // turn on/off Input Select of S44_1
+    cfg_bits[ISEL2_END:ISEL2_BEGIN] = 1'b0; // turn on/off Input Select of S44_2
+    cfg_bits[ISEL3_END:ISEL3_BEGIN] = 1'b0; // turn on/off Input Select of S44_3
+
+    // To select between LUT output and CarryChain output
+    cfg_bits[OMUX0_END:OMUX0_BEGIN] = 1'b1; // turn on/off Output Mux of LUT0
+    cfg_bits[OMUX1_END:OMUX1_BEGIN] = 1'b1; // turn on/off Output Mux of LUT1
+    cfg_bits[OMUX2_END:OMUX2_BEGIN] = 1'b1; // turn on/off Output Mux of LUT2
+    cfg_bits[OMUX3_END:OMUX3_BEGIN] = 1'b1; // turn on/off Output Mux of LUT3
+    cfg_bits[OMUX4_END:OMUX4_BEGIN] = 1'b1; // turn on/off Output Mux of LUT4
+    cfg_bits[OMUX5_END:OMUX5_BEGIN] = 1'b1; // turn on/off Output Mux of LUT5
+    cfg_bits[OMUX6_END:OMUX6_BEGIN] = 1'b1; // turn on/off Output Mux of LUT6
+    cfg_bits[OMUX7_END:OMUX7_BEGIN] = 1'b1; // turn on/off Output Mux of LUT7
 
     cfg_bits[ID_END:ID_BEGIN] = 3'b111;
   end
@@ -118,8 +133,8 @@ module clb_testbench();
     .ID(ID)
   ) dut (
     .I(clb_in),
-    .CIN(cin),
-    .COUT(cout),
+    .CIN(CIN),
+    .COUT(COUT),
     .COMB_O(clb_comb_out),
     .SYNC_O(clb_sync_out),
     .RST(RST),
@@ -147,6 +162,9 @@ module clb_testbench();
   integer i;
   reg cfg_done;
 
+  wire [7:0] A = 8'b1100_1001;
+  wire [7:0] B = 8'b1011_0001;
+
   initial begin
     rst = 1'b1;
     CIN = 1'b0;
@@ -156,7 +174,28 @@ module clb_testbench();
     cfg_in_start = 1'b0;
     cfg_bit_in = 1'b0;
 
-    clb_in = 32'h0F0F_0F0F;
+    //clb_in = 32'hEFEF_EFEF;
+    clb_in = 0;
+
+    #1;
+    clb_in[0]  = A[0]; clb_in[1]  = B[0];
+    clb_in[4]  = A[1]; clb_in[5]  = B[1];
+    clb_in[8]  = A[2]; clb_in[9]  = B[2];
+    clb_in[12] = A[3]; clb_in[13] = B[3];
+    clb_in[16] = A[4]; clb_in[17] = B[4];
+    clb_in[20] = A[5]; clb_in[21] = B[5];
+    clb_in[24] = A[6]; clb_in[25] = B[6];
+    clb_in[28] = A[0]; clb_in[29] = B[7];
+
+    // enable fracturable mode
+    clb_in[3]  = 1'b1;
+    clb_in[7]  = 1'b1;
+    clb_in[11] = 1'b1;
+    clb_in[15] = 1'b1;
+    clb_in[19] = 1'b1;
+    clb_in[23] = 1'b1;
+    clb_in[27] = 1'b1;
+    clb_in[31] = 1'b1;
 
     // Hold reset for a while
     repeat (10) @(posedge clk);
@@ -191,8 +230,21 @@ module clb_testbench();
     $display("LUTS44_3 cfg: %b", dut.cfg[131:99]);
 
     $display("CLB LUT input: %b", dut.I);
+    $display("CLB LUT output: %b", dut.lut_out);
+
+    $display("CLB CarryChain CIN: %b", dut.cc.CIN);
+    $display("CLB CarryChain P: %b", dut.cc.P);
+    $display("CLB CarryChain G: %b", dut.cc.G);
+    $display("CLB CarryChain S: %b", dut.cc.S);
+
     $display("CLB Comb. output: %b", dut.COMB_O);
     $display("CLB Sync. output: %b", dut.SYNC_O);
+    $display("CLB COUT: %b", dut.COUT);
+
+    if ({COUT, clb_comb_out} === A + B)
+      $display("[Test CarryChain] PASSED!");
+    else
+      $display("[Test CarryChain] FAILED!");
 
     #1000;
     $finish();
