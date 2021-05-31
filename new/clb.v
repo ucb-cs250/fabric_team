@@ -11,23 +11,24 @@ module clb #(
   input  wire RST,
   input  wire CE,
 
-  input  wire clk,
-  input  wire crst,
+  input  wire clk,  // global clock (TODO: separate clocks for fabric logic and config?)
+  input  wire crst, // system-wide reset (or config reset)
   input  wire cfg_in_start,
   input  wire cfg_bit_in,
   output wire cfg_out_start,
   output wire cfg_bit_out
 );
 
-  localparam CFG_LUT_SIZE  = 33;
+  localparam CFG_LUT_SIZE  = 33; // S44: 2 x LUT-4 + input select
   localparam CFG_DFF_SIZE  = 1;
   localparam CFG_OMUX_SIZE = 1;
 
   localparam CFG_LUT_OFFSET  = 0;
   localparam CFG_DFF_OFFSET  = 4 * CFG_LUT_SIZE + CFG_LUT_OFFSET;
   localparam CFG_OMUX_OFFSET = 8 * CFG_DFF_SIZE + CFG_DFF_OFFSET;
+  localparam CFG_CC_OFFSET   = 8 * CFG_OMUX_SIZE + CFG_OMUX_OFFSET;
 
-  localparam CFG_SIZE = 8 * CFG_OMUX_SIZE + CFG_OMUX_OFFSET + ID_WIDTH;
+  localparam CFG_SIZE = 2 + CFG_CC_OFFSET + ID_WIDTH;
 
   wire [CFG_SIZE-1:0] cfg;
 
@@ -60,11 +61,19 @@ module clb #(
 
   // Carry Chain (8b)
   wire [7:0] p, g, s;
+  wire carry_in;
+  MUX2 m2_cc (
+    .I0(CIN),
+    .I1(cfg[CFG_CC_OFFSET + 0]), // CYINIT
+    .O(carry_in),
+    .sel(cfg[CFG_CC_OFFSET + 1])
+  );
+
   CARRY8 cc (
     .P(p[7:0]),
     .G(g[7:0]),
     .S(s[7:0]),
-    .CIN(CIN),
+    .CIN(carry_in),
     .COUT(COUT)
   );
 

@@ -79,7 +79,10 @@ module clb_testbench();
   localparam OMUX7_BEGIN = OMUX6_END + 1;
   localparam OMUX7_END   = OMUX7_BEGIN + 1 - 1;
 
-  localparam CFG_SIZE = OMUX7_END + 1;
+  localparam CC_BEGIN = OMUX7_END + 1;
+  localparam CC_END   = CC_BEGIN + 2 - 1;
+
+  localparam CFG_SIZE = CC_END + 1;
 
   reg [CFG_SIZE-1:0] cfg_bits;
 
@@ -88,14 +91,14 @@ module clb_testbench();
     cfg_bits = 0;
 
     #1;
-    cfg_bits[LUT0_END:LUT0_BEGIN] = 16'h6688; // XOR-AND
-    cfg_bits[LUT1_END:LUT1_BEGIN] = 16'h6688; // XOR-AND
-    cfg_bits[LUT2_END:LUT2_BEGIN] = 16'h6688; // XOR-AND
-    cfg_bits[LUT3_END:LUT3_BEGIN] = 16'h6688; // XOR-AND
-    cfg_bits[LUT4_END:LUT4_BEGIN] = 16'h6688; // XOR-AND
-    cfg_bits[LUT5_END:LUT5_BEGIN] = 16'h6688; // XOR-AND
-    cfg_bits[LUT6_END:LUT6_BEGIN] = 16'h6688; // XOR-AND
-    cfg_bits[LUT7_END:LUT7_BEGIN] = 16'h6688; // XOR-AND
+    cfg_bits[LUT0_END:LUT0_BEGIN] = 16'h9944; // XOR-AND
+    cfg_bits[LUT1_END:LUT1_BEGIN] = 16'h9944; // XOR-AND
+    cfg_bits[LUT2_END:LUT2_BEGIN] = 16'h9944; // XOR-AND
+    cfg_bits[LUT3_END:LUT3_BEGIN] = 16'h9944; // XOR-AND
+    cfg_bits[LUT4_END:LUT4_BEGIN] = 16'h9944; // XOR-AND
+    cfg_bits[LUT5_END:LUT5_BEGIN] = 16'h9944; // XOR-AND
+    cfg_bits[LUT6_END:LUT6_BEGIN] = 16'h9944; // XOR-AND
+    cfg_bits[LUT7_END:LUT7_BEGIN] = 16'h9944; // XOR-AND
 
     cfg_bits[ISEL0_END:ISEL0_BEGIN] = 1'b0; // turn on/off Input Select of S44_0
     cfg_bits[ISEL1_END:ISEL1_BEGIN] = 1'b0; // turn on/off Input Select of S44_1
@@ -112,6 +115,7 @@ module clb_testbench();
     cfg_bits[OMUX6_END:OMUX6_BEGIN] = 1'b1; // turn on/off Output Mux of LUT6
     cfg_bits[OMUX7_END:OMUX7_BEGIN] = 1'b1; // turn on/off Output Mux of LUT7
 
+    cfg_bits[CC_END:CC_BEGIN] = 2'b11; // {Carry In Select, CYINIT}
     cfg_bits[ID_END:ID_BEGIN] = 3'b111;
   end
 
@@ -210,6 +214,7 @@ module clb_testbench();
     @(negedge clk);
     cfg_in_start = 1'b1;
     CE = 1'b1;
+    CIN = 1'b0;
 
     for (i = 0; i < CFG_SIZE; i = i + 1) begin
       @(negedge clk);
@@ -241,10 +246,10 @@ module clb_testbench();
     $display("CLB Sync. output: %b", dut.SYNC_O);
     $display("CLB COUT: %b", dut.COUT);
 
-    if ({COUT, clb_comb_out} === A + B)
+    if (clb_comb_out === B - A)
       $display("[Test CarryChain] PASSED!");
     else
-      $display("[Test CarryChain] FAILED!");
+      $display("[Test CarryChain] FAILED! %b vs. %b", clb_comb_out, B - A);
 
     #1000;
     $finish();
