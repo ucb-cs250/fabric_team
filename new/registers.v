@@ -1,5 +1,7 @@
 `timescale 1ns/1ns
 
+// John W. (EECS151)
+
 // Register of D-Type Flip-flops
 module REGISTER(q, d, clk);
   parameter N = 1;
