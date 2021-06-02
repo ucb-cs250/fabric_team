@@ -32,7 +32,7 @@ module muxn_testbench();
       #1;
       m_sel = i;
       #1;
-      if (m_out == m_in[i])
+      if (m_out === m_in[i])
         $display("[TEST m_sel: %b, m_out: %b] PASSED", m_sel, m_out);
       else
         $display("[TEST m_sel: %b, m_out: %b] FAILED", m_sel, m_out);

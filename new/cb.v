@@ -2,8 +2,7 @@
 module cb #(
   parameter CLB_IWIDTH = 10, // # CLB inputs
   parameter CLB_OWIDTH = 4,  // # CLB outputs
-  parameter CHN_IWIDTH = 16, // input channel width
-  parameter CHN_OWIDTH = 16, // output channel width
+  parameter CHN_WIDTH  = 16, // channel width
   parameter ID_WIDTH   = 3,
   parameter ID         = 7
 ) (
@@ -15,11 +14,11 @@ module cb #(
   output [CLB_IWIDTH-1:0] clb0_input,
   output [CLB_IWIDTH-1:0] clb1_input,
 
-  input  [CHN_IWIDTH-1:0] single0_in,
-  input  [CHN_IWIDTH-1:0] single1_in,
+  input  [CHN_WIDTH-1:0]  single0_in,
+  input  [CHN_WIDTH-1:0]  single1_in,
 
-  output [CHN_OWIDTH-1:0] single0_out,
-  output [CHN_OWIDTH-1:0] single1_out,
+  output [CHN_WIDTH-1:0]  single0_out,
+  output [CHN_WIDTH-1:0]  single1_out,
 
   input  wire clk,  // global clock (TODO: separate clocks for fabric logic and config?)
   input  wire crst, // system-wide reset (or config reset)
@@ -29,11 +28,11 @@ module cb #(
   output wire cfg_bit_out
 );
 
-  localparam integer CFG_SNGO_SIZE = $clog2(CHN_IWIDTH + CLB_OWIDTH * 2 + 1);
-  localparam integer CFG_CLBI_SIZE = $clog2(CLB_OWIDTH + CHN_IWIDTH * 2 + 1);
+  localparam integer CFG_SNGO_SIZE = $clog2(CHN_WIDTH + CLB_OWIDTH * 2 + 1);
+  localparam integer CFG_CLBI_SIZE = $clog2(CLB_OWIDTH + CHN_WIDTH * 2 + 1);
 
-  localparam CFG_OFFSET0 =               CHN_OWIDTH * CFG_SNGO_SIZE;
-  localparam CFG_OFFSET1 = CFG_OFFSET0 + CHN_OWIDTH * CFG_SNGO_SIZE;
+  localparam CFG_OFFSET0 =               CHN_WIDTH  * CFG_SNGO_SIZE;
+  localparam CFG_OFFSET1 = CFG_OFFSET0 + CHN_WIDTH  * CFG_SNGO_SIZE;
   localparam CFG_OFFSET2 = CFG_OFFSET1 + CLB_IWIDTH * CFG_CLBI_SIZE;
   localparam CFG_SIZE    = CFG_OFFSET2 + CLB_IWIDTH * CFG_CLBI_SIZE + 1;
 
@@ -42,25 +41,25 @@ module cb #(
   genvar i;
 
   generate
-    // {single0_in, clb0_output, clb1_output} -> single0_out
-    for (i = 0; i < CHN_OWIDTH; i = i + 1) begin: GEN_SNGO0
+    // {single1_in, clb0_output, clb1_output} -> single0_out[i]
+    for (i = 0; i < CHN_WIDTH; i = i + 1) begin: GEN_SNGO0
       MUXN #(
-        .IWIDTH(CHN_IWIDTH+CLB_OWIDTH*2+1),
+        .IWIDTH(CHN_WIDTH+CLB_OWIDTH*2+1),
         .SWIDTH(CFG_SNGO_SIZE)
       ) muxn_sng0 (
-        .I({single0_in, clb1_output, clb0_output, 1'b0}),
+        .I({single1_in, clb1_output, clb0_output, 1'b0}),
         .O(single0_out[i]),
         .sel(cfg[(i+1)*CFG_SNGO_SIZE-1 : i*CFG_SNGO_SIZE])
       );
     end
 
-    // {singl1_in, clb0_output, clb1_output} -> single1_out
-    for (i = 0; i < CHN_OWIDTH; i = i + 1) begin: GEN_SNGO1
+    // {single0_in[i], clb0_output, clb1_output} -> single1_out[i]
+    for (i = 0; i < CHN_WIDTH; i = i + 1) begin: GEN_SNGO1
       MUXN #(
-        .IWIDTH(CHN_IWIDTH+CLB_OWIDTH*2+1),
+        .IWIDTH(CHN_WIDTH+CLB_OWIDTH*2+1),
         .SWIDTH(CFG_SNGO_SIZE)
       ) muxn_sng1 (
-        .I({single1_in, clb1_output, clb0_output, 1'b0}),
+        .I({single0_in, clb1_output, clb0_output, 1'b0}),
         .O(single1_out[i]),
         .sel(cfg[CFG_OFFSET0+(i+1)*CFG_SNGO_SIZE-1 : CFG_OFFSET0+i*CFG_SNGO_SIZE])
       );
@@ -69,7 +68,7 @@ module cb #(
     // {clb0_output, single0_in, single1_in} -> clb1_input
     for (i = 0; i < CLB_IWIDTH; i = i + 1) begin: GEN_CLBI1
       MUXN #(
-        .IWIDTH(CLB_OWIDTH+CHN_IWIDTH*2+1),
+        .IWIDTH(CLB_OWIDTH+CHN_WIDTH*2+1),
         .SWIDTH(CFG_CLBI_SIZE)
       ) muxn_clb1_in (
         .I({clb0_output, single0_in, single1_in, 1'b0}),
@@ -81,7 +80,7 @@ module cb #(
     // {clb1_output, single0_in, single1_in} -> clb0_input
     for (i = 0; i < CLB_IWIDTH; i = i + 1) begin: GEN_CLBI0
       MUXN #(
-        .IWIDTH(CLB_OWIDTH+CHN_IWIDTH*2+1),
+        .IWIDTH(CLB_OWIDTH+CHN_WIDTH*2+1),
         .SWIDTH(CFG_CLBI_SIZE)
       ) muxn_clb0_in (
         .I({clb1_output, single0_in, single1_in, 1'b0}),
