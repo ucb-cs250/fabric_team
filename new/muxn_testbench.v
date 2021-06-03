@@ -2,8 +2,8 @@
 
 module muxn_testbench();
 
-  localparam IWIDTH = 20;
-  localparam SWIDTH = 5;
+  localparam IWIDTH = 37;
+  localparam SWIDTH = 6;
 
   reg [IWIDTH-1:0] m_in;
   wire m_out;
@@ -25,7 +25,8 @@ module muxn_testbench();
     m_sel = 0;
 
     #10;
-    m_in = 20'b1111_0101_0111_1100_1110;
+    m_in = 37'b1_0000_0000_0000_0000_1111_0101_0111_1100_1110;
+    //m_in = 20'b1111_0101_0111_1100_1110;
     //m_in = 8'b1100_1110;
 
     for (i = 0; i < IWIDTH; i = i + 1) begin

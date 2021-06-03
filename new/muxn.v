@@ -8,18 +8,6 @@ module MUXN #(
   input [SWIDTH-1:0] sel
 );
 
-//  wire [IWIDTH:0] tmp;
-//  assign tmp[0] = 1'b0;
-//
-//  genvar i;
-//  generate
-//    for (i = 1; i < IWIDTH + 1; i = i + 1) begin
-//      assign tmp[i] = (sel == i) ? I[i - 1] : tmp[i - 1];
-//    end
-//  endgenerate
-//
-//  assign O = tmp[IWIDTH];
-
   wire [IWIDTH-1:0] tmp [SWIDTH:0];
 
   assign tmp[0] = I;

@@ -42,62 +42,62 @@ module cb_testbench();
 
   function [31:0] CLB0_TO_SNG0;
     input  [31:0] m;
-    CLB0_TO_SNG0 = SNG0_OUT_BEGIN - ID_WIDTH + 1 + m; 
+    CLB0_TO_SNG0 = 1 + m; 
   endfunction
 
   function [31:0] CLB1_TO_SNG0;
     input  [31:0] m;
-    CLB1_TO_SNG0 = SNG0_OUT_BEGIN - ID_WIDTH + 1 + CLB_OWIDTH + m; 
+    CLB1_TO_SNG0 = 1 + CLB_OWIDTH + m; 
   endfunction
 
   function [31:0] SNG1_TO_SNG0;
     input  [31:0] m;
-    SNG1_TO_SNG0 = SNG0_OUT_BEGIN - ID_WIDTH + 1 + CLB_OWIDTH * 2 + m; 
+    SNG1_TO_SNG0 = 1 + CLB_OWIDTH * 2 + m; 
   endfunction
 
   function [31:0] CLB0_TO_SNG1;
     input  [31:0] m;
-    CLB0_TO_SNG1 = SNG1_OUT_BEGIN - ID_WIDTH + 1 + m; 
+    CLB0_TO_SNG1 = 1 + m; 
   endfunction
 
   function [31:0] CLB1_TO_SNG1;
     input  [31:0] m;
-    CLB1_TO_SNG1 = SNG1_OUT_BEGIN - ID_WIDTH + 1 + CLB_OWIDTH + m; 
+    CLB1_TO_SNG1 = 1 + CLB_OWIDTH + m; 
   endfunction
 
   function [31:0] SNG0_TO_SNG1;
     input  [31:0] m;
-    SNG0_TO_SNG1 = SNG1_OUT_BEGIN - ID_WIDTH + 1 + CLB_OWIDTH * 2 + m; 
+    SNG0_TO_SNG1 = 1 + CLB_OWIDTH * 2 + m; 
   endfunction
 
   function [31:0] SNG0_TO_CLB0;
     input  [31:0] m;
-    SNG0_TO_CLB0 = CLB0_IN_BEGIN - ID_WIDTH + 1 + m; 
+    SNG0_TO_CLB0 = 1 + m; 
   endfunction
 
   function [31:0] SNG1_TO_CLB0;
     input  [31:0] m;
-    SNG1_TO_CLB0 = CLB0_IN_BEGIN - ID_WIDTH + 1 + CHN_WIDTH + m; 
+    SNG1_TO_CLB0 = 1 + CHN_WIDTH + m; 
   endfunction
 
   function [31:0] CLB1_TO_CLB0;
     input  [31:0] m;
-    CLB1_TO_CLB0 = CLB0_IN_BEGIN - ID_WIDTH + 1 + CHN_WIDTH * 2 + m; 
+    CLB1_TO_CLB0 = 1 + CHN_WIDTH * 2 + m; 
   endfunction
 
   function [31:0] SNG0_TO_CLB1;
     input  [31:0] m;
-    SNG0_TO_CLB1 = CLB1_IN_BEGIN - ID_WIDTH + 1 + m; 
+    SNG0_TO_CLB1 = 1 + m; 
   endfunction
 
   function [31:0] SNG1_TO_CLB1;
     input  [31:0] m;
-    SNG1_TO_CLB1 = CLB1_IN_BEGIN - ID_WIDTH + 1 + CHN_WIDTH + m; 
+    SNG1_TO_CLB1 = 1 + CHN_WIDTH + m; 
   endfunction
 
   function [31:0] CLB1_TO_CLB1;
     input  [31:0] m;
-    CLB1_TO_CLB1 = CLB1_IN_BEGIN - ID_WIDTH + 1 + CHN_WIDTH * 2 + m; 
+    CLB1_TO_CLB1 = 1 + CHN_WIDTH * 2 + m; 
   endfunction
 
   // initialize configuration bits
@@ -105,13 +105,45 @@ module cb_testbench();
     cfg_bits = 0;
 
     #1;
-    // clb0_out[3] --> single0_out[1]
+    // clb0_output[3] --> single0_out[1]
     cfg_bits[SNG0_OUT_END   + (1+1)*CFG_SNGO_SIZE:
              SNG0_OUT_BEGIN + (0+1)*CFG_SNGO_SIZE] = CLB0_TO_SNG0(3);
 
-    // clb1_out[2] --> single0_out[2]
+    // clb1_output[2] --> single0_out[2]
     cfg_bits[SNG0_OUT_END   + (1+2)*CFG_SNGO_SIZE:
              SNG0_OUT_BEGIN + (0+2)*CFG_SNGO_SIZE] = CLB1_TO_SNG0(2);
+
+    // clb0_output[1] --> single1_out[0]
+    cfg_bits[SNG1_OUT_END   + (1+0)*CFG_SNGO_SIZE:
+             SNG1_OUT_BEGIN + (0+0)*CFG_SNGO_SIZE] = CLB0_TO_SNG0(1);
+
+    // clb1_output[3] --> single1_out[15]
+    cfg_bits[SNG1_OUT_END   + (1+15)*CFG_SNGO_SIZE:
+             SNG1_OUT_BEGIN + (0+15)*CFG_SNGO_SIZE] = CLB1_TO_SNG0(3);
+
+    // single0_in[4] --> clb0_input[0]
+    cfg_bits[CLB0_IN_END   + (1+0)*CFG_CLBI_SIZE:
+             CLB0_IN_BEGIN + (0+0)*CFG_CLBI_SIZE] = SNG0_TO_CLB0(4);
+
+    // single1_in[0] --> clb0_input[5]
+    cfg_bits[CLB0_IN_END   + (1+5)*CFG_CLBI_SIZE:
+             CLB0_IN_BEGIN + (0+5)*CFG_CLBI_SIZE] = SNG1_TO_CLB0(0);
+
+    // clb1_output[2] --> clb0_input[9]
+    cfg_bits[CLB0_IN_END   + (1+9)*CFG_CLBI_SIZE:
+             CLB0_IN_BEGIN + (0+9)*CFG_CLBI_SIZE] = CLB1_TO_CLB0(2);
+
+    // single0_in[3] --> clb1_input[1]
+    cfg_bits[CLB1_IN_END   + (1+1)*CFG_CLBI_SIZE:
+             CLB1_IN_BEGIN + (0+1)*CFG_CLBI_SIZE] = SNG0_TO_CLB1(3);
+
+    // single1_in[6] --> clb1_input[2]
+    cfg_bits[CLB1_IN_END   + (1+2)*CFG_CLBI_SIZE:
+             CLB1_IN_BEGIN + (0+2)*CFG_CLBI_SIZE] = SNG1_TO_CLB1(6);
+
+    // clb0_output[1] --> clb1_input[8]
+    cfg_bits[CLB1_IN_END   + (1+8)*CFG_CLBI_SIZE:
+             CLB1_IN_BEGIN + (0+8)*CFG_CLBI_SIZE] = CLB1_TO_CLB1(1);
 
     cfg_bits[ID_END:ID_BEGIN] = 3'b111;
   end
@@ -178,8 +210,10 @@ module cb_testbench();
     single1_in  = 0;
 
     #1;
-    clb0_output = 4'b1000;
-    clb1_output = 4'b0100;
+    single0_in  = 16'b0000_0100_0001_1100;
+    single1_in  = 16'b0000_0000_0100_0001;
+    clb0_output = 4'b1010;
+    clb1_output = 4'b1100;
 
     // Hold reset for a while
     repeat (10) @(posedge clk);
@@ -210,10 +244,14 @@ module cb_testbench();
 
     $display("cfg %b", dut.cfg[CHN_WIDTH*CFG_SNGO_SIZE-1 : 0]);
 
+    $display("single0_in  = %b", single0_in);
+    $display("single1_in  = %b", single1_in);
     $display("clb0_output = %b", clb0_output);
     $display("clb1_output = %b", clb1_output);
     $display("single0_out = %b", single0_out);
     $display("single1_out = %b", single1_out);
+    $display("clb0_input  = %b", clb0_input);
+    $display("clb1_input  = %b", clb1_input);
 
     $display("TEST Route clb0_output[3] to single0_out[1]");
     if (single0_out[1] === clb0_output[3])
@@ -223,6 +261,54 @@ module cb_testbench();
 
     $display("TEST Route clb1_output[2] to single0_out[2]");
     if (single0_out[2] === clb1_output[2])
+      $display("PASSED!");
+    else
+      $display("FAILED!");
+
+    $display("TEST Route clb0_output[1] to single1_out[0]");
+    if (single1_out[0] === clb0_output[1])
+      $display("PASSED!");
+    else
+      $display("FAILED!");
+
+    $display("TEST Route clb1_output[3] to single1_out[15]");
+    if (single1_out[15] === clb1_output[3])
+      $display("PASSED!");
+    else
+      $display("FAILED!");
+
+    $display("TEST Route single0_in[4] to clb0_input[0]");
+    if (single0_in[4] === clb0_input[0])
+      $display("PASSED!");
+    else
+      $display("FAILED!");
+
+    $display("TEST Route single1_in[0] to clb0_input[5]");
+    if (single1_in[0] === clb0_input[5])
+      $display("PASSED!");
+    else
+      $display("FAILED!");
+
+    $display("TEST Route clb1_output[2] to clb0_input[9]");
+    if (clb1_output[2] === clb0_input[9])
+      $display("PASSED!");
+    else
+      $display("FAILED!");
+
+    $display("TEST Route single0_in[3] to clb1_input[1]");
+    if (single0_in[3] === clb1_input[1])
+      $display("PASSED!");
+    else
+      $display("FAILED!");
+
+    $display("TEST Route single1_in[6] to clb1_input[2]");
+    if (single1_in[6] === clb1_input[2])
+      $display("PASSED! %d", single1_in[6]);
+    else
+      $display("FAILED!");
+
+    $display("TEST Route clb0_output[1] to clb1_input[8]");
+    if (clb0_output[1] === clb1_input[8])
       $display("PASSED!");
     else
       $display("FAILED!");
