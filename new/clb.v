@@ -1,7 +1,8 @@
 
 module clb #(
   parameter ID_WIDTH = 3,
-  parameter ID = 0
+  parameter ID = 0,
+  parameter CFG_SIZE = 256
 ) (
   input  wire [31:0] I,
   input  wire CIN,
@@ -11,12 +12,13 @@ module clb #(
   input  wire RST,
   input  wire CE,
 
-  input  wire clk,  // global clock (TODO: separate clocks for fabric logic and config?)
-  input  wire crst, // system-wide reset (or config reset)
-  input  wire cfg_in_start,
-  input  wire cfg_bit_in,
-  output wire cfg_out_start,
-  output wire cfg_bit_out
+  input wire [CFG_SIZE-1:0] cfg
+//  input  wire clk,  // global clock (TODO: separate clocks for fabric logic and config?)
+//  input  wire crst, // system-wide reset (or config reset)
+//  input  wire cfg_in_start,
+//  input  wire cfg_bit_in,
+//  output wire cfg_out_start,
+//  output wire cfg_bit_out
 );
 
   localparam CFG_LUT_SIZE  = 33; // S44: 2 x LUT-4 + input select
@@ -28,9 +30,9 @@ module clb #(
   localparam CFG_OMUX_OFFSET = 8 * CFG_DFF_SIZE + CFG_DFF_OFFSET;
   localparam CFG_CC_OFFSET   = 8 * CFG_OMUX_SIZE + CFG_OMUX_OFFSET;
 
-  localparam CFG_SIZE = 2 + CFG_CC_OFFSET + ID_WIDTH;
-
-  wire [CFG_SIZE-1:0] cfg;
+//  localparam CFG_SIZE = 2 + CFG_CC_OFFSET + ID_WIDTH;
+//
+//  wire [CFG_SIZE-1:0] cfg;
 
   wire [15:0] lut_out;
   wire [7:0] d;
@@ -97,19 +99,19 @@ module clb #(
     end
   endgenerate
 
-  config_block #(
-    .CFG_SIZE(CFG_SIZE),
-    .SHIFT_LEN(16),
-    .ID_WIDTH(ID_WIDTH),
-    .ID(ID)
-  ) cfg_blk (
-    .clk(clk),
-    .rst(crst),
-    .cfg_in_start(cfg_in_start),
-    .cfg_bit_in(cfg_bit_in),
-    .cfg_out_start(cfg_out_start),
-    .cfg_bit_out(cfg_bit_out),
-    .cfg(cfg)
-  );
+//  config_block #(
+//    .CFG_SIZE(CFG_SIZE),
+//    .SHIFT_LEN(16),
+//    .ID_WIDTH(ID_WIDTH),
+//    .ID(ID)
+//  ) cfg_blk (
+//    .clk(clk),
+//    .rst(crst),
+//    .cfg_in_start(cfg_in_start),
+//    .cfg_bit_in(cfg_bit_in),
+//    .cfg_out_start(cfg_out_start),
+//    .cfg_bit_out(cfg_bit_out),
+//    .cfg(cfg)
+//  );
 
 endmodule
