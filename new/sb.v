@@ -7,8 +7,8 @@
 // E.g., {W, S, E, 1'b0} --> N
 module sb #(
   parameter CHN_WIDTH = 16,
-  parameter ID_WIDTH   = 3,
-  parameter ID         = 7
+  parameter ID_WIDTH  = 3,
+  parameter ID        = 7
 ) (
   input  [CHN_WIDTH-1:0] north_in,
   input  [CHN_WIDTH-1:0] east_in,

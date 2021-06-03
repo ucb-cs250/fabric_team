@@ -106,43 +106,43 @@ module cb_testbench();
 
     #1;
     // clb0_output[3] --> single0_out[1]
-    cfg_bits[SNG0_OUT_END   + (1+1)*CFG_SNGO_SIZE:
+    cfg_bits[SNG0_OUT_END :
              SNG0_OUT_BEGIN + (0+1)*CFG_SNGO_SIZE] = CLB0_TO_SNG0(3);
 
     // clb1_output[2] --> single0_out[2]
-    cfg_bits[SNG0_OUT_END   + (1+2)*CFG_SNGO_SIZE:
+    cfg_bits[SNG0_OUT_END :
              SNG0_OUT_BEGIN + (0+2)*CFG_SNGO_SIZE] = CLB1_TO_SNG0(2);
 
     // clb0_output[1] --> single1_out[0]
-    cfg_bits[SNG1_OUT_END   + (1+0)*CFG_SNGO_SIZE:
+    cfg_bits[SNG1_OUT_END :
              SNG1_OUT_BEGIN + (0+0)*CFG_SNGO_SIZE] = CLB0_TO_SNG0(1);
 
     // clb1_output[3] --> single1_out[15]
-    cfg_bits[SNG1_OUT_END   + (1+15)*CFG_SNGO_SIZE:
+    cfg_bits[SNG1_OUT_END :
              SNG1_OUT_BEGIN + (0+15)*CFG_SNGO_SIZE] = CLB1_TO_SNG0(3);
 
     // single0_in[4] --> clb0_input[0]
-    cfg_bits[CLB0_IN_END   + (1+0)*CFG_CLBI_SIZE:
+    cfg_bits[CLB0_IN_END :
              CLB0_IN_BEGIN + (0+0)*CFG_CLBI_SIZE] = SNG0_TO_CLB0(4);
 
     // single1_in[0] --> clb0_input[5]
-    cfg_bits[CLB0_IN_END   + (1+5)*CFG_CLBI_SIZE:
+    cfg_bits[CLB0_IN_END :
              CLB0_IN_BEGIN + (0+5)*CFG_CLBI_SIZE] = SNG1_TO_CLB0(0);
 
     // clb1_output[2] --> clb0_input[9]
-    cfg_bits[CLB0_IN_END   + (1+9)*CFG_CLBI_SIZE:
+    cfg_bits[CLB0_IN_END :
              CLB0_IN_BEGIN + (0+9)*CFG_CLBI_SIZE] = CLB1_TO_CLB0(2);
 
     // single0_in[3] --> clb1_input[1]
-    cfg_bits[CLB1_IN_END   + (1+1)*CFG_CLBI_SIZE:
+    cfg_bits[CLB1_IN_END :
              CLB1_IN_BEGIN + (0+1)*CFG_CLBI_SIZE] = SNG0_TO_CLB1(3);
 
     // single1_in[6] --> clb1_input[2]
-    cfg_bits[CLB1_IN_END   + (1+2)*CFG_CLBI_SIZE:
+    cfg_bits[CLB1_IN_END :
              CLB1_IN_BEGIN + (0+2)*CFG_CLBI_SIZE] = SNG1_TO_CLB1(6);
 
     // clb0_output[1] --> clb1_input[8]
-    cfg_bits[CLB1_IN_END   + (1+8)*CFG_CLBI_SIZE:
+    cfg_bits[CLB1_IN_END :
              CLB1_IN_BEGIN + (0+8)*CFG_CLBI_SIZE] = CLB1_TO_CLB1(1);
 
     cfg_bits[ID_END:ID_BEGIN] = 3'b111;
@@ -255,49 +255,49 @@ module cb_testbench();
 
     $display("TEST Route clb0_output[3] to single0_out[1]");
     if (single0_out[1] === clb0_output[3])
-      $display("PASSED!");
+      $display("PASSED! %d", single0_out[1]);
     else
       $display("FAILED!");
 
     $display("TEST Route clb1_output[2] to single0_out[2]");
     if (single0_out[2] === clb1_output[2])
-      $display("PASSED!");
+      $display("PASSED! %d", single0_out[2]);
     else
       $display("FAILED!");
 
     $display("TEST Route clb0_output[1] to single1_out[0]");
     if (single1_out[0] === clb0_output[1])
-      $display("PASSED!");
+      $display("PASSED! %d", single1_out[0]);
     else
       $display("FAILED!");
 
     $display("TEST Route clb1_output[3] to single1_out[15]");
     if (single1_out[15] === clb1_output[3])
-      $display("PASSED!");
+      $display("PASSED! %d", single1_out[15]);
     else
       $display("FAILED!");
 
     $display("TEST Route single0_in[4] to clb0_input[0]");
     if (single0_in[4] === clb0_input[0])
-      $display("PASSED!");
+      $display("PASSED! %d", single0_in[4]);
     else
       $display("FAILED!");
 
     $display("TEST Route single1_in[0] to clb0_input[5]");
     if (single1_in[0] === clb0_input[5])
-      $display("PASSED!");
+      $display("PASSED! %d", single1_in[0]);
     else
       $display("FAILED!");
 
     $display("TEST Route clb1_output[2] to clb0_input[9]");
     if (clb1_output[2] === clb0_input[9])
-      $display("PASSED!");
+      $display("PASSED! %d", clb1_output[2]);
     else
       $display("FAILED!");
 
     $display("TEST Route single0_in[3] to clb1_input[1]");
     if (single0_in[3] === clb1_input[1])
-      $display("PASSED!");
+      $display("PASSED! %d", single0_in[3]);
     else
       $display("FAILED!");
 
@@ -309,7 +309,7 @@ module cb_testbench();
 
     $display("TEST Route clb0_output[1] to clb1_input[8]");
     if (clb0_output[1] === clb1_input[8])
-      $display("PASSED!");
+      $display("PASSED! %d", clb0_output[1]);
     else
       $display("FAILED!");
 
