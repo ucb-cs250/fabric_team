@@ -26,7 +26,7 @@ set ::env(VERILOG_FILES) [concat \
 
 set ::env(CLOCK_PORT) "clk"
 # Design config
-set ::env(CLOCK_PERIOD) 30
+set ::env(CLOCK_PERIOD) 100
 set ::env(SYNTH_STRATEGY) "DELAY 1"
 #set ::env(SYNTH_STRATEGY) "AREA 2"
 
@@ -37,4 +37,6 @@ set ::env(CELL_PAD) 0
 set ::env(PL_OPENPHYSYN_OPTIMIZATIONS) 0
 set ::env(CLOCK_TREE_SYNTH) 0
 
+set ::env(FP_PIN_ORDER_CFG) $::env(OPENLANE_ROOT)/designs/250/asic_config/clb_new/pin_order.cfg
+set ::env(PDN_CFG) $::env(OPENLANE_ROOT)/designs/250/asic_config/clb_new/pdn.tcl
 
