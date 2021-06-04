@@ -22,6 +22,7 @@ module cb #(
   output [CHN_WIDTH-1:0]  single1_out,
 
   input [CFG_SIZE-1:0] cfg
+
 //  input  wire clk,  // global clock (TODO: separate clocks for fabric logic and config?)
 //  input  wire crst, // system-wide reset (or config reset)
 //  input  wire cfg_in_start,
