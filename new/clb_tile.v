@@ -10,24 +10,24 @@ module clb_tile #(
   output wire COUT,
 
   // SB
-  input  [CHN_WIDTH-1:0] sb_north_in, sb_north_out,
-  output [CHN_WIDTH-1:0] sb_east_in, sb_east_out,
+  input  [CHN_WIDTH-1:0] sb_north_in,  sb_east_in,
+  output [CHN_WIDTH-1:0] sb_north_out, sb_east_out,
 
   // CB_E (east)
-  input  [CHN_WIDTH-1:0]  cb_e_in,
-  output [CHN_WIDTH-1:0]  cb_e_out,
+  input  [CHN_WIDTH-1:0]  cb_e_single1_in,
+  output [CHN_WIDTH-1:0]  cb_e_single1_out,
   input  [CLB_OWIDTH-1:0] cb_e_clb1_output,
   output [CLB_IWIDTH-1:0] cb_e_clb1_input,
 
   // CB_N (north)
-  input  [CHN_WIDTH-1:0]  cb_n_in,
-  output [CHN_WIDTH-1:0]  cb_n_out,
+  input  [CHN_WIDTH-1:0]  cb_n_single1_in,
+  output [CHN_WIDTH-1:0]  cb_n_single1_out,
   input  [CLB_OWIDTH-1:0] cb_n_clb1_output,
   output [CLB_IWIDTH-1:0] cb_n_clb1_input,
 
   // CLB
-  input  [CLB_IWIDTH-1:0] clb_south_in, clb_east_in,
-  output [CLB_OWIDTH-1:0] clb_south_out, clb_east_out,
+  input  [CLB_IWIDTH-1:0] clb_south_in, clb_west_in,
+  output [CLB_OWIDTH-1:0] clb_south_out, clb_west_out,
 
   // Config
   input  wire clk,  // global clock (TODO: separate clocks for fabric logic and config?)
@@ -102,6 +102,7 @@ module clb_tile #(
     .CE(CE),
 
     .clk(clk),
+    .crst(crst),
     .cfg(clb_cfg)
   );
 
@@ -202,7 +203,7 @@ module clb_tile #(
 
   assign cb_n_clb0_output = clb_north_out;
   assign clb_north_in     = cb_n_clb0_input;
-  assign cb_e_single0_in  = sb_west_out;
+  assign cb_n_single0_in  = sb_west_out;
   assign sb_west_in       = cb_e_single0_out;
 
   assign clb_in[7:0]        = clb_east_in[7:0];

@@ -13,9 +13,9 @@ module clb #(
   input  wire CE,
 
   input wire [CFG_SIZE-1:0] cfg,
-  input wire clk  // global clock (TODO: separate clocks for fabric logic and config?)
+  input wire clk,  // global clock (TODO: separate clocks for fabric logic and config?)
+  input  wire crst // system-wide reset (or config reset)
 
-//  input  wire crst, // system-wide reset (or config reset)
 //  input  wire cfg_in_start,
 //  input  wire cfg_bit_in,
 //  output wire cfg_out_start,
