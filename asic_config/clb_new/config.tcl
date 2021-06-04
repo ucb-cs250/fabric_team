@@ -40,3 +40,10 @@ set ::env(CLOCK_TREE_SYNTH) 0
 set ::env(FP_PIN_ORDER_CFG) $::env(OPENLANE_ROOT)/designs/250/asic_config/clb_new/pin_order.cfg
 set ::env(PDN_CFG) $::env(OPENLANE_ROOT)/designs/250/asic_config/clb_new/pdn.tcl
 
+set ::env(GLB_RT_ALLOW_CONGESTION) 1
+
+set ::env(ROUTING_CORES) 10
+
+set ::env(GLB_RT_MAX_DIODE_INS_ITERS) "10"
+
+set ::env(USE_ARC_ANTENNA_CHECK) 0
