@@ -7,8 +7,6 @@
 // E.g., {W, S, E, 1'b0} --> N
 module sb #(
   parameter CHN_WIDTH = 16,
-  parameter ID_WIDTH  = 3,
-  parameter ID        = 7,
   parameter CFG_SIZE  = 256
 ) (
   input  [CHN_WIDTH-1:0] north_in,
@@ -22,21 +20,9 @@ module sb #(
   output [CHN_WIDTH-1:0] west_out,
 
   input [CFG_SIZE-1:0] cfg
-
-//  input  wire clk,  // global clock (TODO: separate clocks for fabric logic and config?)
-//  input  wire crst, // system-wide reset (or config reset)
-//  input  wire cfg_in_start,
-//  input  wire cfg_bit_in,
-//  output wire cfg_out_start,
-//  output wire cfg_bit_out
 );
 
-//  localparam CFG_SIZE = 8 * CHN_WIDTH;
-//
-//  wire [CFG_SIZE-1:0] cfg;
-
   genvar i;
-
   generate
     for (i = 0; i < CHN_WIDTH; i = i + 1) begin
       MUX4 m4_north (
@@ -76,20 +62,5 @@ module sb #(
       );
     end
   endgenerate
-
-//  config_block #(
-//    .CFG_SIZE(CFG_SIZE),
-//    .SHIFT_LEN(16),
-//    .ID_WIDTH(ID_WIDTH),
-//    .ID(ID)
-//  ) cfg_blk (
-//    .clk(clk),
-//    .rst(crst),
-//    .cfg_in_start(cfg_in_start),
-//    .cfg_bit_in(cfg_bit_in),
-//    .cfg_out_start(cfg_out_start),
-//    .cfg_bit_out(cfg_bit_out),
-//    .cfg(cfg)
-//  );
 
 endmodule

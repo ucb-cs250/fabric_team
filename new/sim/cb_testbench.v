@@ -1,5 +1,56 @@
 `timescale 1ns/1ns
 
+`define CLB_IWIDTH 10
+`define CLB_OWIDTH 4
+`define CHN_WIDTH  16
+
+`define CLB0_TO_SNG0(m) (1 + m)
+`define CLB1_TO_SNG0(m) (1 + `CLB_OWIDTH + m)
+`define SNG1_TO_SNG0(m) (1 + `CLB_OWIDTH * 2 + m)
+
+`define CLB0_TO_SNG1(m) (1 + m)
+`define CLB1_TO_SNG1(m) (1 + `CLB_OWIDTH + m)
+`define SNG1_TO_SNG1(m) (1 + `CLB_OWIDTH * 2 + m)
+
+`define SNG0_TO_CLB0(m) (1 + m)
+`define SNG1_TO_CLB0(m) (1 + `CHN_WIDTH + m)
+`define CLB1_TO_CLB0(m) (1 + `CHN_WIDTH * 2 + m)
+
+`define SNG0_TO_CLB1(m) (1 + m)
+`define SNG1_TO_CLB1(m) (1 + `CHN_WIDTH + m)
+`define CLB0_TO_CLB1(m) (1 + `CHN_WIDTH * 2 + m)
+
+`define ID_WIDTH 3
+`define ID_BEGIN 0
+`define ID_END   (`ID_BEGIN + `ID_WIDTH - 1)
+
+`define NUM_SNGO_SWITCHES (`CHN_WIDTH  + `CLB_OWIDTH * 2 + 1)
+`define NUM_CLBI_SWITCHES (`CLB_OWIDTH + `CHN_WIDTH  * 2 + 1)
+
+`define CFG_SNGO_SIZE $clog2(`NUM_SNGO_SWITCHES)
+`define CFG_CLBI_SIZE $clog2(`NUM_CLBI_SWITCHES)
+
+`define SNG0_OUT_BEGIN (`ID_END + 1)
+`define SNG0_OUT_END   (`SNG0_OUT_BEGIN + `CFG_SNGO_SIZE * `CHN_WIDTH - 1)
+
+`define SNG1_OUT_BEGIN (`SNG0_OUT_END + 1)
+`define SNG1_OUT_END   (`SNG1_OUT_BEGIN + `CFG_SNGO_SIZE * `CHN_WIDTH - 1)
+
+`define CLB0_IN_BEGIN  (`SNG1_OUT_END + 1)
+`define CLB0_IN_END    (`CLB0_IN_BEGIN + `CFG_CLBI_SIZE * `CLB_IWIDTH - 1)
+
+`define CLB1_IN_BEGIN  (`CLB0_IN_END + 1)
+`define CLB1_IN_END    (`CLB1_IN_BEGIN + `CFG_CLBI_SIZE * `CLB_IWIDTH - 1)
+
+`define SNG0_OBEGIN(n) (`SNG0_OUT_BEGIN + (0+n)*`CFG_SNGO_SIZE)
+`define SNG0_OEND(n)   (`SNG0_OUT_BEGIN + (1+n)*`CFG_SNGO_SIZE)
+`define SNG1_OBEGIN(n) (`SNG1_OUT_BEGIN + (0+n)*`CFG_SNGO_SIZE)
+`define SNG1_OEND(n)   (`SNG1_OUT_BEGIN + (1+n)*`CFG_SNGO_SIZE)
+`define CLB0_IBEGIN(n) (`CLB0_IN_BEGIN  + (0+n)*`CFG_CLBI_SIZE)
+`define CLB0_IEND(n)   (`CLB0_IN_BEGIN  + (1+n)*`CFG_CLBI_SIZE)
+`define CLB1_IBEGIN(n) (`CLB1_IN_BEGIN  + (0+n)*`CFG_CLBI_SIZE)
+`define CLB1_IEND(n)   (`CLB1_IN_BEGIN  + (1+n)*`CFG_CLBI_SIZE)
+
 module cb_testbench();
   reg clk;
   localparam CPU_CLOCK_PERIOD = 100;
@@ -8,97 +59,11 @@ module cb_testbench();
   initial clk = 0;
   always #(CPU_CLOCK_PERIOD/2) clk = ~clk;
 
-  localparam CLB_IWIDTH = 10;
-  localparam CLB_OWIDTH = 4;
-  localparam CHN_WIDTH = 16;
-
-  localparam ID_WIDTH = 3;
   localparam ID = 7;
 
-  localparam ID_BEGIN = 0;
-  localparam ID_END   = ID_BEGIN + ID_WIDTH - 1;
-
-  localparam NUM_SNGO_SWITCHES = CHN_WIDTH  + CLB_OWIDTH * 2 + 1;
-  localparam NUM_CLBI_SWITCHES = CLB_OWIDTH + CHN_WIDTH  * 2 + 1;
-
-  localparam integer CFG_SNGO_SIZE = $clog2(NUM_SNGO_SWITCHES);
-  localparam integer CFG_CLBI_SIZE = $clog2(NUM_CLBI_SWITCHES);
-
-  localparam SNG0_OUT_BEGIN = ID_END + 1;
-  localparam SNG0_OUT_END   = SNG0_OUT_BEGIN + CFG_SNGO_SIZE * CHN_WIDTH - 1;
-
-  localparam SNG1_OUT_BEGIN = SNG0_OUT_END + 1;
-  localparam SNG1_OUT_END   = SNG1_OUT_BEGIN + CFG_SNGO_SIZE * CHN_WIDTH - 1;
-
-  localparam CLB0_IN_BEGIN  = SNG1_OUT_END + 1;
-  localparam CLB0_IN_END    = CLB0_IN_BEGIN + CFG_CLBI_SIZE * CLB_IWIDTH - 1;
-
-  localparam CLB1_IN_BEGIN  = CLB0_IN_END + 1;
-  localparam CLB1_IN_END    = CLB1_IN_BEGIN + CFG_CLBI_SIZE * CLB_IWIDTH - 1;
-
-  localparam CFG_SIZE = CLB1_IN_END + 1;
+  localparam CFG_SIZE = `CLB1_IN_END + 1;
 
   reg [CFG_SIZE-1:0] cfg_bits;
-
-  function [31:0] CLB0_TO_SNG0;
-    input  [31:0] m;
-    CLB0_TO_SNG0 = 1 + m; 
-  endfunction
-
-  function [31:0] CLB1_TO_SNG0;
-    input  [31:0] m;
-    CLB1_TO_SNG0 = 1 + CLB_OWIDTH + m; 
-  endfunction
-
-  function [31:0] SNG1_TO_SNG0;
-    input  [31:0] m;
-    SNG1_TO_SNG0 = 1 + CLB_OWIDTH * 2 + m; 
-  endfunction
-
-  function [31:0] CLB0_TO_SNG1;
-    input  [31:0] m;
-    CLB0_TO_SNG1 = 1 + m; 
-  endfunction
-
-  function [31:0] CLB1_TO_SNG1;
-    input  [31:0] m;
-    CLB1_TO_SNG1 = 1 + CLB_OWIDTH + m; 
-  endfunction
-
-  function [31:0] SNG0_TO_SNG1;
-    input  [31:0] m;
-    SNG0_TO_SNG1 = 1 + CLB_OWIDTH * 2 + m; 
-  endfunction
-
-  function [31:0] SNG0_TO_CLB0;
-    input  [31:0] m;
-    SNG0_TO_CLB0 = 1 + m; 
-  endfunction
-
-  function [31:0] SNG1_TO_CLB0;
-    input  [31:0] m;
-    SNG1_TO_CLB0 = 1 + CHN_WIDTH + m; 
-  endfunction
-
-  function [31:0] CLB1_TO_CLB0;
-    input  [31:0] m;
-    CLB1_TO_CLB0 = 1 + CHN_WIDTH * 2 + m; 
-  endfunction
-
-  function [31:0] SNG0_TO_CLB1;
-    input  [31:0] m;
-    SNG0_TO_CLB1 = 1 + m; 
-  endfunction
-
-  function [31:0] SNG1_TO_CLB1;
-    input  [31:0] m;
-    SNG1_TO_CLB1 = 1 + CHN_WIDTH + m; 
-  endfunction
-
-  function [31:0] CLB1_TO_CLB1;
-    input  [31:0] m;
-    CLB1_TO_CLB1 = 1 + CHN_WIDTH * 2 + m; 
-  endfunction
 
   // initialize configuration bits
   initial begin
@@ -106,46 +71,36 @@ module cb_testbench();
 
     #1;
     // clb0_output[3] --> single0_out[1]
-    cfg_bits[SNG0_OUT_END :
-             SNG0_OUT_BEGIN + (0+1)*CFG_SNGO_SIZE] = CLB0_TO_SNG0(3);
+    cfg_bits[`SNG0_OEND(1):`SNG0_OBEGIN(1)] = `CLB0_TO_SNG0(3);
 
     // clb1_output[2] --> single0_out[2]
-    cfg_bits[SNG0_OUT_END :
-             SNG0_OUT_BEGIN + (0+2)*CFG_SNGO_SIZE] = CLB1_TO_SNG0(2);
+    cfg_bits[`SNG0_OEND(2):`SNG0_OBEGIN(2)] = `CLB1_TO_SNG0(2);
 
     // clb0_output[1] --> single1_out[0]
-    cfg_bits[SNG1_OUT_END :
-             SNG1_OUT_BEGIN + (0+0)*CFG_SNGO_SIZE] = CLB0_TO_SNG0(1);
+    cfg_bits[`SNG1_OEND(0):`SNG1_OBEGIN(0)] = `CLB0_TO_SNG0(1);
 
     // clb1_output[3] --> single1_out[15]
-    cfg_bits[SNG1_OUT_END :
-             SNG1_OUT_BEGIN + (0+15)*CFG_SNGO_SIZE] = CLB1_TO_SNG0(3);
+    cfg_bits[`SNG1_OEND(15):`SNG1_OBEGIN(15)] = `CLB1_TO_SNG0(3);
 
     // single0_in[4] --> clb0_input[0]
-    cfg_bits[CLB0_IN_END :
-             CLB0_IN_BEGIN + (0+0)*CFG_CLBI_SIZE] = SNG0_TO_CLB0(4);
+    cfg_bits[`CLB0_IEND(0):`CLB0_IBEGIN(0)] = `SNG0_TO_CLB0(4);
 
     // single1_in[0] --> clb0_input[5]
-    cfg_bits[CLB0_IN_END :
-             CLB0_IN_BEGIN + (0+5)*CFG_CLBI_SIZE] = SNG1_TO_CLB0(0);
+    cfg_bits[`CLB0_IEND(5):`CLB0_IBEGIN(5)] = `SNG1_TO_CLB0(0);
 
     // clb1_output[2] --> clb0_input[9]
-    cfg_bits[CLB0_IN_END :
-             CLB0_IN_BEGIN + (0+9)*CFG_CLBI_SIZE] = CLB1_TO_CLB0(2);
+    cfg_bits[`CLB0_IEND(9):`CLB0_IBEGIN(9)] = `CLB1_TO_CLB0(2);
 
     // single0_in[3] --> clb1_input[1]
-    cfg_bits[CLB1_IN_END :
-             CLB1_IN_BEGIN + (0+1)*CFG_CLBI_SIZE] = SNG0_TO_CLB1(3);
+    cfg_bits[`CLB1_IEND(1):`CLB1_IBEGIN(1)] = `SNG0_TO_CLB1(3);
 
     // single1_in[6] --> clb1_input[2]
-    cfg_bits[CLB1_IN_END :
-             CLB1_IN_BEGIN + (0+2)*CFG_CLBI_SIZE] = SNG1_TO_CLB1(6);
+    cfg_bits[`CLB1_IEND(2):`CLB1_IBEGIN(2)] = `SNG1_TO_CLB1(6);
 
     // clb0_output[1] --> clb1_input[8]
-    cfg_bits[CLB1_IN_END :
-             CLB1_IN_BEGIN + (0+8)*CFG_CLBI_SIZE] = CLB1_TO_CLB1(1);
+    cfg_bits[`CLB1_IEND(8):`CLB1_IBEGIN(8)] = `CLB0_TO_CLB1(1);
 
-    cfg_bits[ID_END:ID_BEGIN] = 3'b111;
+    cfg_bits[`ID_END:`ID_BEGIN] = 3'b111;
   end
 
   reg rst;
@@ -155,16 +110,16 @@ module cb_testbench();
   wire cfg_out_start;
   wire cfg_bit_out;
 
-  reg  [CLB_OWIDTH-1:0] clb0_output, clb1_output;
-  reg  [CHN_WIDTH-1:0]  single0_in,  single1_in;
-  wire [CLB_IWIDTH-1:0] clb0_input,  clb1_input;
-  wire [CHN_WIDTH-1:0]  single0_out, single1_out;
+  reg  [`CLB_OWIDTH-1:0] clb0_output, clb1_output;
+  reg  [`CHN_WIDTH-1:0]  single0_in,  single1_in;
+  wire [`CLB_IWIDTH-1:0] clb0_input,  clb1_input;
+  wire [`CHN_WIDTH-1:0]  single0_out, single1_out;
 
-  cb #(
-    .CLB_IWIDTH(CLB_IWIDTH),
-    .CLB_OWIDTH(CLB_OWIDTH),
-    .CHN_WIDTH(CHN_WIDTH),
-    .ID_WIDTH(ID_WIDTH),
+  cb_with_cfg #(
+    .CLB_IWIDTH(`CLB_IWIDTH),
+    .CLB_OWIDTH(`CLB_OWIDTH),
+    .CHN_WIDTH(`CHN_WIDTH),
+    .ID_WIDTH(`ID_WIDTH),
     .ID(ID)
   ) dut (
     .clb0_output(clb0_output), // input
@@ -242,7 +197,7 @@ module cb_testbench();
     $display("Configuration done! %b", cfg_bits);
     $display("Number of config bits: %d", CFG_SIZE);
 
-    $display("cfg %b", dut.cfg[CHN_WIDTH*CFG_SNGO_SIZE-1 : 0]);
+    $display("cfg %b", dut.cfg[`CHN_WIDTH*`CFG_SNGO_SIZE-1 : 0]);
 
     $display("single0_in  = %b", single0_in);
     $display("single1_in  = %b", single1_in);

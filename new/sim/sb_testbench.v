@@ -16,6 +16,29 @@
 `define E2W 2
 `define S2W 3
 
+`define CHN_WIDTH 16
+
+`define ID_WIDTH 3
+
+`define ID_BEGIN 0
+`define ID_END   (`ID_BEGIN + `ID_WIDTH - 1)
+
+`define NUM_SWITCHES 8
+
+`define NORTH_OUT_OFFSET (`ID_END + 1)
+`define EAST_OUT_OFFSET  (`NORTH_OUT_OFFSET + 2)
+`define SOUTH_OUT_OFFSET (`EAST_OUT_OFFSET  + 2)
+`define WEST_OUT_OFFSET  (`SOUTH_OUT_OFFSET + 2)
+
+`define N_OEND(x)   (`NORTH_OUT_OFFSET + (0+x)*`NUM_SWITCHES + 1)
+`define N_OBEGIN(x) (`NORTH_OUT_OFFSET + (0+x)*`NUM_SWITCHES + 0)
+`define E_OEND(x)   (`EAST_OUT_OFFSET  + (0+x)*`NUM_SWITCHES + 1)
+`define E_OBEGIN(x) (`EAST_OUT_OFFSET  + (0+x)*`NUM_SWITCHES + 0)
+`define S_OEND(x)   (`SOUTH_OUT_OFFSET + (0+x)*`NUM_SWITCHES + 1)
+`define S_OBEGIN(x) (`SOUTH_OUT_OFFSET + (0+x)*`NUM_SWITCHES + 0)
+`define W_OEND(x)   (`WEST_OUT_OFFSET  + (0+x)*`NUM_SWITCHES + 1)
+`define W_OBEGIN(x) (`WEST_OUT_OFFSET  + (0+x)*`NUM_SWITCHES + 0)
+
 module sb_testbench();
   reg clk;
   localparam CPU_CLOCK_PERIOD = 100;
@@ -24,22 +47,9 @@ module sb_testbench();
   initial clk = 0;
   always #(CPU_CLOCK_PERIOD/2) clk = ~clk;
 
-  localparam CHN_WIDTH = 16;
-
-  localparam ID_WIDTH = 3;
   localparam ID = 7;
 
-  localparam ID_BEGIN = 0;
-  localparam ID_END   = ID_BEGIN + ID_WIDTH - 1;
-
-  localparam CFG_SIZE = ID_WIDTH + CHN_WIDTH * 8;
-
-  localparam NUM_SWITCHES = 8;
-
-  localparam NORTH_OUT_OFFSET = ID_END + 1;
-  localparam EAST_OUT_OFFSET  = NORTH_OUT_OFFSET + 2;
-  localparam SOUTH_OUT_OFFSET = EAST_OUT_OFFSET  + 2;
-  localparam WEST_OUT_OFFSET  = SOUTH_OUT_OFFSET + 2;
+  localparam CFG_SIZE = `ID_WIDTH + `CHN_WIDTH * 8;
 
   reg [CFG_SIZE-1:0] cfg_bits;
 
@@ -49,54 +59,42 @@ module sb_testbench();
 
     #1;
     // east_in[1] --> north_out[1]
-    cfg_bits[NORTH_OUT_OFFSET + 1 + (0+1)*NUM_SWITCHES :
-             NORTH_OUT_OFFSET     + (0+1)*NUM_SWITCHES] = `E2N;
+    cfg_bits[`N_OEND(1):`N_OBEGIN(1)] = `E2N;
 
     // south_in[0] --> north_out[0]
-    cfg_bits[NORTH_OUT_OFFSET + 1 + (0+0)*NUM_SWITCHES :
-             NORTH_OUT_OFFSET     + (0+0)*NUM_SWITCHES] = `S2N;
+    cfg_bits[`N_OEND(0):`N_OBEGIN(0)] = `S2N;
 
     // west_in[2] --> north_out[2]
-    cfg_bits[NORTH_OUT_OFFSET + 1 + (0+2)*NUM_SWITCHES :
-             NORTH_OUT_OFFSET     + (0+2)*NUM_SWITCHES] = `W2N;
+    cfg_bits[`N_OEND(2):`N_OBEGIN(2)] = `W2N;
 
     // south_in[0] --> east_out[0]
-    cfg_bits[EAST_OUT_OFFSET + 1 + (0+0)*NUM_SWITCHES :
-             EAST_OUT_OFFSET     + (0+0)*NUM_SWITCHES] = `S2E;
+    cfg_bits[`E_OEND(0):`E_OBEGIN(0)] = `S2E;
 
     // west_in[1] --> east_out[1]
-    cfg_bits[EAST_OUT_OFFSET + 1 + (0+1)*NUM_SWITCHES :
-             EAST_OUT_OFFSET     + (0+1)*NUM_SWITCHES] = `W2E;
+    cfg_bits[`E_OEND(1):`E_OBEGIN(1)] = `W2E;
 
     // north_in[2] --> east_out[2]
-    cfg_bits[EAST_OUT_OFFSET + 1 + (0+2)*NUM_SWITCHES :
-             EAST_OUT_OFFSET     + (0+2)*NUM_SWITCHES] = `N2E;
+    cfg_bits[`E_OEND(2):`E_OBEGIN(2)] = `N2E;
 
     // west_in[10] --> south_out[10]
-    cfg_bits[SOUTH_OUT_OFFSET + 1 + (0+10)*NUM_SWITCHES :
-             SOUTH_OUT_OFFSET     + (0+10)*NUM_SWITCHES] = `W2S;
+    cfg_bits[`S_OEND(10):`S_OBEGIN(10)] = `W2S;
 
     // north_in[11] --> south_out[11]
-    cfg_bits[SOUTH_OUT_OFFSET + 1 + (0+11)*NUM_SWITCHES :
-             SOUTH_OUT_OFFSET     + (0+11)*NUM_SWITCHES] = `N2S;
+    cfg_bits[`S_OEND(11):`S_OBEGIN(11)] = `N2S;
 
     // east_in[12] --> south_out[12]
-    cfg_bits[SOUTH_OUT_OFFSET + 1 + (0+12)*NUM_SWITCHES :
-             SOUTH_OUT_OFFSET     + (0+12)*NUM_SWITCHES] = `E2S;
+    cfg_bits[`S_OEND(12):`S_OBEGIN(12)] = `E2S;
 
     // north_in[7] --> west_out[7]
-    cfg_bits[WEST_OUT_OFFSET + 1 + (0+7)*NUM_SWITCHES :
-             WEST_OUT_OFFSET     + (0+7)*NUM_SWITCHES] = `N2W;
+    cfg_bits[`W_OEND(7):`W_OBEGIN(7)] = `N2W;
 
     // east_in[8] --> west_out[8]
-    cfg_bits[WEST_OUT_OFFSET + 1 + (0+8)*NUM_SWITCHES :
-             WEST_OUT_OFFSET     + (0+8)*NUM_SWITCHES] = `E2W;
+    cfg_bits[`W_OEND(8):`W_OBEGIN(8)] = `E2W;
 
     // south_in[9] --> west_out[9]
-    cfg_bits[WEST_OUT_OFFSET + 1 + (0+9)*NUM_SWITCHES :
-             WEST_OUT_OFFSET     + (0+9)*NUM_SWITCHES] = `S2W;
+    cfg_bits[`W_OEND(9):`W_OBEGIN(9)] = `S2W;
 
-    cfg_bits[ID_END:ID_BEGIN] = 3'b111;
+    cfg_bits[`ID_END:`ID_BEGIN] = 3'b111;
   end
 
   reg rst;
@@ -106,12 +104,12 @@ module sb_testbench();
   wire cfg_out_start;
   wire cfg_bit_out;
 
-  reg  [CHN_WIDTH-1:0] north_in, east_in, south_in, west_in;
-  wire [CHN_WIDTH-1:0] north_out, east_out, south_out, west_out;
+  reg  [`CHN_WIDTH-1:0] north_in, east_in, south_in, west_in;
+  wire [`CHN_WIDTH-1:0] north_out, east_out, south_out, west_out;
 
-  sb #(
-    .CHN_WIDTH(CHN_WIDTH),
-    .ID_WIDTH(ID_WIDTH),
+  sb_with_cfg #(
+    .CHN_WIDTH(`CHN_WIDTH),
+    .ID_WIDTH(`ID_WIDTH),
     .ID(ID)
   ) dut (
     .north_in(north_in),   // input

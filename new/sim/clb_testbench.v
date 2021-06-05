@@ -132,7 +132,7 @@ module clb_testbench();
   wire cfg_out_start;
   wire cfg_bit_out;
 
-  clb #(
+  clb_with_cfg #(
     .ID_WIDTH(ID_WIDTH),
     .ID(ID)
   ) dut (
@@ -235,12 +235,12 @@ module clb_testbench();
     $display("LUTS44_3 cfg: %b", dut.cfg[131:99]);
 
     $display("CLB LUT input: %b", dut.I);
-    $display("CLB LUT output: %b", dut.lut_out);
+    $display("CLB LUT output: %b", dut.clb.lut_out);
 
-    $display("CLB CarryChain CIN: %b", dut.cc.CIN);
-    $display("CLB CarryChain P: %b", dut.cc.P);
-    $display("CLB CarryChain G: %b", dut.cc.G);
-    $display("CLB CarryChain S: %b", dut.cc.S);
+    $display("CLB CarryChain CIN: %b", dut.clb.cc.CIN);
+    $display("CLB CarryChain P: %b", dut.clb.cc.P);
+    $display("CLB CarryChain G: %b", dut.clb.cc.G);
+    $display("CLB CarryChain S: %b", dut.clb.cc.S);
 
     $display("CLB Comb. output: %b", dut.COMB_O);
     $display("CLB Sync. output: %b", dut.SYNC_O);
