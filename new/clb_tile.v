@@ -204,7 +204,7 @@ module clb_tile #(
   assign cb_n_clb0_output = clb_north_out;
   assign clb_north_in     = cb_n_clb0_input;
   assign cb_n_single0_in  = sb_west_out;
-  assign sb_west_in       = cb_e_single0_out;
+  assign sb_west_in       = cb_n_single0_out;
 
   assign clb_in[7:0]        = clb_east_in[7:0];
   assign clb_east_out[3:0]  = {clb_sync_out[1:0], clb_comb_out[1:0]};
