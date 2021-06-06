@@ -1,10 +1,13 @@
 
 module clb_tile #(
-  parameter ID_WIDTH   = 3,
-  parameter ID         = 7,
-  parameter CLB_IWIDTH = 10,
-  parameter CLB_OWIDTH = 4,
-  parameter CHN_WIDTH  = 16
+  parameter ID_WIDTH     = 3,
+  parameter ID           = 7,
+  parameter CLB_IWIDTH   = 10,
+  parameter CLB_OWIDTH   = 4,
+  parameter CHN_WIDTH    = 16,
+  parameter SB_CFG_SIZE  = 256,
+  parameter CB_CFG_SIZE  = 256,
+  parameter CLB_CFG_SIZE = 256
 ) (
   input  wire CIN,
   output wire COUT,
@@ -37,35 +40,7 @@ module clb_tile #(
   output wire cfg_out_start,
   output wire cfg_bit_out
 );
-
-  // CLB
-  localparam CLB_CFG_LUT_SIZE  = 33; // S44: 2 x LUT-4 + input select
-  localparam CLB_CFG_DFF_SIZE  = 1;
-  localparam CLB_CFG_OMUX_SIZE = 1;
-
-  localparam CLB_CFG_LUT_OFFSET  = 0;
-  localparam CLB_CFG_DFF_OFFSET  = 4 * CLB_CFG_LUT_SIZE + CLB_CFG_LUT_OFFSET;
-  localparam CLB_CFG_OMUX_OFFSET = 8 * CLB_CFG_DFF_SIZE + CLB_CFG_DFF_OFFSET;
-  localparam CLB_CFG_CC_OFFSET   = 8 * CLB_CFG_OMUX_SIZE + CLB_CFG_OMUX_OFFSET;
-
-  localparam CLB_CFG_SIZE = 2 + CLB_CFG_CC_OFFSET;
-
-  // CB
-  localparam integer CB_CFG_SNGO_SIZE = $clog2(CHN_WIDTH + CLB_OWIDTH * 2 + 1);
-  localparam integer CB_CFG_CLBI_SIZE = $clog2(CLB_OWIDTH + CHN_WIDTH * 2 + 1);
-
-  localparam CB_CFG_OFFSET0 =                  CHN_WIDTH  * CB_CFG_SNGO_SIZE;
-  localparam CB_CFG_OFFSET1 = CB_CFG_OFFSET0 + CHN_WIDTH  * CB_CFG_SNGO_SIZE;
-  localparam CB_CFG_OFFSET2 = CB_CFG_OFFSET1 + CLB_IWIDTH * CB_CFG_CLBI_SIZE;
-
-  localparam CB_CFG_SIZE    = CB_CFG_OFFSET2 + CLB_IWIDTH * CB_CFG_CLBI_SIZE + 1;
-
-  // SB
-  localparam SB_CFG_SIZE = 8 * CHN_WIDTH;
-
-  localparam ID_BEGIN       = 0;
-  localparam ID_END         = ID_BEGIN + ID_WIDTH - 1;
-  localparam SB_CFG_BEGIN   = ID_END + 1;
+  localparam SB_CFG_BEGIN   = 0;
   localparam SB_CFG_END     = SB_CFG_BEGIN + SB_CFG_SIZE - 1;
   localparam CB_E_CFG_BEGIN = SB_CFG_END + 1;
   localparam CB_E_CFG_END   = CB_E_CFG_BEGIN + CB_CFG_SIZE - 1;
@@ -77,8 +52,8 @@ module clb_tile #(
   localparam RST_CFG_END    = RST_CFG_BEGIN + 3 - 1;
   localparam CE_CFG_BEGIN   = RST_CFG_END + 1;
   localparam CE_CFG_END     = CE_CFG_BEGIN + 3 - 1;
-
   localparam CFG_SIZE       = CE_CFG_END + 1;
+
   wire [CFG_SIZE-1:0] cfg;
 
   wire [31:0] clb_in;
