@@ -4,28 +4,28 @@
 `define CLB_OWIDTH 4
 `define CHN_WIDTH  16
 
-`define CLB0_TO_SNG0(m) (1 + m)
-`define CLB1_TO_SNG0(m) (1 + `CLB_OWIDTH + m)
-`define SNG1_TO_SNG0(m) (1 + `CLB_OWIDTH * 2 + m)
+`define CLB0_TO_SNG0(m) (2 + m)
+`define CLB1_TO_SNG0(m) (2 + `CLB_OWIDTH + m)
+`define SNG1_TO_SNG0(m) (2 + `CLB_OWIDTH * 2 + m)
 
-`define CLB0_TO_SNG1(m) (1 + m)
-`define CLB1_TO_SNG1(m) (1 + `CLB_OWIDTH + m)
-`define SNG1_TO_SNG1(m) (1 + `CLB_OWIDTH * 2 + m)
+`define CLB0_TO_SNG1(m) (2 + m)
+`define CLB1_TO_SNG1(m) (2 + `CLB_OWIDTH + m)
+`define SNG1_TO_SNG1(m) (2 + `CLB_OWIDTH * 2 + m)
 
-`define SNG0_TO_CLB0(m) (1 + m)
-`define SNG1_TO_CLB0(m) (1 + `CHN_WIDTH + m)
-`define CLB1_TO_CLB0(m) (1 + `CHN_WIDTH * 2 + m)
+`define SNG0_TO_CLB0(m) (2 + m)
+`define SNG1_TO_CLB0(m) (2 + `CHN_WIDTH + m)
+`define CLB1_TO_CLB0(m) (2 + `CHN_WIDTH * 2 + m)
 
-`define SNG0_TO_CLB1(m) (1 + m)
-`define SNG1_TO_CLB1(m) (1 + `CHN_WIDTH + m)
-`define CLB0_TO_CLB1(m) (1 + `CHN_WIDTH * 2 + m)
+`define SNG0_TO_CLB1(m) (2 + m)
+`define SNG1_TO_CLB1(m) (2 + `CHN_WIDTH + m)
+`define CLB0_TO_CLB1(m) (2 + `CHN_WIDTH * 2 + m)
 
 `define ID_WIDTH 3
 `define ID_BEGIN 0
 `define ID_END   (`ID_BEGIN + `ID_WIDTH - 1)
 
-`define NUM_SNGO_SWITCHES (`CHN_WIDTH  + `CLB_OWIDTH * 2 + 1)
-`define NUM_CLBI_SWITCHES (`CLB_OWIDTH + `CHN_WIDTH  * 2 + 1)
+`define NUM_SNGO_SWITCHES (`CHN_WIDTH  + `CLB_OWIDTH * 2 + 1 + 1)
+`define NUM_CLBI_SWITCHES (`CLB_OWIDTH + `CHN_WIDTH  * 2 + 1 + 1)
 
 `define CFG_SNGO_SIZE $clog2(`NUM_SNGO_SWITCHES)
 `define CFG_CLBI_SIZE $clog2(`NUM_CLBI_SWITCHES)
