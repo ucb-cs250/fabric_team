@@ -1,5 +1,5 @@
 
-(* blackbox *)
+//(* blackbox *)
 module MUX2_CFG (
   input  wire A0, A1,
   output reg  X,

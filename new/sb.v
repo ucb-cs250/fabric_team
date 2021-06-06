@@ -31,8 +31,9 @@ module sb #(
         .A2(south_in[i]),
         .A3(west_in[i]),
         .X(north_out[i]),
-        .S1(cfg[1+i*8]),
-        .S0(cfg[0+i*8])
+        .S1(cfg[2+i*12]),
+        .S0(cfg[1+i*12]),
+        .EN(cfg[0+i*12])
       );
 
       MUX4_CFG m4_east (
@@ -41,8 +42,9 @@ module sb #(
         .A2(west_in[i]),
         .A3(north_in[i]),
         .X(east_out[i]),
-        .S1(cfg[3+i*8]),
-        .S0(cfg[2+i*8])
+        .S1(cfg[5+i*12]),
+        .S0(cfg[4+i*12]),
+        .EN(cfg[3+i*12])
       );
 
       MUX4_CFG m4_south (
@@ -51,8 +53,9 @@ module sb #(
         .A2(north_in[i]),
         .A3(east_in[i]),
         .X(south_out[i]),
-        .S1(cfg[5+i*8]),
-        .S0(cfg[4+i*8])
+        .S1(cfg[8+i*12]),
+        .S0(cfg[7+i*12]),
+        .EN(cfg[6+i*12])
       );
 
       MUX4_CFG m4_west (
@@ -61,8 +64,9 @@ module sb #(
         .A2(east_in[i]),
         .A3(south_in[i]),
         .X(west_out[i]),
-        .S1(cfg[7+i*8]),
-        .S0(cfg[6+i*8])
+        .S1(cfg[11+i*12]),
+        .S0(cfg[10+i*12]),
+        .EN(cfg[9+i*12])
       );
     end
   endgenerate
