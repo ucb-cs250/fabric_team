@@ -16,11 +16,11 @@ module MUXN #(
   generate
     for (i = 0; i < SWIDTH; i = i + 1) begin
       for (j = 0; j < (IWIDTH + (1 << i) - 1) / (1 << i); j = j + 2) begin
-        MUX2 m2 (
-          .I0(tmp[i][j + 0]),
-          .I1(tmp[i][j + 1]),
-          .O(tmp[i + 1][j / 2]),
-          .sel(sel[i])
+        MUX2_CFG m2 (
+          .A0(tmp[i][j + 0]),
+          .A1(tmp[i][j + 1]),
+          .X(tmp[i + 1][j / 2]),
+          .S(sel[i])
         );
       end
     end

@@ -230,6 +230,9 @@ module clb_tile_testbench();
 
     #1;
     cfg_bits[`LUT0_END:`LUT0_BEGIN] = 16'h8000; // AND
+    cfg_bits[`LUT1_END:`LUT1_BEGIN] = 16'h8000; // AND
+    cfg_bits[`LUT6_END:`LUT6_BEGIN] = 16'h8000; // AND
+    cfg_bits[`LUT7_END:`LUT7_BEGIN] = 16'h8000; // AND
 
     // cb_e_single1_in[0] -> clb0_input[0]
     cfg_bits[`CB_E_CLB0_IEND(0):`CB_E_CLB0_IBEGIN(0)] = `SNG1_TO_CLB0(0);
@@ -242,6 +245,54 @@ module clb_tile_testbench();
 
     // cb_e_single1_in[3] -> clb0_input[3]
     cfg_bits[`CB_E_CLB0_IEND(3):`CB_E_CLB0_IBEGIN(3)] = `SNG1_TO_CLB0(3);
+
+    // cb_n_single1_in[0] -> clb0_input[0]
+    cfg_bits[`CB_N_CLB0_IEND(0):`CB_N_CLB0_IBEGIN(0)] = `SNG1_TO_CLB0(0);
+
+    // cb_n_single1_in[1] -> clb0_input[1]
+    cfg_bits[`CB_N_CLB0_IEND(1):`CB_N_CLB0_IBEGIN(1)] = `SNG1_TO_CLB0(1);
+
+    // cb_n_single1_in[2] -> clb0_input[2]
+    cfg_bits[`CB_N_CLB0_IEND(2):`CB_N_CLB0_IBEGIN(2)] = `SNG1_TO_CLB0(2);
+
+    // cb_n_single1_in[3] -> clb0_input[3]
+    cfg_bits[`CB_N_CLB0_IEND(3):`CB_N_CLB0_IBEGIN(3)] = `SNG1_TO_CLB0(3);
+
+    // cb_e_single1_in[4] -> cb_e_single0_out[10] (sb_south_in[10])
+    cfg_bits[`CB_E_SNG0_OEND(10):`CB_E_SNG0_OBEGIN(10)] = `SNG1_TO_SNG0(4);
+
+    // sb_south_in[10] -> sb_west_out[10]
+    cfg_bits[`W_OEND(10):`W_OBEGIN(10)] = `S2W;
+
+    // cb_n_single0_in[10] -> clb0_input[4]
+    cfg_bits[`CB_N_CLB0_IEND(4):`CB_N_CLB0_IBEGIN(4)] = `SNG0_TO_CLB0(10);
+
+    // cb_n_single0_in[10] -> clb0_input[5]
+    cfg_bits[`CB_N_CLB0_IEND(5):`CB_N_CLB0_IBEGIN(5)] = `SNG0_TO_CLB0(10);
+
+    // cb_n_single0_in[10] -> clb0_input[6]
+    cfg_bits[`CB_N_CLB0_IEND(6):`CB_N_CLB0_IBEGIN(6)] = `SNG0_TO_CLB0(10);
+
+    // cb_n_single0_in[10] -> clb0_input[7]
+    cfg_bits[`CB_N_CLB0_IEND(7):`CB_N_CLB0_IBEGIN(7)] = `SNG0_TO_CLB0(10);
+
+    // cb_n_single1_in[4] -> cb_n_single0_out[15] (sb_west_in[15])
+    cfg_bits[`CB_N_SNG0_OEND(15):`CB_N_SNG0_OBEGIN(15)] = `SNG1_TO_SNG0(4);
+
+    // sb_west_in[15] -> sb_south_out[15]
+    cfg_bits[`S_OEND(15):`S_OBEGIN(15)] = `W2S;
+
+    // cb_e_single0_in[15] -> clb0_input[4]
+    cfg_bits[`CB_E_CLB0_IEND(4):`CB_E_CLB0_IBEGIN(4)] = `SNG0_TO_CLB0(15);
+
+    // cb_e_single0_in[15] -> clb0_input[5]
+    cfg_bits[`CB_E_CLB0_IEND(5):`CB_E_CLB0_IBEGIN(5)] = `SNG0_TO_CLB0(15);
+
+    // cb_e_single0_in[15] -> clb0_input[6]
+    cfg_bits[`CB_E_CLB0_IEND(6):`CB_E_CLB0_IBEGIN(6)] = `SNG0_TO_CLB0(15);
+
+    // cb_e_single0_in[15] -> clb0_input[7]
+    cfg_bits[`CB_E_CLB0_IEND(7):`CB_E_CLB0_IBEGIN(7)] = `SNG0_TO_CLB0(15);
 
     cfg_bits[`ID_END:`ID_BEGIN] = 3'b111;
   end
@@ -345,6 +396,13 @@ module clb_tile_testbench();
     cb_e_single1_in[1] = 1'b1;
     cb_e_single1_in[2] = 1'b1;
     cb_e_single1_in[3] = 1'b1;
+    cb_e_single1_in[4] = 1'b1;
+
+    cb_n_single1_in[0] = 1'b1;
+    cb_n_single1_in[1] = 1'b1;
+    cb_n_single1_in[2] = 1'b1;
+    cb_n_single1_in[3] = 1'b1;
+    cb_n_single1_in[4] = 1'b1;
 
     // Hold reset for a while
     repeat (10) @(posedge clk);
@@ -398,7 +456,6 @@ module clb_tile_testbench();
     $display("clb_west_in:  %b", dut.clb_west_in);
     $display("clb_west_out: %b", dut.clb_west_out);
 
-    $display("CB_E cfg: %b", dut.cb_e.cfg);
     $display("CB_E single0_in:  %b", dut.cb_e.single0_in);
     $display("CB_E single0_out: %b", dut.cb_e.single0_out);
     $display("CB_E single1_in:  %b", dut.cb_e.single1_in);
@@ -407,6 +464,25 @@ module clb_tile_testbench();
     $display("CB_E clb0_output: %b", dut.cb_e.clb0_output);
     $display("CB_E clb1_input:  %b", dut.cb_e.clb1_input);
     $display("CB_E clb1_output: %b", dut.cb_e.clb1_output);
+
+    $display("CB_N single0_in:  %b", dut.cb_n.single0_in);
+    $display("CB_N single0_out: %b", dut.cb_n.single0_out);
+    $display("CB_N single1_in:  %b", dut.cb_n.single1_in);
+    $display("CB_N single1_out: %b", dut.cb_n.single1_out);
+    $display("CB_N clb0_input:  %b", dut.cb_n.clb0_input);
+    $display("CB_N clb0_output: %b", dut.cb_n.clb0_output);
+    $display("CB_N clb1_input:  %b", dut.cb_n.clb1_input);
+    $display("CB_N clb1_output: %b", dut.cb_n.clb1_output);
+
+    $display("SB north_in: %b", dut.sb.north_in);
+    $display("SB east_in:  %b", dut.sb.east_in);
+    $display("SB south_in: %b", dut.sb.south_in);
+    $display("SB west_in:  %b", dut.sb.west_in);
+
+    $display("SB north_out: %b", dut.sb.north_out);
+    $display("SB east_out:  %b", dut.sb.east_out);
+    $display("SB south_out: %b", dut.sb.south_out);
+    $display("SB west_out:  %b", dut.sb.west_out);
 
     $display("LUTS44_0 cfg: %b", dut.clb.cfg[32:0]);
     $display("LUTS44_1 cfg: %b", dut.clb.cfg[65:33]);

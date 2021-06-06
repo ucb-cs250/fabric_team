@@ -27,11 +27,11 @@ module LUTS44 (
     .cfg(cfg[31:16])
   );
 
-  MUX2 m0 (
-    .I0(I[4]),
-    .I1(O[0]),
-    .O(lut1_i0),
-    .sel(cfg[32])
+  MUX2_CFG m0 (
+    .A0(I[4]),
+    .A1(O[0]),
+    .X(lut1_i0),
+    .S(cfg[32])
   );
 
 endmodule

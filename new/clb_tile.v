@@ -196,39 +196,41 @@ module clb_tile #(
   wire rst_tmp;
   wire [2:0] rst_cfg = cfg[RST_CFG_END:RST_CFG_BEGIN];
 
-  MUX4 m4_rst (
-    .I0(clb_east_in[8]),
-    .I1(clb_south_in[8]),
-    .I2(clb_west_in[8]),
-    .I3(clb_north_in[8]),
-    .O(rst_tmp),
-    .sel(rst_cfg[1:0])
+  MUX4_CFG m4_rst (
+    .A0(clb_east_in[8]),
+    .A1(clb_south_in[8]),
+    .A2(clb_west_in[8]),
+    .A3(clb_north_in[8]),
+    .X(rst_tmp),
+    .S1(rst_cfg[1]),
+    .S0(rst_cfg[0])
   );
 
-  MUX2 m2_rst (
-    .I0(1'b0),
-    .I1(rst_tmp),
-    .O(RST),
-    .sel(rst_cfg[2])
+  MUX2_CFG m2_rst (
+    .A0(1'b0),
+    .A1(rst_tmp),
+    .X(RST),
+    .S(rst_cfg[2])
   );
 
   wire ce_tmp;
   wire [2:0] ce_cfg = cfg[CE_CFG_END:CE_CFG_BEGIN];
 
-  MUX4 m4_ce (
-    .I0(clb_east_in[9]),
-    .I1(clb_south_in[9]),
-    .I2(clb_west_in[9]),
-    .I3(clb_north_in[9]),
-    .O(ce_tmp),
-    .sel(ce_cfg[1:0])
+  MUX4_CFG m4_ce (
+    .A0(clb_east_in[9]),
+    .A1(clb_south_in[9]),
+    .A2(clb_west_in[9]),
+    .A3(clb_north_in[9]),
+    .X(ce_tmp),
+    .S1(ce_cfg[1]),
+    .S0(ce_cfg[0])
   );
 
-  MUX2 m2_ce (
-    .I0(1'b0),
-    .I1(ce_tmp),
-    .O(CE),
-    .sel(ce_cfg[2])
+  MUX2_CFG m2_ce (
+    .A0(1'b0),
+    .A1(ce_tmp),
+    .X(CE),
+    .S(ce_cfg[2])
   );
 
 endmodule
