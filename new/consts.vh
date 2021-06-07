@@ -52,21 +52,21 @@
 `define CFG_SIZE       (`CE_CFG_END + 1)
 
 // CB parameters
-`define CLB0_TO_SNG0(m) (2 + m)
-`define CLB1_TO_SNG0(m) (2 + `CLB_OWIDTH + m)
-`define SNG1_TO_SNG0(m) (2 + `CLB_OWIDTH * 2 + m)
+`define SNG0_FROM_CLB0(m) (2 + m)
+`define SNG0_FROM_CLB1(m) (2 + `CLB_OWIDTH + m)
+`define SNG0_FROM_SNG1(m) (2 + `CLB_OWIDTH * 2 + m)
 
-`define CLB0_TO_SNG1(m) (2 + m)
-`define CLB1_TO_SNG1(m) (2 + `CLB_OWIDTH + m)
-`define SNG1_TO_SNG1(m) (2 + `CLB_OWIDTH * 2 + m)
+`define SNG1_FROM_CLB0(m) (2 + m)
+`define SNG1_FROM_CLB1(m) (2 + `CLB_OWIDTH + m)
+`define SNG1_FROM_SNG0(m) (2 + `CLB_OWIDTH * 2 + m)
 
-`define SNG0_TO_CLB0(m) (2 + m)
-`define SNG1_TO_CLB0(m) (2 + `CHN_WIDTH + m)
-`define CLB1_TO_CLB0(m) (2 + `CHN_WIDTH * 2 + m)
+`define CLB0_FROM_SNG0(m) (2 + m)
+`define CLB0_FROM_SNG1(m) (2 + `CHN_WIDTH + m)
+`define CLB0_FROM_CLB1(m) (2 + `CHN_WIDTH * 2 + m)
 
-`define SNG0_TO_CLB1(m) (2 + m)
-`define SNG1_TO_CLB1(m) (2 + `CHN_WIDTH + m)
-`define CLB0_TO_CLB1(m) (2 + `CHN_WIDTH * 2 + m)
+`define CLB1_FROM_SNG0(m) (2 + m)
+`define CLB1_FROM_SNG1(m) (2 + `CHN_WIDTH + m)
+`define CLB1_FROM_CLB0(m) (2 + `CHN_WIDTH * 2 + m)
 
 `define CB_E_SNG0_OUT_BEGIN (`CB_E_CFG_BEGIN)
 `define CB_E_SNG0_OUT_END   (`CB_E_SNG0_OUT_BEGIN + `CFG_SNGO_SIZE * `CHN_WIDTH - 1)

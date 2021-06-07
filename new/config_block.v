@@ -13,6 +13,7 @@ module config_block #(
 
   output wire cfg_out_start,
   output wire cfg_bit_out,
+  output wire cfg_sr_pulse,
 
   output wire [CFG_SIZE-1:0] cfg
 );
@@ -183,6 +184,12 @@ module config_block #(
     end
 
   endgenerate
+
+  REGISTER #(.N(1)) cfg_sr_pulse_reg (
+    .clk(clk),
+    .d(sr_filled),
+    .q(cfg_sr_pulse)
+  );
 
   assign cfg = l_value;
 

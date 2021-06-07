@@ -50,6 +50,8 @@ module clb_tile #(
 
   wire [CFG_SIZE-1:0] cfg;
 
+  wire cfg_sr_pulse;
+
   wire [31:0] clb_in;
   wire [7:0]  clb_comb_out;
   wire [7:0]  clb_sync_out;
@@ -71,7 +73,7 @@ module clb_tile #(
     .CE(CE),
 
     .clk(clk),
-    .crst(crst),
+    .crst(cfg_sr_pulse),
     .cfg(clb_cfg)
   );
 
@@ -157,6 +159,7 @@ module clb_tile #(
     .cfg_bit_in(cfg_bit_in),
     .cfg_out_start(cfg_out_start),
     .cfg_bit_out(cfg_bit_out),
+    .cfg_sr_pulse(cfg_sr_pulse),
     .cfg(cfg)
   );
 

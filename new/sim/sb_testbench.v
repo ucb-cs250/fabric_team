@@ -1,21 +1,5 @@
 `timescale 1ns/1ns
 
-`define E2N 1
-`define S2N 2
-`define W2N 3
-
-`define S2E 1
-`define W2E 2
-`define N2E 3
-
-`define W2S 1
-`define N2S 2
-`define E2S 3
-
-`define N2W 1
-`define E2W 2
-`define S2W 3
-
 `define CHN_WIDTH 16
 
 `define ID_WIDTH 3
@@ -23,21 +7,37 @@
 `define ID_BEGIN 0
 `define ID_END   (`ID_BEGIN + `ID_WIDTH - 1)
 
-`define NUM_SWITCHES 8
+`define SWITCH_CFG_SIZE 12
 
-`define NORTH_OUT_OFFSET (`ID_END + 1)
-`define EAST_OUT_OFFSET  (`NORTH_OUT_OFFSET + 2)
-`define SOUTH_OUT_OFFSET (`EAST_OUT_OFFSET  + 2)
-`define WEST_OUT_OFFSET  (`SOUTH_OUT_OFFSET + 2)
+`define NORTH_OUT_OFFSET (`SB_CFG_BEGIN)
+`define EAST_OUT_OFFSET  (`NORTH_OUT_OFFSET + 3)
+`define SOUTH_OUT_OFFSET (`EAST_OUT_OFFSET  + 3)
+`define WEST_OUT_OFFSET  (`SOUTH_OUT_OFFSET + 3)
 
-`define N_OEND(x)   (`NORTH_OUT_OFFSET + (0+x)*`NUM_SWITCHES + 1)
-`define N_OBEGIN(x) (`NORTH_OUT_OFFSET + (0+x)*`NUM_SWITCHES + 0)
-`define E_OEND(x)   (`EAST_OUT_OFFSET  + (0+x)*`NUM_SWITCHES + 1)
-`define E_OBEGIN(x) (`EAST_OUT_OFFSET  + (0+x)*`NUM_SWITCHES + 0)
-`define S_OEND(x)   (`SOUTH_OUT_OFFSET + (0+x)*`NUM_SWITCHES + 1)
-`define S_OBEGIN(x) (`SOUTH_OUT_OFFSET + (0+x)*`NUM_SWITCHES + 0)
-`define W_OEND(x)   (`WEST_OUT_OFFSET  + (0+x)*`NUM_SWITCHES + 1)
-`define W_OBEGIN(x) (`WEST_OUT_OFFSET  + (0+x)*`NUM_SWITCHES + 0)
+`define E2N (2 + 1)
+`define S2N (4 + 1)
+`define W2N (6 + 1)
+
+`define S2E (2 + 1)
+`define W2E (4 + 1)
+`define N2E (6 + 1)
+
+`define W2S (2 + 1)
+`define N2S (4 + 1)
+`define E2S (6 + 1)
+
+`define N2W (2 + 1)
+`define E2W (4 + 1)
+`define S2W (6 + 1)
+
+`define N_OEND(x)   (`NORTH_OUT_OFFSET + (0+x)*`SWITCH_CFG_SIZE + 2)
+`define N_OBEGIN(x) (`NORTH_OUT_OFFSET + (0+x)*`SWITCH_CFG_SIZE + 0)
+`define E_OEND(x)   (`EAST_OUT_OFFSET  + (0+x)*`SWITCH_CFG_SIZE + 2)
+`define E_OBEGIN(x) (`EAST_OUT_OFFSET  + (0+x)*`SWITCH_CFG_SIZE + 0)
+`define S_OEND(x)   (`SOUTH_OUT_OFFSET + (0+x)*`SWITCH_CFG_SIZE + 2)
+`define S_OBEGIN(x) (`SOUTH_OUT_OFFSET + (0+x)*`SWITCH_CFG_SIZE + 0)
+`define W_OEND(x)   (`WEST_OUT_OFFSET  + (0+x)*`SWITCH_CFG_SIZE + 2)
+`define W_OBEGIN(x) (`WEST_OUT_OFFSET  + (0+x)*`SWITCH_CFG_SIZE + 0)
 
 module sb_testbench();
   reg clk;
