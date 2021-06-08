@@ -2,7 +2,7 @@
 
 `define ID_WIDTH 3
 
-// CLB
+// CLB parameters
 `define CLB_CFG_LUT_SIZE  33 // S44: 2 x LUT-4 + input select
 `define CLB_CFG_DFF_SIZE  1
 `define CLB_CFG_OMUX_SIZE 1
@@ -14,7 +14,7 @@
 
 `define CLB_CFG_SIZE (2 + `CLB_CFG_CC_OFFSET)
 
-// CB
+// CB parameters
 `define CLB_IWIDTH 10
 `define CLB_OWIDTH 4
 `define CHN_WIDTH  16
@@ -30,7 +30,7 @@
 
 `define CB_CFG_SIZE (`CB_CFG_OFFSET2 + `CLB_IWIDTH * `CFG_CLBI_SIZE)
 
-// SB
+// SB parameters
 `define SWITCH_CFG_SIZE 12
 `define SB_CFG_SIZE (`SWITCH_CFG_SIZE * `CHN_WIDTH)
 
@@ -51,7 +51,7 @@
 
 `define CFG_SIZE       (`CE_CFG_END + 1)
 
-// CB parameters
+// CB Utility
 `define SNG0_FROM_CLB0(m) (2 + m)
 `define SNG0_FROM_CLB1(m) (2 + `CLB_OWIDTH + m)
 `define SNG0_FROM_SNG1(m) (2 + `CLB_OWIDTH * 2 + m)
@@ -110,7 +110,7 @@
 `define CB_N_CLB1_IBEGIN(n) (`CB_N_CLB1_IN_BEGIN  + (0+n)*`CFG_CLBI_SIZE)
 `define CB_N_CLB1_IEND(n)   (`CB_N_CLB1_IN_BEGIN  + (1+n)*`CFG_CLBI_SIZE)
 
-// SB parameters
+// SB Utility
 `define NORTH_OUT_OFFSET (`SB_CFG_BEGIN)
 `define EAST_OUT_OFFSET  (`NORTH_OUT_OFFSET + 3)
 `define SOUTH_OUT_OFFSET (`EAST_OUT_OFFSET  + 3)
@@ -141,7 +141,7 @@
 `define W_OEND(x)   (`WEST_OUT_OFFSET  + (0+x)*`SWITCH_CFG_SIZE + 2)
 `define W_OBEGIN(x) (`WEST_OUT_OFFSET  + (0+x)*`SWITCH_CFG_SIZE + 0)
 
-// CLB parameters
+// CLB Utility
 //
 `define CFG_LUT4_SIZE 16
 
