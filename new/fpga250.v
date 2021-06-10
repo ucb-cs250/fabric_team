@@ -1,8 +1,8 @@
 `include "consts.vh"
 
 module fpga250 #(
-  parameter MX   = 2,
-  parameter MY   = 2,
+  parameter MX   = 9,
+  parameter MY   = 11,
   parameter IO_N = 10,
   parameter IO_E = 10,
   parameter IO_S = 10,
@@ -84,8 +84,8 @@ module fpga250 #(
 
   genvar x, y;
   generate
-    for (y = 0; y < MY; y = y + 1) begin: GEN_MY
-      for (x = 0; x < MX; x = x + 1) begin: GEN_MX
+    for (x = 0; x < MX; x = x + 1) begin: X
+      for (y = 0; y < MY; y = y + 1) begin: Y
         clb_tile #(
           .ID(y)
         ) clb_tile (
