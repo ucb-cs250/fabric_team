@@ -116,7 +116,7 @@ module clb_testbench();
     cfg_bits[OMUX7_END:OMUX7_BEGIN] = 1'b1; // turn on/off Output Mux of LUT7
 
     cfg_bits[CC_END:CC_BEGIN] = 2'b11; // {Carry In Select, CYINIT}
-    cfg_bits[ID_END:ID_BEGIN] = 3'b000;
+    cfg_bits[ID_END:ID_BEGIN] = 3'b111;
   end
 
   reg [31:0] clb_in;
@@ -127,6 +127,16 @@ module clb_testbench();
 
   reg rst, CE, RST;
 
+  wire cfg1_in_start;
+  wire cfg1_bit_in;
+  wire cfg1_bit_in_valid;
+  wire cfg1_out_start;
+  wire cfg1_bit_out;
+  wire cfg1_bit_out_valid;
+
+  wire [31:0] clb0_in;
+  wire [7:0]  clb0_comb_out, clb0_sync_out;
+
   reg cfg_in_start;
   reg cfg_bit_in;
   reg cfg_bit_in_valid;
@@ -134,15 +144,40 @@ module clb_testbench();
   wire cfg_bit_out;
   wire cfg_bit_out_valid;
 
+  // This CLB will be configured
   clb_with_cfg #(
     .ID_WIDTH(ID_WIDTH),
-    .ID(ID)
+    .ID(3'b111)
   ) dut (
     .I(clb_in),
     .CIN(CIN),
     .COUT(COUT),
     .COMB_O(clb_comb_out),
     .SYNC_O(clb_sync_out),
+    .RST(RST),
+    .CE(CE),
+
+    .clk(clk),
+    .crst(rst),
+
+    .cfg_in_start(cfg1_in_start),          // input
+    .cfg_bit_in(cfg1_bit_in),              // input
+    .cfg_bit_in_valid(cfg1_bit_in_valid),  // input
+    .cfg_out_start(cfg1_out_start),        // output
+    .cfg_bit_out(cfg1_bit_out),            // output
+    .cfg_bit_out_valid(cfg1_bit_out_valid) // output
+  );
+
+  // This CLB will not be configured
+  clb_with_cfg #(
+    .ID_WIDTH(ID_WIDTH),
+    .ID(3'b110)
+  ) clb0 (
+    .I(clb0_in),
+    .CIN(CIN),
+    .COUT(COUT),
+    .COMB_O(clb0_comb_out),
+    .SYNC_O(clb0_sync_out),
     .RST(RST),
     .CE(CE),
 
@@ -156,6 +191,11 @@ module clb_testbench();
     .cfg_bit_out(cfg_bit_out),            // output
     .cfg_bit_out_valid(cfg_bit_out_valid) // output
   );
+
+  // Pass the config bits from clb0 to dut
+  assign cfg1_in_start      = cfg_out_start;
+  assign cfg1_bit_in        = cfg_bit_out;
+  assign cfg1_bit_in_valid  = cfg_bit_out_valid;
 
   reg [31:0] cycle_cnt;
   always @(posedge clk) begin
@@ -244,18 +284,16 @@ module clb_testbench();
         cfg_in_start = 1'b0;
 
       cfg_bit_in = cfg_bits[i];
-      cfg_bit_in_valid = 1'b1;
 
-      //repeat (10) @(posedge clk);
-
-//      @(negedge clk);
-//      cfg_bit_in_valid = 1'b0;
-//
-//      @(negedge clk);
-//      cfg_bit_in_valid = 1'b1;
-//
-//     @(negedge clk);
-//      cfg_bit_in_valid = 1'b0;
+      // invalid cfg input bit after every 32 valid input bits
+      if (i % 32 === 0) begin
+        cfg_bit_in_valid = 1'b0;
+        @(negedge clk);
+        cfg_bit_in_valid = 1'b1;
+      end
+      else begin
+        cfg_bit_in_valid = 1'b1;
+      end
 
     end
 
