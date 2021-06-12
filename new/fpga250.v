@@ -1,21 +1,34 @@
 `include "consts.vh"
 
 module fpga250 #(
-  parameter MX   = 9,
-  parameter MY   = 11,
+  parameter MX   = 2,//9,
+  parameter MY   = 2,//11,
   parameter IO_N = 10,
   parameter IO_E = 10,
   parameter IO_S = 10,
   parameter IO_W = 10
 ) (
-
-  input clk,
-  input rst,
-
   inout [IO_N-1:0] gpio_n,
   inout [IO_E-1:0] gpio_e,
   inout [IO_S-1:0] gpio_s,
-  inout [IO_W-1:0] gpio_w
+  inout [IO_W-1:0] gpio_w,
+
+  // Wishbone Slave ports (WB MI A)
+  input wire         wb_clk_i,
+  input wire         wb_rst_i,
+
+  input wire         wbs_stb_i, // chip-select
+  input wire         wbs_cyc_i, // valid
+
+  input wire         wbs_we_i,  // write-enable
+
+  input wire [3:0]   wbs_sel_i, // write-strobe
+
+  output wire        wbs_ack_o, // acknowledgement to Master (ready)
+
+  input wire [31:0]  wbs_dat_i,
+  input wire [31:0]  wbs_adr_i,
+  output wire [31:0] wbs_dat_o
 );
 
   // ________________  ________________
@@ -52,10 +65,13 @@ module fpga250 #(
   wire CIN  [MY-1:0][MX-1:0];
   wire COUT [MY-1:0][MX-1:0];
 
-  wire cfg_in_start  [MY-1:0][MX-1:0];
-  wire cfg_bit_in    [MY-1:0][MX-1:0];
-  wire cfg_out_start [MY-1:0][MX-1:0];
-  wire cfg_bit_out   [MY-1:0][MX-1:0];
+  wire cfg_in_start     [MY-1:0][MX-1:0];
+  wire cfg_bit_in       [MY-1:0][MX-1:0];
+  wire cfg_bit_in_valid [MY-1:0][MX-1:0];
+
+  wire cfg_out_start     [MY-1:0][MX-1:0];
+  wire cfg_bit_out       [MY-1:0][MX-1:0];
+  wire cfg_bit_out_valid [MY-1:0][MX-1:0];
 
   wire [`CHN_WIDTH-1:0]  sb_north_in  [MY-1:0][MX-1:0];
   wire [`CHN_WIDTH-1:0]  sb_east_in   [MY-1:0][MX-1:0];
@@ -116,17 +132,43 @@ module fpga250 #(
           .clb_west_in(clb_west_in[y][x]),           // input
           .clb_west_out(clb_west_out[y][x]),         // output
 
-          .clk(clk),
-          .crst(rst),
+          .clk(wb_clk_i),
+          .crst(wb_rst_i),
 
-          .cfg_in_start(cfg_in_start[y][x]),   // input
-          .cfg_bit_in(cfg_bit_in[y][x]),       // input
-          .cfg_out_start(cfg_out_start[y][x]), // output
-          .cfg_bit_out(cfg_bit_out[y][x])      // output
+          .cfg_in_start(cfg_in_start[y][x]),          // input
+          .cfg_bit_in(cfg_bit_in[y][x]),              // input
+          .cfg_bit_in_valid(cfg_bit_in_valid[y][x]),  // input
+          .cfg_out_start(cfg_out_start[y][x]),        // output
+          .cfg_bit_out(cfg_bit_out[y][x]),            // output
+          .cfg_bit_out_valid(cfg_bit_out_valid[y][x]) // output
         );
       end
     end
   endgenerate
+
+  wire [3:0] col_sel;
+  wire wb_cfg_out_start;
+  wire wb_cfg_bit_out;
+  wire wb_cfg_bit_out_valid;
+
+  wb_config wb (
+    .wb_clk_i(wb_clk_i),
+    .wb_rst_i(wb_rst_i),
+
+    .wbs_stb_i(wbs_stb_i),
+    .wbs_cyc_i(wbs_cyc_i),
+    .wbs_we_i(wbs_we_i),
+    .wbs_sel_i(wbs_sel_i),
+    .wbs_ack_o(wbs_ack_o),
+    .wbs_dat_i(wbs_dat_i),
+    .wbs_adr_i(wbs_adr_i),
+    .wbs_dat_o(wbs_dat_o),
+
+    .col_sel(col_sel),
+    .cfg_out_start(wb_cfg_out_start),
+    .cfg_bit_out(wb_cfg_bit_out),
+    .cfg_bit_out_valid(wb_cfg_bit_out_valid)
+  );
 
   generate
     for (y = 0; y < MY; y = y + 1) begin
@@ -156,27 +198,33 @@ module fpga250 #(
         end
       end
     end
+
+    for (x = 0; x < MX; x = x + 1) begin
+      assign cfg_in_start[0][x]     = wb_cfg_out_start & (col_sel == x);
+      assign cfg_bit_in[0][x]       = wb_cfg_bit_out;
+      assign cfg_bit_in_valid[0][x] = wb_cfg_bit_out_valid;
+    end
   endgenerate
 
   // GPIO pin assignments
   generate
     // even indices: output, odd indices: input
-    for (y = 0; y < IO_W / 2; y = y + 1) begin
+    for (y = 0; y < `min(MY, IO_W / 2); y = y + 1) begin
       assign gpio_w[2 * y + 0]        = cb_n_single1_out[y][0][0];
       assign cb_n_single1_in[y][0][0] = gpio_w[2 * y + 1];
     end
 
-    for (y = 0; y < IO_E / 2; y = y + 1) begin
+    for (y = 0; y < `min(MY, IO_E / 2); y = y + 1) begin
       assign gpio_e[2 * y + 0]             = cb_e_single1_out[y][MX - 1][0];
       assign cb_e_single1_in[y][MX - 1][0] = gpio_e[2 * y + 1];
     end
 
-    for (x = 0; x < IO_S / 2; x = x + 1) begin
+    for (x = 0; x < `min(MX, IO_S / 2); x = x + 1) begin
       assign gpio_s[2 * x + 0]    = sb_south_out[0][x][0];
       assign sb_south_in[0][x][0] = gpio_s[2 * x + 1];
     end
 
-    for (x = 0; x < IO_N / 2; x = x + 1) begin
+    for (x = 0; x < `min(MX, IO_N / 2); x = x + 1) begin
       assign gpio_n[2 * x + 0]         = sb_north_out[MY - 1][x][0];
       assign sb_north_in[MY - 1][x][0] = gpio_n[2 * x + 1];
     end

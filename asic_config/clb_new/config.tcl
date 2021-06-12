@@ -4,6 +4,7 @@
 #set ::env(DESIGN_NAME) cb
 #set ::env(DESIGN_NAME) sb
 set ::env(DESIGN_NAME) clb_tile
+#set ::env(DESIGN_NAME) wb_config
 
 # Change if needed
 #set ::env(VERILOG_FILES) [glob $::env(OPENLANE_ROOT)/designs/250/new/*.v]
@@ -24,6 +25,7 @@ set ::env(VERILOG_FILES) [concat \
   $::env(OPENLANE_ROOT)/designs/250/new/cb.v \
   $::env(OPENLANE_ROOT)/designs/250/new/muxn.v \
   $::env(OPENLANE_ROOT)/designs/250/new/sb.v \
+  $::env(OPENLANE_ROOT)/designs/250/new/wb_config.v \
 ]
 
 set ::env(MACRO_PLACEMENT_CFG) $::env(OPENLANE_ROOT)/designs/250/asic_config/clb_new/macro_placement.cfg

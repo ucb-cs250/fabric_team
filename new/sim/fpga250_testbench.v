@@ -21,6 +21,13 @@ module fpga250_testbench();
   wire [IO_E-1:0] gpio_e;
   wire [IO_S-1:0] gpio_s;
   wire [IO_W-1:0] gpio_w;
+  reg rst;
+  reg wbs_stb_i, wbs_cyc_i, wbs_we_i;
+  reg [3:0] wbs_sel_i;
+  wire wbs_ack_o;
+  wire [31:0] wbs_dat_o;
+  reg  [31:0] wbs_dat_i;
+  reg  [31:0] wbs_adr_i;
 
   reg [`CFG_SIZE-1:0] cfg_bits;
 
@@ -31,7 +38,7 @@ module fpga250_testbench();
     #1;
   end
 
-  fpga #(
+  fpga250 #(
     .MX(MX),
     .MY(MY),
     .IO_N(IO_N),
@@ -39,13 +46,22 @@ module fpga250_testbench();
     .IO_S(IO_S),
     .IO_W(IO_W)
   ) dut (
-    .clk(clk),
-    .rst(rst),
+    .wb_clk_i(clk),
+    .wb_rst_i(rst),
 
     .gpio_n(gpio_n),
     .gpio_e(gpio_e),
     .gpio_s(gpio_s),
-    .gpio_w(gpio_w)
+    .gpio_w(gpio_w),
+
+    .wbs_stb_i(wbs_stb_i),
+    .wbs_cyc_i(wbs_cyc_i),
+    .wbs_we_i(wbs_we_i),
+    .wbs_sel_i(wbs_sel_i),
+    .wbs_ack_o(wbs_ack_o),
+    .wbs_dat_i(wbs_dat_i),
+    .wbs_adr_i(wbs_adr_i),
+    .wbs_dat_o(wbs_dat_o)
   );
 
   reg [31:0] cycle_cnt;

@@ -1,5 +1,7 @@
 `timescale 1ns/1ns
 
+`define min(x, y) ((x < y) ? x : y)
+
 `define ID_WIDTH 3
 
 // CLB parameters
