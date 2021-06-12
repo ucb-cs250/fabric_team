@@ -118,8 +118,10 @@ module clb_tile_testbench();
 
   reg cfg_in_start;
   reg cfg_bit_in;
+  reg cfg_bit_in_valid;
   wire cfg_out_start;
   wire cfg_bit_out;
+  wire cfg_bit_out_valid;
 
   reg  [`CHN_WIDTH-1:0]  sb_north_in, sb_east_in;
   wire [`CHN_WIDTH-1:0]  sb_north_out, sb_east_out;
@@ -163,10 +165,12 @@ module clb_tile_testbench();
     .clk(clk),
     .crst(rst),
 
-    .cfg_in_start(cfg_in_start),   // input
-    .cfg_bit_in(cfg_bit_in),       // input
-    .cfg_out_start(cfg_out_start), // output
-    .cfg_bit_out(cfg_bit_out)      // output
+    .cfg_in_start(cfg_in_start),          // input
+    .cfg_bit_in(cfg_bit_in),              // input
+    .cfg_bit_in_valid(cfg_bit_in_valid),  // input
+    .cfg_out_start(cfg_out_start),        // output
+    .cfg_bit_out(cfg_bit_out),            // output
+    .cfg_bit_out_valid(cfg_bit_out_valid) // output
   );
 
   reg [31:0] cycle_cnt;
@@ -188,6 +192,7 @@ module clb_tile_testbench();
     cfg_done = 1'b0;
     cfg_in_start = 1'b0;
     cfg_bit_in = 1'b0;
+    cfg_bit_in_valid = 1'b0;
 
     sb_north_in      = 16'b0;
     sb_east_in       = 16'b0;
@@ -233,12 +238,24 @@ module clb_tile_testbench();
         cfg_in_start = 1'b0;
 
       cfg_bit_in = cfg_bits[i];
+      cfg_bit_in_valid = 1'b1;
+
+//      @(negedge clk);
+//      cfg_bit_in_valid = 1'b1;
+//
+//     @(negedge clk);
+//      cfg_bit_in_valid = 1'b0;
     end
+
+    @(negedge clk);
+    cfg_bit_in_valid = 1'b0;
 
     repeat (100) @(posedge clk);
     cfg_done = 1'b1;
 
-    $display("Configuration done! %b", cfg_bits);
+    $display("Configuration done! ref %b", cfg_bits);
+    $display("Configuration done! res %b", dut.cfg);
+
     $display("Config. size: %d", `CFG_SIZE);
 
     $display("sb_north_in: %b",  dut.sb_north_in);

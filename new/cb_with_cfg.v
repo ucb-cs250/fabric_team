@@ -24,8 +24,10 @@ module cb_with_cfg #(
   input  wire crst, // system-wide reset (or config reset)
   input  wire cfg_in_start,
   input  wire cfg_bit_in,
+  input  wire cfg_bit_in_valid,
   output wire cfg_out_start,
-  output wire cfg_bit_out
+  output wire cfg_bit_out,
+  output wire cfg_bit_out_valid
 );
 
   localparam NUM_SNGO_SWITCHES = CHN_WIDTH  + CLB_OWIDTH * 2 + 1;
@@ -78,8 +80,10 @@ module cb_with_cfg #(
     .rst(crst),
     .cfg_in_start(cfg_in_start),
     .cfg_bit_in(cfg_bit_in),
+    .cfg_bit_in_valid(cfg_bit_in_valid),
     .cfg_out_start(cfg_out_start),
     .cfg_bit_out(cfg_bit_out),
+    .cfg_bit_out_valid(cfg_bit_out_valid),
     .cfg_sr_pulse(),
     .cfg(cfg)
   );

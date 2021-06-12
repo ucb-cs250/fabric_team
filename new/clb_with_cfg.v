@@ -16,8 +16,10 @@ module clb_with_cfg #(
 
   input  wire cfg_in_start,
   input  wire cfg_bit_in,
+  input  wire cfg_bit_in_valid,
   output wire cfg_out_start,
-  output wire cfg_bit_out
+  output wire cfg_bit_out,
+  output wire cfg_bit_out_valid
 );
 
   localparam CFG_LUT_SIZE  = 33; // S44: 2 x LUT-4 + input select
@@ -29,7 +31,7 @@ module clb_with_cfg #(
   localparam CFG_OMUX_OFFSET = 8 * CFG_DFF_SIZE + CFG_DFF_OFFSET;
   localparam CFG_CC_OFFSET   = 8 * CFG_OMUX_SIZE + CFG_OMUX_OFFSET;
 
-  localparam CFG_SIZE = 2 + CFG_CC_OFFSET + ID_WIDTH;
+  localparam CFG_SIZE = 2 + CFG_CC_OFFSET;
 
   wire [CFG_SIZE-1:0] cfg;
 
@@ -61,8 +63,10 @@ module clb_with_cfg #(
     .rst(crst),
     .cfg_in_start(cfg_in_start),
     .cfg_bit_in(cfg_bit_in),
+    .cfg_bit_in_valid(cfg_bit_in_valid),
     .cfg_out_start(cfg_out_start),
     .cfg_bit_out(cfg_bit_out),
+    .cfg_bit_out_valid(cfg_bit_out_valid),
     .cfg_sr_pulse(cfg_sr_pulse),
     .cfg(cfg)
   );

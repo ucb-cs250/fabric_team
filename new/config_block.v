@@ -10,9 +10,12 @@ module config_block #(
 
   input  wire cfg_in_start,
   input  wire cfg_bit_in,
+  input  wire cfg_bit_in_valid,
 
   output wire cfg_out_start,
   output wire cfg_bit_out,
+  output wire cfg_bit_out_valid,
+
   output wire cfg_sr_pulse,
 
   output wire [CFG_SIZE-1:0] cfg
@@ -20,10 +23,14 @@ module config_block #(
 
   localparam integer CNT_WIDTH    = $clog2(SHIFT_LEN) + 1;
   localparam integer NUM_CFG_BLKS = $ceil(CFG_SIZE / SHIFT_LEN) + 1;
+  localparam integer CFG_BLK_SIZE = $floor(CFG_SIZE / SHIFT_LEN) * SHIFT_LEN;
 
   wire [CFG_SIZE-1:0]     l_next, l_value, l_en;
   wire [SHIFT_LEN-1:0]    sr_next, sr_value;
   wire [NUM_CFG_BLKS-1:0] sblk_next, sblk_value, sblk_ce;
+ 
+  wire [1:0] sro_next  [ID_WIDTH+2-1:0];
+  wire [1:0] sro_value [ID_WIDTH+2-1:0];
 
   genvar i, j;
   generate
@@ -38,10 +45,21 @@ module config_block #(
 
   generate
     for (i = 0; i < SHIFT_LEN; i = i + 1) begin: GEN_SR
-      REGISTER sr (
+      REGISTER_CE sr (
         .clk(clk),
         .d(sr_next[i]),
-        .q(sr_value[i])
+        .q(sr_value[i]),
+        .ce(cfg_bit_in_valid)
+      );
+    end
+  endgenerate
+
+  generate
+    for (i = 0; i < ID_WIDTH + 2; i = i + 1) begin: GEN_SRO
+      REGISTER #(.N(2)) sro (
+        .clk(clk),
+        .d(sro_next[i]),
+        .q(sro_value[i])
       );
     end
   endgenerate
@@ -79,14 +97,6 @@ module config_block #(
     .ce(cfg_init_ce)
   );
 
-  wire cfg_byp_next, cfg_byp_value;
-
-  REGISTER #(.N(1)) cfg_byp_reg (
-    .clk(clk),
-    .d(cfg_byp_next),
-    .q(cfg_byp_value)
-  );
-
   localparam STATE_IDLE       = 0;
   localparam STATE_CHK_HEADER = 1;
   localparam STATE_CFG_APPLY  = 2;
@@ -116,7 +126,7 @@ module config_block #(
       end
 
       STATE_CHK_HEADER: begin
-        if (cnt_value == ID_WIDTH) begin
+        if (cnt_value == ID_WIDTH && cfg_bit_in_valid) begin
           if (sr_value[SHIFT_LEN-1:SHIFT_LEN-ID_WIDTH] == ID)
             state_next = STATE_CFG_APPLY;
           else
@@ -138,22 +148,31 @@ module config_block #(
   end
 
   wire id_matched = chk_header & (cnt_value == ID_WIDTH);
-  wire sr_filled  = cfg_apply  & (cnt_value == SHIFT_LEN);
+  wire sr_filled  = cfg_apply  & ((cnt_value == SHIFT_LEN) |
+                                  (cnt_value == CFG_SIZE - CFG_BLK_SIZE & sblk_value[NUM_CFG_BLKS - 2]));
 
   assign cnt_next = (id_matched | sr_filled) ? 1 : (cnt_value + 1);
-  assign cnt_ce   = chk_header | cfg_apply;
+  assign cnt_ce   = (chk_header | cfg_apply) & cfg_bit_in_valid;
   assign cnt_rst  = rst;
 
   assign cfg_init_next = 1;
   assign cfg_init_ce   = id_matched;
-  assign cfg_init_rst  = sr_filled | rst;
+  assign cfg_init_rst  = (sr_filled & cfg_bit_in_valid) | rst;
 
-  assign cfg_byp_next = sr_value[SHIFT_LEN - 1];
-
-  assign cfg_out_start = cfg_bypass;
-  assign cfg_bit_out   = cfg_byp_value;
+  assign cfg_out_start     = cfg_bypass;
+  assign cfg_bit_out       = sro_value[0][0];
+  assign cfg_bit_out_valid = sro_value[0][1];
 
   generate
+    for (i = 0; i < ID_WIDTH + 2; i = i + 1) begin
+      if (i == ID_WIDTH + 2 - 1) begin
+        assign sro_next[i] = {cfg_bit_in_valid, cfg_bit_in};
+      end
+      else begin
+        assign sro_next[i] = sro_value[i + 1];
+      end
+    end
+
     for (i = 0; i < SHIFT_LEN; i = i + 1) begin
       if (i == SHIFT_LEN - 1) begin
         assign sr_next[i] = cfg_bit_in;
@@ -171,26 +190,35 @@ module config_block #(
         assign sblk_next[i] = sblk_value[i - 1];
       end
 
-      assign sblk_ce[i] = sr_filled;
+      assign sblk_ce[i] = cfg_sr_pulse;
     end
 
-    for (i = 0; i < CFG_SIZE; i = i + SHIFT_LEN) begin
+    for (i = 0; i < CFG_BLK_SIZE; i = i + SHIFT_LEN) begin
       for (j = 0; j < SHIFT_LEN; j = j + 1) begin
         if (i + j < CFG_SIZE) begin
           assign l_next[i + j] = sr_value[j];
-          assign l_en[i + j]   = sblk_next[i / SHIFT_LEN] & sr_filled;
+          assign l_en[i + j]   = ~clk & sblk_next[i / SHIFT_LEN] & cfg_sr_pulse;
         end
+      end
+    end
+
+    for (j = 0; j < SHIFT_LEN; j = j + 1) begin
+      if (CFG_BLK_SIZE + j < CFG_SIZE) begin
+        assign l_next[CFG_BLK_SIZE + j] = sr_value[SHIFT_LEN - (CFG_SIZE - CFG_BLK_SIZE) + j];
+        assign l_en[CFG_BLK_SIZE + j]   = ~clk & sblk_next[NUM_CFG_BLKS - 1] & cfg_sr_pulse;
       end
     end
 
   endgenerate
 
+  wire tmp;
   REGISTER #(.N(1)) cfg_sr_pulse_reg (
     .clk(clk),
     .d(sr_filled),
-    .q(cfg_sr_pulse)
+    .q(tmp)
   );
 
+  assign cfg_sr_pulse = ~tmp & sr_filled;
   assign cfg = l_value;
 
 endmodule

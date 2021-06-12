@@ -116,7 +116,7 @@ module clb_testbench();
     cfg_bits[OMUX7_END:OMUX7_BEGIN] = 1'b1; // turn on/off Output Mux of LUT7
 
     cfg_bits[CC_END:CC_BEGIN] = 2'b11; // {Carry In Select, CYINIT}
-    cfg_bits[ID_END:ID_BEGIN] = 3'b111;
+    cfg_bits[ID_END:ID_BEGIN] = 3'b000;
   end
 
   reg [31:0] clb_in;
@@ -129,8 +129,10 @@ module clb_testbench();
 
   reg cfg_in_start;
   reg cfg_bit_in;
+  reg cfg_bit_in_valid;
   wire cfg_out_start;
   wire cfg_bit_out;
+  wire cfg_bit_out_valid;
 
   clb_with_cfg #(
     .ID_WIDTH(ID_WIDTH),
@@ -147,10 +149,12 @@ module clb_testbench();
     .clk(clk),
     .crst(rst),
 
-    .cfg_in_start(cfg_in_start),   // input
-    .cfg_bit_in(cfg_bit_in),       // input
-    .cfg_out_start(cfg_out_start), // output
-    .cfg_bit_out(cfg_bit_out)      // output
+    .cfg_in_start(cfg_in_start),          // input
+    .cfg_bit_in(cfg_bit_in),              // input
+    .cfg_bit_in_valid(cfg_bit_in_valid),  // input
+    .cfg_out_start(cfg_out_start),        // output
+    .cfg_bit_out(cfg_bit_out),            // output
+    .cfg_bit_out_valid(cfg_bit_out_valid) // output
   );
 
   reg [31:0] cycle_cnt;
@@ -160,6 +164,23 @@ module clb_testbench();
     end
     else begin
       cycle_cnt <= cycle_cnt + 1;
+    end
+  end
+
+  reg cfg_out_running;
+  reg [CFG_SIZE-1:0] cfg_bits_out;
+
+  always @(posedge clk) begin
+    if (rst) begin
+      cfg_bits_out <= 0;
+      cfg_out_running <= 0;
+    end
+    else begin
+      if (cfg_out_start)
+        cfg_out_running <= 1'b1;
+
+      if (cfg_out_running && cfg_bit_out_valid)
+        cfg_bits_out <= {cfg_bit_out, cfg_bits_out[CFG_SIZE-1:1]};
     end
   end
 
@@ -177,6 +198,7 @@ module clb_testbench();
     cfg_done = 1'b0;
     cfg_in_start = 1'b0;
     cfg_bit_in = 1'b0;
+    cfg_bit_in_valid = 1'b0;
 
     //clb_in = 32'hEFEF_EFEF;
     clb_in = 0;
@@ -222,13 +244,35 @@ module clb_testbench();
         cfg_in_start = 1'b0;
 
       cfg_bit_in = cfg_bits[i];
+      cfg_bit_in_valid = 1'b1;
+
+      //repeat (10) @(posedge clk);
+
+//      @(negedge clk);
+//      cfg_bit_in_valid = 1'b0;
+//
+//      @(negedge clk);
+//      cfg_bit_in_valid = 1'b1;
+//
+//     @(negedge clk);
+//      cfg_bit_in_valid = 1'b0;
+
     end
+
+    @(negedge clk);
+    cfg_bit_in_valid = 1'b0;
 
     repeat (100) @(posedge clk);
     cfg_done = 1'b1;
     CE = 1'b0;
+    cfg_bit_in_valid = 1'b0;
 
-    $display("Configuration done! %b", cfg_bits);
+    $display("Configuration done! ref: %b", cfg_bits);
+    $display("Configuration done! res: %b", dut.cfg);
+    $display("Configuration done! out: %b", cfg_bits_out);
+
+    $display("Config. size: %d", CFG_SIZE - ID_WIDTH);
+
     $display("LUTS44_0 cfg: %b", dut.cfg[32:0]);
     $display("LUTS44_1 cfg: %b", dut.cfg[65:33]);
     $display("LUTS44_2 cfg: %b", dut.cfg[98:66]);
@@ -246,10 +290,18 @@ module clb_testbench();
     $display("CLB Sync. output: %b", dut.SYNC_O);
     $display("CLB COUT: %b", dut.COUT);
 
-    if (clb_comb_out === B - A)
-      $display("[Test CarryChain] PASSED!");
-    else
-      $display("[Test CarryChain] FAILED! %b vs. %b", clb_comb_out, B - A);
+    if (cfg_bits[ID_WIDTH-1:0] !== ID) begin
+      if (cfg_bits === cfg_bits_out)
+        $display("[Test Config Bypass] PASSED!");
+      else
+        $display("[Test Config Bypass] FAILED!");
+    end
+    else begin
+      if (clb_comb_out === B - A)
+        $display("[Test CarryChain] PASSED!");
+      else
+        $display("[Test CarryChain] FAILED! %b vs. %b", clb_comb_out, B - A);
+    end
 
     #1000;
     $finish();
@@ -263,13 +315,19 @@ module clb_testbench();
 
   always @(posedge clk) begin
     if (cfg_done === 1'b0) begin
-      $display("[sim. cycle %d] cfg_state=%d, start=%b, sr_value=%b, id_matched=%b, sr_filled=%b, sblk_value=%b",
+      $display("[sim. cycle %d] cfg_state=%d, start=%b, bit=%b, bit_valid=%b, out_start=%b, bit_out=%b, bit_out_valid=%b, sr_value=%b, id_matched=%b, sr_filled=%b, sblk_value=%b, sr_pulse=%b",
         cycle_cnt, dut.cfg_blk.state_value,
         dut.cfg_blk.cfg_in_start,
+        dut.cfg_blk.cfg_bit_in,
+        dut.cfg_blk.cfg_bit_in_valid,
+        dut.cfg_blk.cfg_out_start,
+        dut.cfg_blk.cfg_bit_out,
+        dut.cfg_blk.cfg_bit_out_valid,
         dut.cfg_blk.sr_value,
         dut.cfg_blk.id_matched,
         dut.cfg_blk.sr_filled,
-        dut.cfg_blk.sblk_value
+        dut.cfg_blk.sblk_value,
+        dut.cfg_blk.cfg_sr_pulse
       );
     end
   end

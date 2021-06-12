@@ -1,6 +1,6 @@
 `include "consts.vh"
 
-(* blackbox *)
+//(* blackbox *)
 module clb_tile #(
   parameter ID = 7
 ) (
@@ -32,8 +32,10 @@ module clb_tile #(
   input  wire crst, // system-wide reset (or config reset)
   input  wire cfg_in_start,
   input  wire cfg_bit_in,
+  input  wire cfg_bit_in_valid,
   output wire cfg_out_start,
-  output wire cfg_bit_out
+  output wire cfg_bit_out,
+  output wire cfg_bit_out_valid
 );
   localparam SB_CFG_BEGIN   = 0;
   localparam SB_CFG_END     = SB_CFG_BEGIN + `SB_CFG_SIZE - 1;
@@ -156,8 +158,10 @@ module clb_tile #(
     .rst(crst),
     .cfg_in_start(cfg_in_start),
     .cfg_bit_in(cfg_bit_in),
+    .cfg_bit_in_valid(cfg_bit_in_valid),
     .cfg_out_start(cfg_out_start),
     .cfg_bit_out(cfg_bit_out),
+    .cfg_bit_out_valid(cfg_bit_out_valid),
     .cfg_sr_pulse(cfg_sr_pulse),
     .cfg(cfg)
   );
