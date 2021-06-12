@@ -20,7 +20,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 244.350 264.875 244.630 268.875 ;
+        RECT 239.750 264.875 240.030 268.875 ;
     END
   END COUT
   PIN cb_e_clb1_input[0]
@@ -44,7 +44,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 13.640 258.155 14.240 ;
+        RECT 254.155 14.320 258.155 14.920 ;
     END
   END cb_e_clb1_input[2]
   PIN cb_e_clb1_input[3]
@@ -52,7 +52,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 19.080 258.155 19.680 ;
+        RECT 254.155 19.760 258.155 20.360 ;
     END
   END cb_e_clb1_input[3]
   PIN cb_e_clb1_input[4]
@@ -60,7 +60,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 24.520 258.155 25.120 ;
+        RECT 254.155 25.880 258.155 26.480 ;
     END
   END cb_e_clb1_input[4]
   PIN cb_e_clb1_input[5]
@@ -68,7 +68,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 30.640 258.155 31.240 ;
+        RECT 254.155 31.320 258.155 31.920 ;
     END
   END cb_e_clb1_input[5]
   PIN cb_e_clb1_input[6]
@@ -76,7 +76,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 36.080 258.155 36.680 ;
+        RECT 254.155 37.440 258.155 38.040 ;
     END
   END cb_e_clb1_input[6]
   PIN cb_e_clb1_input[7]
@@ -84,7 +84,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 41.520 258.155 42.120 ;
+        RECT 254.155 43.560 258.155 44.160 ;
     END
   END cb_e_clb1_input[7]
   PIN cb_e_clb1_input[8]
@@ -92,7 +92,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 46.960 258.155 47.560 ;
+        RECT 254.155 49.000 258.155 49.600 ;
     END
   END cb_e_clb1_input[8]
   PIN cb_e_clb1_input[9]
@@ -100,7 +100,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 53.080 258.155 53.680 ;
+        RECT 254.155 55.120 258.155 55.720 ;
     END
   END cb_e_clb1_input[9]
   PIN cb_e_clb1_output[0]
@@ -108,7 +108,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 58.520 258.155 59.120 ;
+        RECT 254.155 60.560 258.155 61.160 ;
     END
   END cb_e_clb1_output[0]
   PIN cb_e_clb1_output[1]
@@ -116,7 +116,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 63.960 258.155 64.560 ;
+        RECT 254.155 66.680 258.155 67.280 ;
     END
   END cb_e_clb1_output[1]
   PIN cb_e_clb1_output[2]
@@ -124,7 +124,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 69.400 258.155 70.000 ;
+        RECT 254.155 72.800 258.155 73.400 ;
     END
   END cb_e_clb1_output[2]
   PIN cb_e_clb1_output[3]
@@ -132,7 +132,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 74.840 258.155 75.440 ;
+        RECT 254.155 78.240 258.155 78.840 ;
     END
   END cb_e_clb1_output[3]
   PIN cb_e_single1_in[0]
@@ -420,7 +420,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 18.030 264.875 18.310 268.875 ;
+        RECT 17.570 264.875 17.850 268.875 ;
     END
   END cb_n_clb1_input[3]
   PIN cb_n_clb1_input[4]
@@ -428,7 +428,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 23.090 264.875 23.370 268.875 ;
+        RECT 22.630 264.875 22.910 268.875 ;
     END
   END cb_n_clb1_input[4]
   PIN cb_n_clb1_input[5]
@@ -436,7 +436,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 28.610 264.875 28.890 268.875 ;
+        RECT 28.150 264.875 28.430 268.875 ;
     END
   END cb_n_clb1_input[5]
   PIN cb_n_clb1_input[6]
@@ -444,7 +444,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 33.670 264.875 33.950 268.875 ;
+        RECT 33.210 264.875 33.490 268.875 ;
     END
   END cb_n_clb1_input[6]
   PIN cb_n_clb1_input[7]
@@ -452,7 +452,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 39.190 264.875 39.470 268.875 ;
+        RECT 38.270 264.875 38.550 268.875 ;
     END
   END cb_n_clb1_input[7]
   PIN cb_n_clb1_input[8]
@@ -460,7 +460,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 44.250 264.875 44.530 268.875 ;
+        RECT 43.330 264.875 43.610 268.875 ;
     END
   END cb_n_clb1_input[8]
   PIN cb_n_clb1_input[9]
@@ -468,7 +468,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 49.770 264.875 50.050 268.875 ;
+        RECT 48.390 264.875 48.670 268.875 ;
     END
   END cb_n_clb1_input[9]
   PIN cb_n_clb1_output[0]
@@ -476,7 +476,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 54.830 264.875 55.110 268.875 ;
+        RECT 53.910 264.875 54.190 268.875 ;
     END
   END cb_n_clb1_output[0]
   PIN cb_n_clb1_output[1]
@@ -484,7 +484,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 59.890 264.875 60.170 268.875 ;
+        RECT 58.970 264.875 59.250 268.875 ;
     END
   END cb_n_clb1_output[1]
   PIN cb_n_clb1_output[2]
@@ -492,7 +492,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 65.410 264.875 65.690 268.875 ;
+        RECT 64.030 264.875 64.310 268.875 ;
     END
   END cb_n_clb1_output[2]
   PIN cb_n_clb1_output[3]
@@ -500,7 +500,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 70.470 264.875 70.750 268.875 ;
+        RECT 69.090 264.875 69.370 268.875 ;
     END
   END cb_n_clb1_output[3]
   PIN cb_n_single1_in[0]
@@ -508,7 +508,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 177.520 4.000 178.120 ;
+        RECT 0.000 174.120 4.000 174.720 ;
     END
   END cb_n_single1_in[0]
   PIN cb_n_single1_in[10]
@@ -516,7 +516,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 236.000 4.000 236.600 ;
+        RECT 0.000 231.240 4.000 231.840 ;
     END
   END cb_n_single1_in[10]
   PIN cb_n_single1_in[11]
@@ -524,7 +524,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 242.120 4.000 242.720 ;
+        RECT 0.000 236.680 4.000 237.280 ;
     END
   END cb_n_single1_in[11]
   PIN cb_n_single1_in[12]
@@ -532,7 +532,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 247.560 4.000 248.160 ;
+        RECT 0.000 242.120 4.000 242.720 ;
     END
   END cb_n_single1_in[12]
   PIN cb_n_single1_in[13]
@@ -540,7 +540,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 253.680 4.000 254.280 ;
+        RECT 0.000 248.240 4.000 248.840 ;
     END
   END cb_n_single1_in[13]
   PIN cb_n_single1_in[14]
@@ -548,7 +548,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 259.120 4.000 259.720 ;
+        RECT 0.000 253.680 4.000 254.280 ;
     END
   END cb_n_single1_in[14]
   PIN cb_n_single1_in[15]
@@ -556,7 +556,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 265.240 4.000 265.840 ;
+        RECT 0.000 259.800 4.000 260.400 ;
     END
   END cb_n_single1_in[15]
   PIN cb_n_single1_in[1]
@@ -564,7 +564,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 183.640 4.000 184.240 ;
+        RECT 0.000 179.560 4.000 180.160 ;
     END
   END cb_n_single1_in[1]
   PIN cb_n_single1_in[2]
@@ -572,7 +572,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 189.080 4.000 189.680 ;
+        RECT 0.000 185.000 4.000 185.600 ;
     END
   END cb_n_single1_in[2]
   PIN cb_n_single1_in[3]
@@ -580,7 +580,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 195.200 4.000 195.800 ;
+        RECT 0.000 191.120 4.000 191.720 ;
     END
   END cb_n_single1_in[3]
   PIN cb_n_single1_in[4]
@@ -588,7 +588,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 200.640 4.000 201.240 ;
+        RECT 0.000 196.560 4.000 197.160 ;
     END
   END cb_n_single1_in[4]
   PIN cb_n_single1_in[5]
@@ -596,7 +596,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 206.760 4.000 207.360 ;
+        RECT 0.000 202.680 4.000 203.280 ;
     END
   END cb_n_single1_in[5]
   PIN cb_n_single1_in[6]
@@ -604,7 +604,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 212.880 4.000 213.480 ;
+        RECT 0.000 208.120 4.000 208.720 ;
     END
   END cb_n_single1_in[6]
   PIN cb_n_single1_in[7]
@@ -612,7 +612,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 218.320 4.000 218.920 ;
+        RECT 0.000 213.560 4.000 214.160 ;
     END
   END cb_n_single1_in[7]
   PIN cb_n_single1_in[8]
@@ -620,7 +620,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 224.440 4.000 225.040 ;
+        RECT 0.000 219.680 4.000 220.280 ;
     END
   END cb_n_single1_in[8]
   PIN cb_n_single1_in[9]
@@ -628,7 +628,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 229.880 4.000 230.480 ;
+        RECT 0.000 225.120 4.000 225.720 ;
     END
   END cb_n_single1_in[9]
   PIN cb_n_single1_out[0]
@@ -636,7 +636,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 84.360 4.000 84.960 ;
+        RECT 0.000 82.320 4.000 82.920 ;
     END
   END cb_n_single1_out[0]
   PIN cb_n_single1_out[10]
@@ -644,7 +644,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 142.840 4.000 143.440 ;
+        RECT 0.000 139.440 4.000 140.040 ;
     END
   END cb_n_single1_out[10]
   PIN cb_n_single1_out[11]
@@ -652,7 +652,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 148.280 4.000 148.880 ;
+        RECT 0.000 145.560 4.000 146.160 ;
     END
   END cb_n_single1_out[11]
   PIN cb_n_single1_out[12]
@@ -660,7 +660,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 154.400 4.000 155.000 ;
+        RECT 0.000 151.000 4.000 151.600 ;
     END
   END cb_n_single1_out[12]
   PIN cb_n_single1_out[13]
@@ -668,7 +668,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 159.840 4.000 160.440 ;
+        RECT 0.000 156.440 4.000 157.040 ;
     END
   END cb_n_single1_out[13]
   PIN cb_n_single1_out[14]
@@ -676,7 +676,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 165.960 4.000 166.560 ;
+        RECT 0.000 162.560 4.000 163.160 ;
     END
   END cb_n_single1_out[14]
   PIN cb_n_single1_out[15]
@@ -684,7 +684,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 172.080 4.000 172.680 ;
+        RECT 0.000 168.000 4.000 168.600 ;
     END
   END cb_n_single1_out[15]
   PIN cb_n_single1_out[1]
@@ -692,7 +692,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 89.800 4.000 90.400 ;
+        RECT 0.000 88.440 4.000 89.040 ;
     END
   END cb_n_single1_out[1]
   PIN cb_n_single1_out[2]
@@ -700,7 +700,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 95.920 4.000 96.520 ;
+        RECT 0.000 93.880 4.000 94.480 ;
     END
   END cb_n_single1_out[2]
   PIN cb_n_single1_out[3]
@@ -708,7 +708,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 101.360 4.000 101.960 ;
+        RECT 0.000 99.320 4.000 99.920 ;
     END
   END cb_n_single1_out[3]
   PIN cb_n_single1_out[4]
@@ -716,7 +716,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 107.480 4.000 108.080 ;
+        RECT 0.000 105.440 4.000 106.040 ;
     END
   END cb_n_single1_out[4]
   PIN cb_n_single1_out[5]
@@ -724,7 +724,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 113.600 4.000 114.200 ;
+        RECT 0.000 110.880 4.000 111.480 ;
     END
   END cb_n_single1_out[5]
   PIN cb_n_single1_out[6]
@@ -732,7 +732,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 119.040 4.000 119.640 ;
+        RECT 0.000 117.000 4.000 117.600 ;
     END
   END cb_n_single1_out[6]
   PIN cb_n_single1_out[7]
@@ -740,7 +740,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 125.160 4.000 125.760 ;
+        RECT 0.000 122.440 4.000 123.040 ;
     END
   END cb_n_single1_out[7]
   PIN cb_n_single1_out[8]
@@ -748,7 +748,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 130.600 4.000 131.200 ;
+        RECT 0.000 127.880 4.000 128.480 ;
     END
   END cb_n_single1_out[8]
   PIN cb_n_single1_out[9]
@@ -756,7 +756,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 136.720 4.000 137.320 ;
+        RECT 0.000 134.000 4.000 134.600 ;
     END
   END cb_n_single1_out[9]
   PIN cfg_bit_in
@@ -772,7 +772,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 254.930 264.875 255.210 268.875 ;
+        RECT 249.870 264.875 250.150 268.875 ;
     END
   END cfg_bit_out
   PIN cfg_in_start
@@ -788,7 +788,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 249.870 264.875 250.150 268.875 ;
+        RECT 244.810 264.875 245.090 268.875 ;
     END
   END cfg_out_start
   PIN clb_south_in[0]
@@ -924,7 +924,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 14.320 4.000 14.920 ;
+        RECT 0.000 13.640 4.000 14.240 ;
     END
   END clb_west_in[2]
   PIN clb_west_in[3]
@@ -940,7 +940,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 25.880 4.000 26.480 ;
+        RECT 0.000 25.200 4.000 25.800 ;
     END
   END clb_west_in[4]
   PIN clb_west_in[5]
@@ -956,7 +956,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 37.440 4.000 38.040 ;
+        RECT 0.000 36.760 4.000 37.360 ;
     END
   END clb_west_in[6]
   PIN clb_west_in[7]
@@ -964,7 +964,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 43.560 4.000 44.160 ;
+        RECT 0.000 42.200 4.000 42.800 ;
     END
   END clb_west_in[7]
   PIN clb_west_in[8]
@@ -972,7 +972,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 49.000 4.000 49.600 ;
+        RECT 0.000 48.320 4.000 48.920 ;
     END
   END clb_west_in[8]
   PIN clb_west_in[9]
@@ -980,7 +980,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 55.120 4.000 55.720 ;
+        RECT 0.000 53.760 4.000 54.360 ;
     END
   END clb_west_in[9]
   PIN clb_west_out[0]
@@ -988,7 +988,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 60.560 4.000 61.160 ;
+        RECT 0.000 59.880 4.000 60.480 ;
     END
   END clb_west_out[0]
   PIN clb_west_out[1]
@@ -996,7 +996,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 66.680 4.000 67.280 ;
+        RECT 0.000 65.320 4.000 65.920 ;
     END
   END clb_west_out[1]
   PIN clb_west_out[2]
@@ -1004,7 +1004,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 72.800 4.000 73.400 ;
+        RECT 0.000 70.760 4.000 71.360 ;
     END
   END clb_west_out[2]
   PIN clb_west_out[3]
@@ -1012,7 +1012,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 0.000 78.240 4.000 78.840 ;
+        RECT 0.000 76.880 4.000 77.480 ;
     END
   END clb_west_out[3]
   PIN clk
@@ -1020,15 +1020,15 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 259.800 258.155 260.400 ;
+        RECT 0.000 265.240 4.000 265.840 ;
     END
   END clk
   PIN crst
     DIRECTION INPUT ;
     USE SIGNAL ;
     PORT
-      LAYER met3 ;
-        RECT 254.155 265.240 258.155 265.840 ;
+      LAYER met2 ;
+        RECT 254.930 264.875 255.210 268.875 ;
     END
   END crst
   PIN sb_east_in[0]
@@ -1036,7 +1036,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 80.960 258.155 81.560 ;
+        RECT 254.155 84.360 258.155 84.960 ;
     END
   END sb_east_in[0]
   PIN sb_east_in[10]
@@ -1044,7 +1044,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 136.720 258.155 137.320 ;
+        RECT 254.155 142.840 258.155 143.440 ;
     END
   END sb_east_in[10]
   PIN sb_east_in[11]
@@ -1052,7 +1052,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 142.160 258.155 142.760 ;
+        RECT 254.155 148.280 258.155 148.880 ;
     END
   END sb_east_in[11]
   PIN sb_east_in[12]
@@ -1060,7 +1060,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 147.600 258.155 148.200 ;
+        RECT 254.155 154.400 258.155 155.000 ;
     END
   END sb_east_in[12]
   PIN sb_east_in[13]
@@ -1068,7 +1068,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 153.720 258.155 154.320 ;
+        RECT 254.155 159.840 258.155 160.440 ;
     END
   END sb_east_in[13]
   PIN sb_east_in[14]
@@ -1076,7 +1076,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 159.160 258.155 159.760 ;
+        RECT 254.155 165.960 258.155 166.560 ;
     END
   END sb_east_in[14]
   PIN sb_east_in[15]
@@ -1084,7 +1084,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 164.600 258.155 165.200 ;
+        RECT 254.155 172.080 258.155 172.680 ;
     END
   END sb_east_in[15]
   PIN sb_east_in[1]
@@ -1092,7 +1092,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 86.400 258.155 87.000 ;
+        RECT 254.155 89.800 258.155 90.400 ;
     END
   END sb_east_in[1]
   PIN sb_east_in[2]
@@ -1100,7 +1100,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 91.840 258.155 92.440 ;
+        RECT 254.155 95.920 258.155 96.520 ;
     END
   END sb_east_in[2]
   PIN sb_east_in[3]
@@ -1108,7 +1108,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 97.280 258.155 97.880 ;
+        RECT 254.155 101.360 258.155 101.960 ;
     END
   END sb_east_in[3]
   PIN sb_east_in[4]
@@ -1116,7 +1116,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 103.400 258.155 104.000 ;
+        RECT 254.155 107.480 258.155 108.080 ;
     END
   END sb_east_in[4]
   PIN sb_east_in[5]
@@ -1124,7 +1124,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 108.840 258.155 109.440 ;
+        RECT 254.155 113.600 258.155 114.200 ;
     END
   END sb_east_in[5]
   PIN sb_east_in[6]
@@ -1132,7 +1132,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 114.280 258.155 114.880 ;
+        RECT 254.155 119.040 258.155 119.640 ;
     END
   END sb_east_in[6]
   PIN sb_east_in[7]
@@ -1140,7 +1140,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 119.720 258.155 120.320 ;
+        RECT 254.155 125.160 258.155 125.760 ;
     END
   END sb_east_in[7]
   PIN sb_east_in[8]
@@ -1148,7 +1148,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 125.840 258.155 126.440 ;
+        RECT 254.155 130.600 258.155 131.200 ;
     END
   END sb_east_in[8]
   PIN sb_east_in[9]
@@ -1156,7 +1156,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 131.280 258.155 131.880 ;
+        RECT 254.155 136.720 258.155 137.320 ;
     END
   END sb_east_in[9]
   PIN sb_east_out[0]
@@ -1164,7 +1164,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 170.040 258.155 170.640 ;
+        RECT 254.155 177.520 258.155 178.120 ;
     END
   END sb_east_out[0]
   PIN sb_east_out[10]
@@ -1172,7 +1172,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 226.480 258.155 227.080 ;
+        RECT 254.155 236.000 258.155 236.600 ;
     END
   END sb_east_out[10]
   PIN sb_east_out[11]
@@ -1180,7 +1180,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 231.920 258.155 232.520 ;
+        RECT 254.155 242.120 258.155 242.720 ;
     END
   END sb_east_out[11]
   PIN sb_east_out[12]
@@ -1188,7 +1188,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 237.360 258.155 237.960 ;
+        RECT 254.155 247.560 258.155 248.160 ;
     END
   END sb_east_out[12]
   PIN sb_east_out[13]
@@ -1196,7 +1196,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 242.800 258.155 243.400 ;
+        RECT 254.155 253.680 258.155 254.280 ;
     END
   END sb_east_out[13]
   PIN sb_east_out[14]
@@ -1204,7 +1204,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 248.920 258.155 249.520 ;
+        RECT 254.155 259.120 258.155 259.720 ;
     END
   END sb_east_out[14]
   PIN sb_east_out[15]
@@ -1212,7 +1212,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 254.360 258.155 254.960 ;
+        RECT 254.155 265.240 258.155 265.840 ;
     END
   END sb_east_out[15]
   PIN sb_east_out[1]
@@ -1220,7 +1220,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 176.160 258.155 176.760 ;
+        RECT 254.155 183.640 258.155 184.240 ;
     END
   END sb_east_out[1]
   PIN sb_east_out[2]
@@ -1228,7 +1228,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 181.600 258.155 182.200 ;
+        RECT 254.155 189.080 258.155 189.680 ;
     END
   END sb_east_out[2]
   PIN sb_east_out[3]
@@ -1236,7 +1236,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 187.040 258.155 187.640 ;
+        RECT 254.155 195.200 258.155 195.800 ;
     END
   END sb_east_out[3]
   PIN sb_east_out[4]
@@ -1244,7 +1244,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 192.480 258.155 193.080 ;
+        RECT 254.155 200.640 258.155 201.240 ;
     END
   END sb_east_out[4]
   PIN sb_east_out[5]
@@ -1252,7 +1252,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 198.600 258.155 199.200 ;
+        RECT 254.155 206.760 258.155 207.360 ;
     END
   END sb_east_out[5]
   PIN sb_east_out[6]
@@ -1260,7 +1260,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 204.040 258.155 204.640 ;
+        RECT 254.155 212.880 258.155 213.480 ;
     END
   END sb_east_out[6]
   PIN sb_east_out[7]
@@ -1268,7 +1268,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 209.480 258.155 210.080 ;
+        RECT 254.155 218.320 258.155 218.920 ;
     END
   END sb_east_out[7]
   PIN sb_east_out[8]
@@ -1276,7 +1276,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 214.920 258.155 215.520 ;
+        RECT 254.155 224.440 258.155 225.040 ;
     END
   END sb_east_out[8]
   PIN sb_east_out[9]
@@ -1284,7 +1284,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met3 ;
-        RECT 254.155 220.360 258.155 220.960 ;
+        RECT 254.155 229.880 258.155 230.480 ;
     END
   END sb_east_out[9]
   PIN sb_north_in[0]
@@ -1292,7 +1292,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 75.990 264.875 76.270 268.875 ;
+        RECT 74.610 264.875 74.890 268.875 ;
     END
   END sb_north_in[0]
   PIN sb_north_in[10]
@@ -1300,7 +1300,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 128.430 264.875 128.710 268.875 ;
+        RECT 126.130 264.875 126.410 268.875 ;
     END
   END sb_north_in[10]
   PIN sb_north_in[11]
@@ -1308,7 +1308,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 133.950 264.875 134.230 268.875 ;
+        RECT 131.190 264.875 131.470 268.875 ;
     END
   END sb_north_in[11]
   PIN sb_north_in[12]
@@ -1316,7 +1316,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 139.010 264.875 139.290 268.875 ;
+        RECT 136.250 264.875 136.530 268.875 ;
     END
   END sb_north_in[12]
   PIN sb_north_in[13]
@@ -1324,7 +1324,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 144.530 264.875 144.810 268.875 ;
+        RECT 141.310 264.875 141.590 268.875 ;
     END
   END sb_north_in[13]
   PIN sb_north_in[14]
@@ -1332,7 +1332,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 149.590 264.875 149.870 268.875 ;
+        RECT 146.830 264.875 147.110 268.875 ;
     END
   END sb_north_in[14]
   PIN sb_north_in[15]
@@ -1340,7 +1340,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 155.110 264.875 155.390 268.875 ;
+        RECT 151.890 264.875 152.170 268.875 ;
     END
   END sb_north_in[15]
   PIN sb_north_in[1]
@@ -1348,7 +1348,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 81.050 264.875 81.330 268.875 ;
+        RECT 79.670 264.875 79.950 268.875 ;
     END
   END sb_north_in[1]
   PIN sb_north_in[2]
@@ -1356,7 +1356,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 86.570 264.875 86.850 268.875 ;
+        RECT 84.730 264.875 85.010 268.875 ;
     END
   END sb_north_in[2]
   PIN sb_north_in[3]
@@ -1364,7 +1364,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 91.630 264.875 91.910 268.875 ;
+        RECT 89.790 264.875 90.070 268.875 ;
     END
   END sb_north_in[3]
   PIN sb_north_in[4]
@@ -1372,7 +1372,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 97.150 264.875 97.430 268.875 ;
+        RECT 94.850 264.875 95.130 268.875 ;
     END
   END sb_north_in[4]
   PIN sb_north_in[5]
@@ -1380,7 +1380,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 102.210 264.875 102.490 268.875 ;
+        RECT 100.370 264.875 100.650 268.875 ;
     END
   END sb_north_in[5]
   PIN sb_north_in[6]
@@ -1388,7 +1388,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 107.270 264.875 107.550 268.875 ;
+        RECT 105.430 264.875 105.710 268.875 ;
     END
   END sb_north_in[6]
   PIN sb_north_in[7]
@@ -1396,7 +1396,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 112.790 264.875 113.070 268.875 ;
+        RECT 110.490 264.875 110.770 268.875 ;
     END
   END sb_north_in[7]
   PIN sb_north_in[8]
@@ -1404,7 +1404,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 117.850 264.875 118.130 268.875 ;
+        RECT 115.550 264.875 115.830 268.875 ;
     END
   END sb_north_in[8]
   PIN sb_north_in[9]
@@ -1412,7 +1412,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 123.370 264.875 123.650 268.875 ;
+        RECT 121.070 264.875 121.350 268.875 ;
     END
   END sb_north_in[9]
   PIN sb_north_out[0]
@@ -1420,7 +1420,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 160.170 264.875 160.450 268.875 ;
+        RECT 156.950 264.875 157.230 268.875 ;
     END
   END sb_north_out[0]
   PIN sb_north_out[10]
@@ -1428,7 +1428,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 212.610 264.875 212.890 268.875 ;
+        RECT 208.470 264.875 208.750 268.875 ;
     END
   END sb_north_out[10]
   PIN sb_north_out[11]
@@ -1436,7 +1436,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 218.130 264.875 218.410 268.875 ;
+        RECT 213.990 264.875 214.270 268.875 ;
     END
   END sb_north_out[11]
   PIN sb_north_out[12]
@@ -1444,7 +1444,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 223.190 264.875 223.470 268.875 ;
+        RECT 219.050 264.875 219.330 268.875 ;
     END
   END sb_north_out[12]
   PIN sb_north_out[13]
@@ -1452,7 +1452,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 228.710 264.875 228.990 268.875 ;
+        RECT 224.110 264.875 224.390 268.875 ;
     END
   END sb_north_out[13]
   PIN sb_north_out[14]
@@ -1460,7 +1460,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 233.770 264.875 234.050 268.875 ;
+        RECT 229.170 264.875 229.450 268.875 ;
     END
   END sb_north_out[14]
   PIN sb_north_out[15]
@@ -1468,7 +1468,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 239.290 264.875 239.570 268.875 ;
+        RECT 234.230 264.875 234.510 268.875 ;
     END
   END sb_north_out[15]
   PIN sb_north_out[1]
@@ -1476,7 +1476,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 165.230 264.875 165.510 268.875 ;
+        RECT 162.010 264.875 162.290 268.875 ;
     END
   END sb_north_out[1]
   PIN sb_north_out[2]
@@ -1484,7 +1484,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 170.750 264.875 171.030 268.875 ;
+        RECT 167.530 264.875 167.810 268.875 ;
     END
   END sb_north_out[2]
   PIN sb_north_out[3]
@@ -1492,7 +1492,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 175.810 264.875 176.090 268.875 ;
+        RECT 172.590 264.875 172.870 268.875 ;
     END
   END sb_north_out[3]
   PIN sb_north_out[4]
@@ -1500,7 +1500,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 181.330 264.875 181.610 268.875 ;
+        RECT 177.650 264.875 177.930 268.875 ;
     END
   END sb_north_out[4]
   PIN sb_north_out[5]
@@ -1508,7 +1508,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 186.390 264.875 186.670 268.875 ;
+        RECT 182.710 264.875 182.990 268.875 ;
     END
   END sb_north_out[5]
   PIN sb_north_out[6]
@@ -1516,7 +1516,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 191.910 264.875 192.190 268.875 ;
+        RECT 187.770 264.875 188.050 268.875 ;
     END
   END sb_north_out[6]
   PIN sb_north_out[7]
@@ -1524,7 +1524,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 196.970 264.875 197.250 268.875 ;
+        RECT 193.290 264.875 193.570 268.875 ;
     END
   END sb_north_out[7]
   PIN sb_north_out[8]
@@ -1532,7 +1532,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 202.490 264.875 202.770 268.875 ;
+        RECT 198.350 264.875 198.630 268.875 ;
     END
   END sb_north_out[8]
   PIN sb_north_out[9]
@@ -1540,7 +1540,7 @@ MACRO clb_tile
     USE SIGNAL ;
     PORT
       LAYER met2 ;
-        RECT 207.550 264.875 207.830 268.875 ;
+        RECT 203.410 264.875 203.690 268.875 ;
     END
   END sb_north_out[9]
   PIN VPWR
@@ -1569,57 +1569,58 @@ MACRO clb_tile
   END VGND
   OBS
       LAYER li1 ;
-        RECT 4.745 6.885 253.775 255.765 ;
+        RECT 4.745 7.565 253.315 255.765 ;
       LAYER met1 ;
-        RECT 2.370 6.160 255.230 259.720 ;
+        RECT 2.370 6.160 255.230 260.060 ;
       LAYER met2 ;
         RECT 2.950 264.595 7.170 265.725 ;
         RECT 8.010 264.595 12.230 265.725 ;
-        RECT 13.070 264.595 17.750 265.725 ;
-        RECT 18.590 264.595 22.810 265.725 ;
-        RECT 23.650 264.595 28.330 265.725 ;
-        RECT 29.170 264.595 33.390 265.725 ;
-        RECT 34.230 264.595 38.910 265.725 ;
-        RECT 39.750 264.595 43.970 265.725 ;
-        RECT 44.810 264.595 49.490 265.725 ;
-        RECT 50.330 264.595 54.550 265.725 ;
-        RECT 55.390 264.595 59.610 265.725 ;
-        RECT 60.450 264.595 65.130 265.725 ;
-        RECT 65.970 264.595 70.190 265.725 ;
-        RECT 71.030 264.595 75.710 265.725 ;
-        RECT 76.550 264.595 80.770 265.725 ;
-        RECT 81.610 264.595 86.290 265.725 ;
-        RECT 87.130 264.595 91.350 265.725 ;
-        RECT 92.190 264.595 96.870 265.725 ;
-        RECT 97.710 264.595 101.930 265.725 ;
-        RECT 102.770 264.595 106.990 265.725 ;
-        RECT 107.830 264.595 112.510 265.725 ;
-        RECT 113.350 264.595 117.570 265.725 ;
-        RECT 118.410 264.595 123.090 265.725 ;
-        RECT 123.930 264.595 128.150 265.725 ;
-        RECT 128.990 264.595 133.670 265.725 ;
-        RECT 134.510 264.595 138.730 265.725 ;
-        RECT 139.570 264.595 144.250 265.725 ;
-        RECT 145.090 264.595 149.310 265.725 ;
-        RECT 150.150 264.595 154.830 265.725 ;
-        RECT 155.670 264.595 159.890 265.725 ;
-        RECT 160.730 264.595 164.950 265.725 ;
-        RECT 165.790 264.595 170.470 265.725 ;
-        RECT 171.310 264.595 175.530 265.725 ;
-        RECT 176.370 264.595 181.050 265.725 ;
-        RECT 181.890 264.595 186.110 265.725 ;
-        RECT 186.950 264.595 191.630 265.725 ;
-        RECT 192.470 264.595 196.690 265.725 ;
-        RECT 197.530 264.595 202.210 265.725 ;
-        RECT 203.050 264.595 207.270 265.725 ;
-        RECT 208.110 264.595 212.330 265.725 ;
-        RECT 213.170 264.595 217.850 265.725 ;
-        RECT 218.690 264.595 222.910 265.725 ;
-        RECT 223.750 264.595 228.430 265.725 ;
-        RECT 229.270 264.595 233.490 265.725 ;
-        RECT 234.330 264.595 239.010 265.725 ;
-        RECT 239.850 264.595 244.070 265.725 ;
-        RECT 244.910 264.595 249.590 265.725 ;
+        RECT 13.070 264.595 17.290 265.725 ;
+        RECT 18.130 264.595 22.350 265.725 ;
+        RECT 23.190 264.595 27.870 265.725 ;
+        RECT 28.710 264.595 32.930 265.725 ;
+        RECT 33.770 264.595 37.990 265.725 ;
+        RECT 38.830 264.595 43.050 265.725 ;
+        RECT 43.890 264.595 48.110 265.725 ;
+        RECT 48.950 264.595 53.630 265.725 ;
+        RECT 54.470 264.595 58.690 265.725 ;
+        RECT 59.530 264.595 63.750 265.725 ;
+        RECT 64.590 264.595 68.810 265.725 ;
+        RECT 69.650 264.595 74.330 265.725 ;
+        RECT 75.170 264.595 79.390 265.725 ;
+        RECT 80.230 264.595 84.450 265.725 ;
+        RECT 85.290 264.595 89.510 265.725 ;
+        RECT 90.350 264.595 94.570 265.725 ;
+        RECT 95.410 264.595 100.090 265.725 ;
+        RECT 100.930 264.595 105.150 265.725 ;
+        RECT 105.990 264.595 110.210 265.725 ;
+        RECT 111.050 264.595 115.270 265.725 ;
+        RECT 116.110 264.595 120.790 265.725 ;
+        RECT 121.630 264.595 125.850 265.725 ;
+        RECT 126.690 264.595 130.910 265.725 ;
+        RECT 131.750 264.595 135.970 265.725 ;
+        RECT 136.810 264.595 141.030 265.725 ;
+        RECT 141.870 264.595 146.550 265.725 ;
+        RECT 147.390 264.595 151.610 265.725 ;
+        RECT 152.450 264.595 156.670 265.725 ;
+        RECT 157.510 264.595 161.730 265.725 ;
+        RECT 162.570 264.595 167.250 265.725 ;
+        RECT 168.090 264.595 172.310 265.725 ;
+        RECT 173.150 264.595 177.370 265.725 ;
+        RECT 178.210 264.595 182.430 265.725 ;
+        RECT 183.270 264.595 187.490 265.725 ;
+        RECT 188.330 264.595 193.010 265.725 ;
+        RECT 193.850 264.595 198.070 265.725 ;
+        RECT 198.910 264.595 203.130 265.725 ;
+        RECT 203.970 264.595 208.190 265.725 ;
+        RECT 209.030 264.595 213.710 265.725 ;
+        RECT 214.550 264.595 218.770 265.725 ;
+        RECT 219.610 264.595 223.830 265.725 ;
+        RECT 224.670 264.595 228.890 265.725 ;
+        RECT 229.730 264.595 233.950 265.725 ;
+        RECT 234.790 264.595 239.470 265.725 ;
+        RECT 240.310 264.595 244.530 265.725 ;
+        RECT 245.370 264.595 249.590 265.725 ;
         RECT 250.430 264.595 254.650 265.725 ;
         RECT 2.400 4.280 255.200 264.595 ;
         RECT 2.950 2.875 7.170 4.280 ;
@@ -1672,193 +1673,184 @@ MACRO clb_tile
         RECT 250.430 2.875 254.650 4.280 ;
       LAYER met3 ;
         RECT 4.400 264.840 253.755 265.705 ;
-        RECT 4.000 260.800 254.155 264.840 ;
-        RECT 4.000 260.120 253.755 260.800 ;
+        RECT 3.990 260.800 254.155 264.840 ;
+        RECT 4.400 260.120 254.155 260.800 ;
         RECT 4.400 259.400 253.755 260.120 ;
-        RECT 4.400 258.720 254.155 259.400 ;
-        RECT 4.000 255.360 254.155 258.720 ;
-        RECT 4.000 254.680 253.755 255.360 ;
-        RECT 4.400 253.960 253.755 254.680 ;
-        RECT 4.400 253.280 254.155 253.960 ;
-        RECT 4.000 249.920 254.155 253.280 ;
-        RECT 4.000 248.560 253.755 249.920 ;
-        RECT 4.400 248.520 253.755 248.560 ;
-        RECT 4.400 247.160 254.155 248.520 ;
-        RECT 4.000 243.800 254.155 247.160 ;
-        RECT 4.000 243.120 253.755 243.800 ;
-        RECT 4.400 242.400 253.755 243.120 ;
-        RECT 4.400 241.720 254.155 242.400 ;
-        RECT 4.000 238.360 254.155 241.720 ;
-        RECT 4.000 237.000 253.755 238.360 ;
-        RECT 4.400 236.960 253.755 237.000 ;
-        RECT 4.400 235.600 254.155 236.960 ;
-        RECT 4.000 232.920 254.155 235.600 ;
-        RECT 4.000 231.520 253.755 232.920 ;
-        RECT 4.000 230.880 254.155 231.520 ;
-        RECT 4.400 229.480 254.155 230.880 ;
-        RECT 4.000 227.480 254.155 229.480 ;
-        RECT 4.000 226.080 253.755 227.480 ;
-        RECT 4.000 225.440 254.155 226.080 ;
-        RECT 4.400 224.040 254.155 225.440 ;
-        RECT 4.000 221.360 254.155 224.040 ;
-        RECT 4.000 219.960 253.755 221.360 ;
-        RECT 4.000 219.320 254.155 219.960 ;
-        RECT 4.400 217.920 254.155 219.320 ;
-        RECT 4.000 215.920 254.155 217.920 ;
-        RECT 4.000 214.520 253.755 215.920 ;
-        RECT 4.000 213.880 254.155 214.520 ;
-        RECT 4.400 212.480 254.155 213.880 ;
-        RECT 4.000 210.480 254.155 212.480 ;
-        RECT 4.000 209.080 253.755 210.480 ;
-        RECT 4.000 207.760 254.155 209.080 ;
-        RECT 4.400 206.360 254.155 207.760 ;
-        RECT 4.000 205.040 254.155 206.360 ;
-        RECT 4.000 203.640 253.755 205.040 ;
-        RECT 4.000 201.640 254.155 203.640 ;
-        RECT 4.400 200.240 254.155 201.640 ;
-        RECT 4.000 199.600 254.155 200.240 ;
-        RECT 4.000 198.200 253.755 199.600 ;
-        RECT 4.000 196.200 254.155 198.200 ;
-        RECT 4.400 194.800 254.155 196.200 ;
-        RECT 4.000 193.480 254.155 194.800 ;
-        RECT 4.000 192.080 253.755 193.480 ;
-        RECT 4.000 190.080 254.155 192.080 ;
-        RECT 4.400 188.680 254.155 190.080 ;
-        RECT 4.000 188.040 254.155 188.680 ;
-        RECT 4.000 186.640 253.755 188.040 ;
-        RECT 4.000 184.640 254.155 186.640 ;
-        RECT 4.400 183.240 254.155 184.640 ;
-        RECT 4.000 182.600 254.155 183.240 ;
-        RECT 4.000 181.200 253.755 182.600 ;
-        RECT 4.000 178.520 254.155 181.200 ;
-        RECT 4.400 177.160 254.155 178.520 ;
-        RECT 4.400 177.120 253.755 177.160 ;
-        RECT 4.000 175.760 253.755 177.120 ;
-        RECT 4.000 173.080 254.155 175.760 ;
-        RECT 4.400 171.680 254.155 173.080 ;
-        RECT 4.000 171.040 254.155 171.680 ;
-        RECT 4.000 169.640 253.755 171.040 ;
-        RECT 4.000 166.960 254.155 169.640 ;
-        RECT 4.400 165.600 254.155 166.960 ;
-        RECT 4.400 165.560 253.755 165.600 ;
-        RECT 4.000 164.200 253.755 165.560 ;
-        RECT 4.000 160.840 254.155 164.200 ;
-        RECT 4.400 160.160 254.155 160.840 ;
-        RECT 4.400 159.440 253.755 160.160 ;
-        RECT 4.000 158.760 253.755 159.440 ;
-        RECT 4.000 155.400 254.155 158.760 ;
-        RECT 4.400 154.720 254.155 155.400 ;
-        RECT 4.400 154.000 253.755 154.720 ;
-        RECT 4.000 153.320 253.755 154.000 ;
-        RECT 4.000 149.280 254.155 153.320 ;
-        RECT 4.400 148.600 254.155 149.280 ;
-        RECT 4.400 147.880 253.755 148.600 ;
-        RECT 4.000 147.200 253.755 147.880 ;
-        RECT 4.000 143.840 254.155 147.200 ;
-        RECT 4.400 143.160 254.155 143.840 ;
-        RECT 4.400 142.440 253.755 143.160 ;
-        RECT 4.000 141.760 253.755 142.440 ;
-        RECT 4.000 137.720 254.155 141.760 ;
-        RECT 4.400 136.320 253.755 137.720 ;
-        RECT 4.000 132.280 254.155 136.320 ;
-        RECT 4.000 131.600 253.755 132.280 ;
-        RECT 4.400 130.880 253.755 131.600 ;
-        RECT 4.400 130.200 254.155 130.880 ;
-        RECT 4.000 126.840 254.155 130.200 ;
-        RECT 4.000 126.160 253.755 126.840 ;
-        RECT 4.400 125.440 253.755 126.160 ;
-        RECT 4.400 124.760 254.155 125.440 ;
-        RECT 4.000 120.720 254.155 124.760 ;
-        RECT 4.000 120.040 253.755 120.720 ;
-        RECT 4.400 119.320 253.755 120.040 ;
-        RECT 4.400 118.640 254.155 119.320 ;
-        RECT 4.000 115.280 254.155 118.640 ;
-        RECT 4.000 114.600 253.755 115.280 ;
-        RECT 4.400 113.880 253.755 114.600 ;
-        RECT 4.400 113.200 254.155 113.880 ;
-        RECT 4.000 109.840 254.155 113.200 ;
-        RECT 4.000 108.480 253.755 109.840 ;
-        RECT 4.400 108.440 253.755 108.480 ;
-        RECT 4.400 107.080 254.155 108.440 ;
-        RECT 4.000 104.400 254.155 107.080 ;
-        RECT 4.000 103.000 253.755 104.400 ;
-        RECT 4.000 102.360 254.155 103.000 ;
-        RECT 4.400 100.960 254.155 102.360 ;
-        RECT 4.000 98.280 254.155 100.960 ;
-        RECT 4.000 96.920 253.755 98.280 ;
-        RECT 4.400 96.880 253.755 96.920 ;
-        RECT 4.400 95.520 254.155 96.880 ;
-        RECT 4.000 92.840 254.155 95.520 ;
-        RECT 4.000 91.440 253.755 92.840 ;
-        RECT 4.000 90.800 254.155 91.440 ;
-        RECT 4.400 89.400 254.155 90.800 ;
-        RECT 4.000 87.400 254.155 89.400 ;
-        RECT 4.000 86.000 253.755 87.400 ;
-        RECT 4.000 85.360 254.155 86.000 ;
-        RECT 4.400 83.960 254.155 85.360 ;
-        RECT 4.000 81.960 254.155 83.960 ;
-        RECT 4.000 80.560 253.755 81.960 ;
-        RECT 4.000 79.240 254.155 80.560 ;
-        RECT 4.400 77.840 254.155 79.240 ;
-        RECT 4.000 75.840 254.155 77.840 ;
-        RECT 4.000 74.440 253.755 75.840 ;
-        RECT 4.000 73.800 254.155 74.440 ;
-        RECT 4.400 72.400 254.155 73.800 ;
-        RECT 4.000 70.400 254.155 72.400 ;
-        RECT 4.000 69.000 253.755 70.400 ;
-        RECT 4.000 67.680 254.155 69.000 ;
-        RECT 4.400 66.280 254.155 67.680 ;
-        RECT 4.000 64.960 254.155 66.280 ;
-        RECT 4.000 63.560 253.755 64.960 ;
-        RECT 4.000 61.560 254.155 63.560 ;
-        RECT 4.400 60.160 254.155 61.560 ;
-        RECT 4.000 59.520 254.155 60.160 ;
-        RECT 4.000 58.120 253.755 59.520 ;
-        RECT 4.000 56.120 254.155 58.120 ;
-        RECT 4.400 54.720 254.155 56.120 ;
-        RECT 4.000 54.080 254.155 54.720 ;
-        RECT 4.000 52.680 253.755 54.080 ;
-        RECT 4.000 50.000 254.155 52.680 ;
-        RECT 4.400 48.600 254.155 50.000 ;
-        RECT 4.000 47.960 254.155 48.600 ;
-        RECT 4.000 46.560 253.755 47.960 ;
-        RECT 4.000 44.560 254.155 46.560 ;
-        RECT 4.400 43.160 254.155 44.560 ;
-        RECT 4.000 42.520 254.155 43.160 ;
-        RECT 4.000 41.120 253.755 42.520 ;
-        RECT 4.000 38.440 254.155 41.120 ;
-        RECT 4.400 37.080 254.155 38.440 ;
-        RECT 4.400 37.040 253.755 37.080 ;
-        RECT 4.000 35.680 253.755 37.040 ;
-        RECT 4.000 32.320 254.155 35.680 ;
-        RECT 4.400 31.640 254.155 32.320 ;
-        RECT 4.400 30.920 253.755 31.640 ;
-        RECT 4.000 30.240 253.755 30.920 ;
-        RECT 4.000 26.880 254.155 30.240 ;
-        RECT 4.400 25.520 254.155 26.880 ;
-        RECT 4.400 25.480 253.755 25.520 ;
-        RECT 4.000 24.120 253.755 25.480 ;
-        RECT 4.000 20.760 254.155 24.120 ;
-        RECT 4.400 20.080 254.155 20.760 ;
-        RECT 4.400 19.360 253.755 20.080 ;
-        RECT 4.000 18.680 253.755 19.360 ;
-        RECT 4.000 15.320 254.155 18.680 ;
-        RECT 4.400 14.640 254.155 15.320 ;
+        RECT 3.990 258.720 253.755 259.400 ;
+        RECT 3.990 254.680 254.155 258.720 ;
+        RECT 4.400 253.280 253.755 254.680 ;
+        RECT 3.990 249.240 254.155 253.280 ;
+        RECT 4.400 248.560 254.155 249.240 ;
+        RECT 4.400 247.840 253.755 248.560 ;
+        RECT 3.990 247.160 253.755 247.840 ;
+        RECT 3.990 243.120 254.155 247.160 ;
+        RECT 4.400 241.720 253.755 243.120 ;
+        RECT 3.990 237.680 254.155 241.720 ;
+        RECT 4.400 237.000 254.155 237.680 ;
+        RECT 4.400 236.280 253.755 237.000 ;
+        RECT 3.990 235.600 253.755 236.280 ;
+        RECT 3.990 232.240 254.155 235.600 ;
+        RECT 4.400 230.880 254.155 232.240 ;
+        RECT 4.400 230.840 253.755 230.880 ;
+        RECT 3.990 229.480 253.755 230.840 ;
+        RECT 3.990 226.120 254.155 229.480 ;
+        RECT 4.400 225.440 254.155 226.120 ;
+        RECT 4.400 224.720 253.755 225.440 ;
+        RECT 3.990 224.040 253.755 224.720 ;
+        RECT 3.990 220.680 254.155 224.040 ;
+        RECT 4.400 219.320 254.155 220.680 ;
+        RECT 4.400 219.280 253.755 219.320 ;
+        RECT 3.990 217.920 253.755 219.280 ;
+        RECT 3.990 214.560 254.155 217.920 ;
+        RECT 4.400 213.880 254.155 214.560 ;
+        RECT 4.400 213.160 253.755 213.880 ;
+        RECT 3.990 212.480 253.755 213.160 ;
+        RECT 3.990 209.120 254.155 212.480 ;
+        RECT 4.400 207.760 254.155 209.120 ;
+        RECT 4.400 207.720 253.755 207.760 ;
+        RECT 3.990 206.360 253.755 207.720 ;
+        RECT 3.990 203.680 254.155 206.360 ;
+        RECT 4.400 202.280 254.155 203.680 ;
+        RECT 3.990 201.640 254.155 202.280 ;
+        RECT 3.990 200.240 253.755 201.640 ;
+        RECT 3.990 197.560 254.155 200.240 ;
+        RECT 4.400 196.200 254.155 197.560 ;
+        RECT 4.400 196.160 253.755 196.200 ;
+        RECT 3.990 194.800 253.755 196.160 ;
+        RECT 3.990 192.120 254.155 194.800 ;
+        RECT 4.400 190.720 254.155 192.120 ;
+        RECT 3.990 190.080 254.155 190.720 ;
+        RECT 3.990 188.680 253.755 190.080 ;
+        RECT 3.990 186.000 254.155 188.680 ;
+        RECT 4.400 184.640 254.155 186.000 ;
+        RECT 4.400 184.600 253.755 184.640 ;
+        RECT 3.990 183.240 253.755 184.600 ;
+        RECT 3.990 180.560 254.155 183.240 ;
+        RECT 4.400 179.160 254.155 180.560 ;
+        RECT 3.990 178.520 254.155 179.160 ;
+        RECT 3.990 177.120 253.755 178.520 ;
+        RECT 3.990 175.120 254.155 177.120 ;
+        RECT 4.400 173.720 254.155 175.120 ;
+        RECT 3.990 173.080 254.155 173.720 ;
+        RECT 3.990 171.680 253.755 173.080 ;
+        RECT 3.990 169.000 254.155 171.680 ;
+        RECT 4.400 167.600 254.155 169.000 ;
+        RECT 3.990 166.960 254.155 167.600 ;
+        RECT 3.990 165.560 253.755 166.960 ;
+        RECT 3.990 163.560 254.155 165.560 ;
+        RECT 4.400 162.160 254.155 163.560 ;
+        RECT 3.990 160.840 254.155 162.160 ;
+        RECT 3.990 159.440 253.755 160.840 ;
+        RECT 3.990 157.440 254.155 159.440 ;
+        RECT 4.400 156.040 254.155 157.440 ;
+        RECT 3.990 155.400 254.155 156.040 ;
+        RECT 3.990 154.000 253.755 155.400 ;
+        RECT 3.990 152.000 254.155 154.000 ;
+        RECT 4.400 150.600 254.155 152.000 ;
+        RECT 3.990 149.280 254.155 150.600 ;
+        RECT 3.990 147.880 253.755 149.280 ;
+        RECT 3.990 146.560 254.155 147.880 ;
+        RECT 4.400 145.160 254.155 146.560 ;
+        RECT 3.990 143.840 254.155 145.160 ;
+        RECT 3.990 142.440 253.755 143.840 ;
+        RECT 3.990 140.440 254.155 142.440 ;
+        RECT 4.400 139.040 254.155 140.440 ;
+        RECT 3.990 137.720 254.155 139.040 ;
+        RECT 3.990 136.320 253.755 137.720 ;
+        RECT 3.990 135.000 254.155 136.320 ;
+        RECT 4.400 133.600 254.155 135.000 ;
+        RECT 3.990 131.600 254.155 133.600 ;
+        RECT 3.990 130.200 253.755 131.600 ;
+        RECT 3.990 128.880 254.155 130.200 ;
+        RECT 4.400 127.480 254.155 128.880 ;
+        RECT 3.990 126.160 254.155 127.480 ;
+        RECT 3.990 124.760 253.755 126.160 ;
+        RECT 3.990 123.440 254.155 124.760 ;
+        RECT 4.400 122.040 254.155 123.440 ;
+        RECT 3.990 120.040 254.155 122.040 ;
+        RECT 3.990 118.640 253.755 120.040 ;
+        RECT 3.990 118.000 254.155 118.640 ;
+        RECT 4.400 116.600 254.155 118.000 ;
+        RECT 3.990 114.600 254.155 116.600 ;
+        RECT 3.990 113.200 253.755 114.600 ;
+        RECT 3.990 111.880 254.155 113.200 ;
+        RECT 4.400 110.480 254.155 111.880 ;
+        RECT 3.990 108.480 254.155 110.480 ;
+        RECT 3.990 107.080 253.755 108.480 ;
+        RECT 3.990 106.440 254.155 107.080 ;
+        RECT 4.400 105.040 254.155 106.440 ;
+        RECT 3.990 102.360 254.155 105.040 ;
+        RECT 3.990 100.960 253.755 102.360 ;
+        RECT 3.990 100.320 254.155 100.960 ;
+        RECT 4.400 98.920 254.155 100.320 ;
+        RECT 3.990 96.920 254.155 98.920 ;
+        RECT 3.990 95.520 253.755 96.920 ;
+        RECT 3.990 94.880 254.155 95.520 ;
+        RECT 4.400 93.480 254.155 94.880 ;
+        RECT 3.990 90.800 254.155 93.480 ;
+        RECT 3.990 89.440 253.755 90.800 ;
+        RECT 4.400 89.400 253.755 89.440 ;
+        RECT 4.400 88.040 254.155 89.400 ;
+        RECT 3.990 85.360 254.155 88.040 ;
+        RECT 3.990 83.960 253.755 85.360 ;
+        RECT 3.990 83.320 254.155 83.960 ;
+        RECT 4.400 81.920 254.155 83.320 ;
+        RECT 3.990 79.240 254.155 81.920 ;
+        RECT 3.990 77.880 253.755 79.240 ;
+        RECT 4.400 77.840 253.755 77.880 ;
+        RECT 4.400 76.480 254.155 77.840 ;
+        RECT 3.990 73.800 254.155 76.480 ;
+        RECT 3.990 72.400 253.755 73.800 ;
+        RECT 3.990 71.760 254.155 72.400 ;
+        RECT 4.400 70.360 254.155 71.760 ;
+        RECT 3.990 67.680 254.155 70.360 ;
+        RECT 3.990 66.320 253.755 67.680 ;
+        RECT 4.400 66.280 253.755 66.320 ;
+        RECT 4.400 64.920 254.155 66.280 ;
+        RECT 3.990 61.560 254.155 64.920 ;
+        RECT 3.990 60.880 253.755 61.560 ;
+        RECT 4.400 60.160 253.755 60.880 ;
+        RECT 4.400 59.480 254.155 60.160 ;
+        RECT 3.990 56.120 254.155 59.480 ;
+        RECT 3.990 54.760 253.755 56.120 ;
+        RECT 4.400 54.720 253.755 54.760 ;
+        RECT 4.400 53.360 254.155 54.720 ;
+        RECT 3.990 50.000 254.155 53.360 ;
+        RECT 3.990 49.320 253.755 50.000 ;
+        RECT 4.400 48.600 253.755 49.320 ;
+        RECT 4.400 47.920 254.155 48.600 ;
+        RECT 3.990 44.560 254.155 47.920 ;
+        RECT 3.990 43.200 253.755 44.560 ;
+        RECT 4.400 43.160 253.755 43.200 ;
+        RECT 4.400 41.800 254.155 43.160 ;
+        RECT 3.990 38.440 254.155 41.800 ;
+        RECT 3.990 37.760 253.755 38.440 ;
+        RECT 4.400 37.040 253.755 37.760 ;
+        RECT 4.400 36.360 254.155 37.040 ;
+        RECT 3.990 32.320 254.155 36.360 ;
+        RECT 4.400 30.920 253.755 32.320 ;
+        RECT 3.990 26.880 254.155 30.920 ;
+        RECT 3.990 26.200 253.755 26.880 ;
+        RECT 4.400 25.480 253.755 26.200 ;
+        RECT 4.400 24.800 254.155 25.480 ;
+        RECT 3.990 20.760 254.155 24.800 ;
+        RECT 4.400 19.360 253.755 20.760 ;
+        RECT 3.990 15.320 254.155 19.360 ;
+        RECT 3.990 14.640 253.755 15.320 ;
         RECT 4.400 13.920 253.755 14.640 ;
-        RECT 4.000 13.240 253.755 13.920 ;
-        RECT 4.000 9.200 254.155 13.240 ;
+        RECT 4.400 13.240 254.155 13.920 ;
+        RECT 3.990 9.200 254.155 13.240 ;
         RECT 4.400 7.800 253.755 9.200 ;
-        RECT 4.000 3.760 254.155 7.800 ;
+        RECT 3.990 3.760 254.155 7.800 ;
         RECT 4.400 2.895 253.755 3.760 ;
       LAYER met4 ;
-        RECT 10.415 256.320 245.345 260.265 ;
-        RECT 10.415 10.240 20.640 256.320 ;
-        RECT 23.040 10.240 97.440 256.320 ;
-        RECT 99.840 10.240 174.240 256.320 ;
-        RECT 176.640 10.240 245.345 256.320 ;
-        RECT 10.415 6.295 245.345 10.240 ;
+        RECT 9.495 256.320 243.505 265.705 ;
+        RECT 9.495 11.055 20.640 256.320 ;
+        RECT 23.040 11.055 97.440 256.320 ;
+        RECT 99.840 11.055 174.240 256.320 ;
+        RECT 176.640 11.055 243.505 256.320 ;
       LAYER met5 ;
-        RECT 160.660 21.300 223.900 36.500 ;
+        RECT 190.100 38.300 210.100 39.900 ;
   END
 END clb_tile
 END LIBRARY
