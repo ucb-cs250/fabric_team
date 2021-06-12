@@ -11,7 +11,6 @@ module clb_with_cfg #(
   input  wire RST,
   input  wire CE,
 
-  input wire [CFG_SIZE-1:0] cfg,
   input wire clk,  // global clock (TODO: separate clocks for fabric logic and config?)
   input wire crst, // system-wide reset (or config reset)
 
@@ -32,6 +31,10 @@ module clb_with_cfg #(
 
   localparam CFG_SIZE = 2 + CFG_CC_OFFSET + ID_WIDTH;
 
+  wire [CFG_SIZE-1:0] cfg;
+
+  wire cfg_sr_pulse;
+
   clb # (
     .CFG_SIZE(CFG_SIZE)
   ) clb (
@@ -44,7 +47,7 @@ module clb_with_cfg #(
     .CE(CE),
 
     .clk(clk),
-    .crst(crst),
+    .crst(cfg_sr_pulse),
     .cfg(cfg)
   );
 
@@ -60,6 +63,7 @@ module clb_with_cfg #(
     .cfg_bit_in(cfg_bit_in),
     .cfg_out_start(cfg_out_start),
     .cfg_bit_out(cfg_bit_out),
+    .cfg_sr_pulse(cfg_sr_pulse),
     .cfg(cfg)
   );
 

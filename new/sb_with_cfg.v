@@ -28,7 +28,7 @@ module sb_with_cfg #(
   output wire cfg_bit_out
 );
 
-  localparam CFG_SIZE = 8 * CHN_WIDTH;
+  localparam CFG_SIZE = 12 * CHN_WIDTH;
 
   wire [CFG_SIZE-1:0] cfg;
 
@@ -60,6 +60,7 @@ module sb_with_cfg #(
     .cfg_bit_in(cfg_bit_in),
     .cfg_out_start(cfg_out_start),
     .cfg_bit_out(cfg_bit_out),
+    .cfg_sr_pulse(),
     .cfg(cfg)
   );
 

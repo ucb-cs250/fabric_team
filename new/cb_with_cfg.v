@@ -80,6 +80,7 @@ module cb_with_cfg #(
     .cfg_bit_in(cfg_bit_in),
     .cfg_out_start(cfg_out_start),
     .cfg_bit_out(cfg_bit_out),
+    .cfg_sr_pulse(),
     .cfg(cfg)
   );
 

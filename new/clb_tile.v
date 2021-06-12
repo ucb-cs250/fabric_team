@@ -1,5 +1,6 @@
 `include "consts.vh"
 
+(* blackbox *)
 module clb_tile #(
   parameter ID = 7
 ) (
@@ -7,24 +8,24 @@ module clb_tile #(
   output wire COUT,
 
   // SB
-  input  [`CHN_WIDTH-1:0] sb_north_in,  sb_east_in,
-  output [`CHN_WIDTH-1:0] sb_north_out, sb_east_out,
+  input  wire [`CHN_WIDTH-1:0] sb_north_in,  sb_east_in,
+  output wire [`CHN_WIDTH-1:0] sb_north_out, sb_east_out,
 
   // CB_E (east)
-  input  [`CHN_WIDTH-1:0]  cb_e_single1_in,
-  output [`CHN_WIDTH-1:0]  cb_e_single1_out,
-  input  [`CLB_OWIDTH-1:0] cb_e_clb1_output,
-  output [`CLB_IWIDTH-1:0] cb_e_clb1_input,
+  input  wire [`CHN_WIDTH-1:0]  cb_e_single1_in,
+  output wire [`CHN_WIDTH-1:0]  cb_e_single1_out,
+  input  wire [`CLB_OWIDTH-1:0] cb_e_clb1_output,
+  output wire [`CLB_IWIDTH-1:0] cb_e_clb1_input,
 
   // CB_N (north)
-  input  [`CHN_WIDTH-1:0]  cb_n_single1_in,
-  output [`CHN_WIDTH-1:0]  cb_n_single1_out,
-  input  [`CLB_OWIDTH-1:0] cb_n_clb1_output,
-  output [`CLB_IWIDTH-1:0] cb_n_clb1_input,
+  input  wire [`CHN_WIDTH-1:0]  cb_n_single1_in,
+  output wire [`CHN_WIDTH-1:0]  cb_n_single1_out,
+  input  wire [`CLB_OWIDTH-1:0] cb_n_clb1_output,
+  output wire [`CLB_IWIDTH-1:0] cb_n_clb1_input,
 
   // CLB
-  input  [`CLB_IWIDTH-1:0] clb_south_in, clb_west_in,
-  output [`CLB_OWIDTH-1:0] clb_south_out, clb_west_out,
+  input  wire [`CLB_IWIDTH-1:0] clb_south_in, clb_west_in,
+  output wire [`CLB_OWIDTH-1:0] clb_south_out, clb_west_out,
 
   // Config
   input  wire clk,  // global clock (TODO: separate clocks for fabric logic and config?)
@@ -58,8 +59,8 @@ module clb_tile #(
   wire RST, CE;
   wire [`CLB_CFG_SIZE-1:0] clb_cfg;
 
-  wire [`CLB_IWIDTH-1:0] clb_north_in, clb_east_in, clb_south_in, clb_west_in;
-  wire [`CLB_OWIDTH-1:0] clb_north_out, clb_east_out, clb_south_out, clb_west_out;
+  wire [`CLB_IWIDTH-1:0] clb_north_in, clb_east_in;
+  wire [`CLB_OWIDTH-1:0] clb_north_out, clb_east_out;
 
   clb # (
     .CFG_SIZE(`CLB_CFG_SIZE)
@@ -77,10 +78,10 @@ module clb_tile #(
     .cfg(clb_cfg)
   );
 
-  wire [`CLB_IWIDTH -1:0] cb_e_clb0_input, cb_e_clb1_input;
-  wire [`CLB_OWIDTH -1:0] cb_e_clb0_output, cb_e_clb1_output;
-  wire [`CHN_WIDTH  -1:0] cb_e_single0_in, cb_e_single1_in;
-  wire [`CHN_WIDTH  -1:0] cb_e_single0_out, cb_e_single1_out;
+  wire [`CLB_IWIDTH -1:0] cb_e_clb0_input;
+  wire [`CLB_OWIDTH -1:0] cb_e_clb0_output;
+  wire [`CHN_WIDTH  -1:0] cb_e_single0_in;
+  wire [`CHN_WIDTH  -1:0] cb_e_single0_out;
   wire [`CB_CFG_SIZE-1:0] cb_e_cfg;
 
   cb #(
@@ -101,10 +102,10 @@ module clb_tile #(
     .cfg(cb_e_cfg)
   );
 
-  wire [`CLB_IWIDTH -1:0] cb_n_clb0_input, cb_n_clb1_input;
-  wire [`CLB_OWIDTH -1:0] cb_n_clb0_output, cb_n_clb1_output;
-  wire [`CHN_WIDTH  -1:0] cb_n_single0_in, cb_n_single1_in;
-  wire [`CHN_WIDTH  -1:0] cb_n_single0_out, cb_n_single1_out;
+  wire [`CLB_IWIDTH -1:0] cb_n_clb0_input;
+  wire [`CLB_OWIDTH -1:0] cb_n_clb0_output;
+  wire [`CHN_WIDTH  -1:0] cb_n_single0_in;
+  wire [`CHN_WIDTH  -1:0] cb_n_single0_out;
   wire [`CB_CFG_SIZE-1:0] cb_n_cfg;
 
   cb #(
@@ -125,8 +126,6 @@ module clb_tile #(
     .cfg(cb_n_cfg)
   );
 
-  wire [`CHN_WIDTH-1:0]   sb_north_in, sb_north_out;
-  wire [`CHN_WIDTH-1:0]   sb_east_in, sb_east_out;
   wire [`CHN_WIDTH-1:0]   sb_south_in, sb_south_out;
   wire [`CHN_WIDTH-1:0]   sb_west_in, sb_west_out;
   wire [`SB_CFG_SIZE-1:0] sb_cfg;
@@ -206,7 +205,7 @@ module clb_tile #(
     .A0(1'b0),
     .A1(rst_tmp),
     .X(RST),
-    .S(rst_cfg[3])
+    .S(rst_cfg[2])
   );
 
   wire ce_tmp;

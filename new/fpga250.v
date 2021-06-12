@@ -161,18 +161,22 @@ module fpga250 #(
   // GPIO pin assignments
   generate
     // even indices: output, odd indices: input
-    for (y = 0; y < MY; y = y + 1) begin
+    for (y = 0; y < IO_W / 2; y = y + 1) begin
       assign gpio_w[2 * y + 0]        = cb_n_single1_out[y][0][0];
       assign cb_n_single1_in[y][0][0] = gpio_w[2 * y + 1];
+    end
 
+    for (y = 0; y < IO_E / 2; y = y + 1) begin
       assign gpio_e[2 * y + 0]             = cb_e_single1_out[y][MX - 1][0];
       assign cb_e_single1_in[y][MX - 1][0] = gpio_e[2 * y + 1];
     end
 
-    for (x = 0; x < MX; x = x + 1) begin
+    for (x = 0; x < IO_S / 2; x = x + 1) begin
       assign gpio_s[2 * x + 0]    = sb_south_out[0][x][0];
       assign sb_south_in[0][x][0] = gpio_s[2 * x + 1];
+    end
 
+    for (x = 0; x < IO_N / 2; x = x + 1) begin
       assign gpio_n[2 * x + 0]         = sb_north_out[MY - 1][x][0];
       assign sb_north_in[MY - 1][x][0] = gpio_n[2 * x + 1];
     end
