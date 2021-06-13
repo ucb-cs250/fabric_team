@@ -30,7 +30,7 @@ module sb_with_cfg #(
   output wire cfg_bit_out_valid
 );
 
-  localparam CFG_SIZE = 12 * CHN_WIDTH;
+  localparam CFG_SIZE = 8 * CHN_WIDTH;
 
   wire [CFG_SIZE-1:0] cfg;
 

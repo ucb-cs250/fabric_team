@@ -38,8 +38,8 @@ set ::env(SYNTH_STRATEGY) "DELAY 1"
 
 #set ::env(SYNTH_READ_BLACKBOX_LIB) 1
 
-set ::env(FP_CORE_UTIL) 75
-set ::env(PL_TARGET_DENSITY) 0.80
+set ::env(FP_CORE_UTIL) 80
+set ::env(PL_TARGET_DENSITY) 0.85
 
 set ::env(CELL_PAD) 0
 set ::env(PL_OPENPHYSYN_OPTIMIZATIONS) 1
@@ -50,10 +50,10 @@ set ::env(FP_PIN_ORDER_CFG) $::env(OPENLANE_ROOT)/designs/250/asic_config/clb_ne
 
 set ::env(DESIGN_IS_CORE) 0
 
-set ::env(GLB_RT_ALLOW_CONGESTION) 1
+#set ::env(GLB_RT_ALLOW_CONGESTION) 1
 
 set ::env(ROUTING_CORES) 10
 
-set ::env(GLB_RT_MAX_DIODE_INS_ITERS) "10"
+#set ::env(GLB_RT_MAX_DIODE_INS_ITERS) "10"
 
 set ::env(USE_ARC_ANTENNA_CHECK) 0

@@ -20,7 +20,7 @@
 `define CLB_IWIDTH 10
 `define CLB_OWIDTH 4
 `define CHN_WIDTH  16
-`define NUM_SNGO_SWITCHES (`CHN_WIDTH  + `CLB_OWIDTH * 2 + 1 + 1)
+`define NUM_SNGO_SWITCHES (`CHN_WIDTH  + `CLB_OWIDTH * 2)
 `define NUM_CLBI_SWITCHES (`CLB_OWIDTH + `CHN_WIDTH  * 2 + 1 + 1)
 
 `define CFG_SNGO_SIZE $clog2(`NUM_SNGO_SWITCHES)
@@ -33,7 +33,7 @@
 `define CB_CFG_SIZE (`CB_CFG_OFFSET2 + `CLB_IWIDTH * `CFG_CLBI_SIZE)
 
 // SB parameters
-`define SWITCH_CFG_SIZE 12
+`define SWITCH_CFG_SIZE 8
 `define SB_CFG_SIZE (`SWITCH_CFG_SIZE * `CHN_WIDTH)
 
 `define ID_BEGIN       0
@@ -47,9 +47,9 @@
 `define CLB_CFG_BEGIN  (`CB_N_CFG_END + 1)
 `define CLB_CFG_END    (`CLB_CFG_BEGIN + `CLB_CFG_SIZE - 1)
 `define RST_CFG_BEGIN  (`CLB_CFG_END + 1)
-`define RST_CFG_END    (`RST_CFG_BEGIN + 3 - 1)
+`define RST_CFG_END    (`RST_CFG_BEGIN + 2 - 1)
 `define CE_CFG_BEGIN   (`RST_CFG_END + 1)
-`define CE_CFG_END     (`CE_CFG_BEGIN + 3 - 1)
+`define CE_CFG_END     (`CE_CFG_BEGIN + 2 - 1)
 
 `define CFG_SIZE       (`CE_CFG_END + 1)
 

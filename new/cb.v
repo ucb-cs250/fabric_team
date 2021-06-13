@@ -22,7 +22,7 @@ module cb #(
   input [CFG_SIZE-1:0] cfg
 );
 
-  localparam integer CFG_SNGO_SIZE = $clog2(CHN_WIDTH + CLB_OWIDTH * 2 + 1 + 1);
+  localparam integer CFG_SNGO_SIZE = $clog2(CHN_WIDTH + CLB_OWIDTH * 2);
   localparam integer CFG_CLBI_SIZE = $clog2(CLB_OWIDTH + CHN_WIDTH * 2 + 1 + 1);
 
   localparam CFG_OFFSET0 =               CHN_WIDTH  * CFG_SNGO_SIZE;
@@ -34,10 +34,10 @@ module cb #(
     // {single1_in, clb0_output, clb1_output} -> single0_out[i]
     for (i = 0; i < CHN_WIDTH; i = i + 1) begin: GEN_SNGO0
       MUXN #(
-        .IWIDTH(CHN_WIDTH+CLB_OWIDTH*2+1+1),
+        .IWIDTH(CHN_WIDTH+CLB_OWIDTH*2),
         .SWIDTH(CFG_SNGO_SIZE)
       ) muxn_sng0 (
-        .I({single1_in, clb1_output, clb0_output, 1'b1, 1'b0}),
+        .I({single1_in, clb1_output, clb0_output}),
         .O(single0_out[i]),
         .sel(cfg[(i+1)*CFG_SNGO_SIZE-1 : i*CFG_SNGO_SIZE])
       );
@@ -46,10 +46,10 @@ module cb #(
     // {single0_in[i], clb0_output, clb1_output} -> single1_out[i]
     for (i = 0; i < CHN_WIDTH; i = i + 1) begin: GEN_SNGO1
       MUXN #(
-        .IWIDTH(CHN_WIDTH+CLB_OWIDTH*2+1+1),
+        .IWIDTH(CHN_WIDTH+CLB_OWIDTH*2),
         .SWIDTH(CFG_SNGO_SIZE)
       ) muxn_sng1 (
-        .I({single0_in, clb1_output, clb0_output, 1'b1, 1'b0}),
+        .I({single0_in, clb1_output, clb0_output}),
         .O(single1_out[i]),
         .sel(cfg[CFG_OFFSET0+(i+1)*CFG_SNGO_SIZE-1 : CFG_OFFSET0+i*CFG_SNGO_SIZE])
       );

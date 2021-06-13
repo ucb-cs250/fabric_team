@@ -30,8 +30,8 @@ module cb_with_cfg #(
   output wire cfg_bit_out_valid
 );
 
-  localparam NUM_SNGO_SWITCHES = CHN_WIDTH  + CLB_OWIDTH * 2 + 1;
-  localparam NUM_CLBI_SWITCHES = CLB_OWIDTH + CHN_WIDTH  * 2 + 1;
+  localparam NUM_SNGO_SWITCHES = CHN_WIDTH  + CLB_OWIDTH * 2;
+  localparam NUM_CLBI_SWITCHES = CLB_OWIDTH + CHN_WIDTH  * 2 + 1 + 1;
 
   localparam integer CFG_SNGO_SIZE = $clog2(NUM_SNGO_SWITCHES);
   localparam integer CFG_CLBI_SIZE = $clog2(NUM_CLBI_SWITCHES);
