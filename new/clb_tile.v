@@ -1,6 +1,5 @@
 `include "consts.vh"
 
-//(* blackbox *)
 module clb_tile #(
   parameter ID = 7
 ) (

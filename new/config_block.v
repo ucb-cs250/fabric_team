@@ -153,7 +153,7 @@ module config_block #(
 
   assign cnt_next = (id_matched | sr_filled) ? 1 : (cnt_value + 1);
   assign cnt_ce   = (chk_header | cfg_apply) & cfg_bit_in_valid;
-  assign cnt_rst  = rst;
+  assign cnt_rst  = idle | rst;
 
   assign cfg_init_next = 1;
   assign cfg_init_ce   = id_matched;

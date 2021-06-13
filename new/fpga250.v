@@ -1,8 +1,8 @@
 `include "consts.vh"
 
 module fpga250 #(
-  parameter MX   = 2,//9,
-  parameter MY   = 2,//11,
+  parameter MX   = 9,
+  parameter MY   = 11,
   parameter IO_N = 10,
   parameter IO_E = 10,
   parameter IO_S = 10,
@@ -151,24 +151,24 @@ module fpga250 #(
   wire wb_cfg_bit_out;
   wire wb_cfg_bit_out_valid;
 
-  wb_config wb (
-    .wb_clk_i(wb_clk_i),
-    .wb_rst_i(wb_rst_i),
-
-    .wbs_stb_i(wbs_stb_i),
-    .wbs_cyc_i(wbs_cyc_i),
-    .wbs_we_i(wbs_we_i),
-    .wbs_sel_i(wbs_sel_i),
-    .wbs_ack_o(wbs_ack_o),
-    .wbs_dat_i(wbs_dat_i),
-    .wbs_adr_i(wbs_adr_i),
-    .wbs_dat_o(wbs_dat_o),
-
-    .col_sel(col_sel),
-    .cfg_out_start(wb_cfg_out_start),
-    .cfg_bit_out(wb_cfg_bit_out),
-    .cfg_bit_out_valid(wb_cfg_bit_out_valid)
-  );
+//  wb_config wb (
+//    .wb_clk_i(wb_clk_i),
+//    .wb_rst_i(wb_rst_i),
+//
+//    .wbs_stb_i(wbs_stb_i),
+//    .wbs_cyc_i(wbs_cyc_i),
+//    .wbs_we_i(wbs_we_i),
+//    .wbs_sel_i(wbs_sel_i),
+//    .wbs_ack_o(wbs_ack_o),
+//    .wbs_dat_i(wbs_dat_i),
+//    .wbs_adr_i(wbs_adr_i),
+//    .wbs_dat_o(wbs_dat_o),
+//
+//    .col_sel(col_sel),
+//    .cfg_out_start(wb_cfg_out_start),
+//    .cfg_bit_out(wb_cfg_bit_out),
+//    .cfg_bit_out_valid(wb_cfg_bit_out_valid)
+//  );
 
   generate
     for (y = 0; y < MY; y = y + 1) begin
@@ -182,8 +182,10 @@ module fpga250 #(
           assign cb_e_single1_in [y + 0][x + 0]  = sb_north_out    [y - 1][x + 0];
           assign sb_north_in     [y - 1][x + 0]  = cb_e_single1_out[y + 0][x + 0];
 
-          assign cfg_in_start[y][x] = cfg_out_start[y - 1][x];
-          assign cfg_bit_in  [y][x] = cfg_bit_out  [y - 1][x];
+          assign cfg_in_start    [y][x] = cfg_out_start    [y - 1][x];
+          assign cfg_bit_in      [y][x] = cfg_bit_out      [y - 1][x];
+          assign cfg_bit_in_valid[y][x] = cfg_bit_out_valid[y - 1][x];
+
         end
         else begin
           assign CIN[0][x] = 1'b0;
@@ -200,7 +202,7 @@ module fpga250 #(
     end
 
     for (x = 0; x < MX; x = x + 1) begin
-      assign cfg_in_start[0][x]     = wb_cfg_out_start & (col_sel == x);
+      assign cfg_in_start[0][x]     = wb_cfg_out_start & (wbs_adr_i[5:2] == x);
       assign cfg_bit_in[0][x]       = wb_cfg_bit_out;
       assign cfg_bit_in_valid[0][x] = wb_cfg_bit_out_valid;
     end

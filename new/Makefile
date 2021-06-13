@@ -3,7 +3,7 @@ VCS = vcs -full64
 INCS = ./
 
 
-SRCS = sim/clb_tile_testbench.v \
+SRCS = sim/fpga250_testbench.v \
        carrychain.v \
        cb_with_cfg.v \
        clb.v \
@@ -23,7 +23,8 @@ SRCS = sim/clb_tile_testbench.v \
        mux2_cfg.v \
        mux4_cfg.v \
        muxn.v \
-       sb.v
+       sb.v \
+       wb_config.v \
 
 all: sim-rtl
 
