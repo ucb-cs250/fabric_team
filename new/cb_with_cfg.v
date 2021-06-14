@@ -31,7 +31,7 @@ module cb_with_cfg #(
 );
 
   localparam NUM_SNGO_SWITCHES = CHN_WIDTH  + CLB_OWIDTH * 2;
-  localparam NUM_CLBI_SWITCHES = CLB_OWIDTH + CHN_WIDTH  * 2 + 1 + 1;
+  localparam NUM_CLBI_SWITCHES = CLB_OWIDTH + CHN_WIDTH + 1 + 1;
 
   localparam integer CFG_SNGO_SIZE = $clog2(NUM_SNGO_SWITCHES);
   localparam integer CFG_CLBI_SIZE = $clog2(NUM_CLBI_SWITCHES);
