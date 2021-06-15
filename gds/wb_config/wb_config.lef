@@ -935,30 +935,6 @@ MACRO wb_config
         RECT 14.075 10.640 15.675 65.520 ;
     END
   END VPWR
-  PIN VPWR
-    DIRECTION INOUT ;
-    USE POWER ;
-    PORT
-      LAYER met5 ;
-        RECT 5.520 55.175 61.640 56.775 ;
-    END
-  END VPWR
-  PIN VPWR
-    DIRECTION INOUT ;
-    USE POWER ;
-    PORT
-      LAYER met5 ;
-        RECT 5.520 37.040 61.640 38.640 ;
-    END
-  END VPWR
-  PIN VPWR
-    DIRECTION INOUT ;
-    USE POWER ;
-    PORT
-      LAYER met5 ;
-        RECT 5.520 18.905 61.640 20.505 ;
-    END
-  END VPWR
   PIN VGND
     DIRECTION INOUT ;
     USE GROUND ;
@@ -975,27 +951,11 @@ MACRO wb_config
         RECT 23.425 10.640 25.025 65.520 ;
     END
   END VGND
-  PIN VGND
-    DIRECTION INOUT ;
-    USE GROUND ;
-    PORT
-      LAYER met5 ;
-        RECT 5.520 46.105 61.640 47.705 ;
-    END
-  END VGND
-  PIN VGND
-    DIRECTION INOUT ;
-    USE GROUND ;
-    PORT
-      LAYER met5 ;
-        RECT 5.520 27.975 61.640 29.575 ;
-    END
-  END VGND
   OBS
       LAYER li1 ;
-        RECT 0.605 6.885 62.415 65.365 ;
+        RECT 2.445 8.925 61.640 65.365 ;
       LAYER met1 ;
-        RECT 0.070 4.460 66.630 67.620 ;
+        RECT 0.070 4.800 66.630 67.280 ;
       LAYER met2 ;
         RECT 0.100 73.810 3.490 74.090 ;
         RECT 4.330 73.810 10.850 74.090 ;
@@ -1050,19 +1010,15 @@ MACRO wb_config
         RECT 64.130 4.000 64.210 4.280 ;
         RECT 65.510 4.000 65.590 4.280 ;
       LAYER met3 ;
-        RECT 2.825 4.935 66.175 65.445 ;
+        RECT 2.365 4.255 60.655 65.445 ;
       LAYER met4 ;
-        RECT 4.895 10.240 13.675 65.520 ;
+        RECT 5.815 10.240 13.675 65.520 ;
         RECT 16.075 10.240 23.025 65.520 ;
         RECT 25.425 10.240 32.380 65.520 ;
         RECT 34.780 10.240 41.735 65.520 ;
         RECT 44.135 10.240 51.085 65.520 ;
-        RECT 53.485 10.240 54.905 65.520 ;
-        RECT 4.895 4.935 54.905 10.240 ;
-      LAYER met5 ;
-        RECT 5.520 49.305 61.640 53.575 ;
-        RECT 5.520 40.240 61.640 44.505 ;
-        RECT 5.520 31.175 61.640 35.440 ;
+        RECT 53.485 10.240 53.985 65.520 ;
+        RECT 5.815 4.255 53.985 10.240 ;
   END
 END wb_config
 END LIBRARY

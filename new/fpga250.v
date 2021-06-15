@@ -151,24 +151,24 @@ module fpga250 #(
   wire wb_cfg_bit_out;
   wire wb_cfg_bit_out_valid;
 
-//  wb_config wb (
-//    .wb_clk_i(wb_clk_i),
-//    .wb_rst_i(wb_rst_i),
-//
-//    .wbs_stb_i(wbs_stb_i),
-//    .wbs_cyc_i(wbs_cyc_i),
-//    .wbs_we_i(wbs_we_i),
-//    .wbs_sel_i(wbs_sel_i),
-//    .wbs_ack_o(wbs_ack_o),
-//    .wbs_dat_i(wbs_dat_i),
-//    .wbs_adr_i(wbs_adr_i),
-//    .wbs_dat_o(wbs_dat_o),
-//
-//    .col_sel(col_sel),
-//    .cfg_out_start(wb_cfg_out_start),
-//    .cfg_bit_out(wb_cfg_bit_out),
-//    .cfg_bit_out_valid(wb_cfg_bit_out_valid)
-//  );
+  wb_config wb (
+    .wb_clk_i(wb_clk_i),
+    .wb_rst_i(wb_rst_i),
+
+    .wbs_stb_i(wbs_stb_i),
+    .wbs_cyc_i(wbs_cyc_i),
+    .wbs_we_i(wbs_we_i),
+    .wbs_sel_i(wbs_sel_i),
+    .wbs_ack_o(wbs_ack_o),
+    .wbs_dat_i(wbs_dat_i),
+    .wbs_adr_i(wbs_adr_i),
+    .wbs_dat_o(wbs_dat_o),
+
+    .col_sel(col_sel),
+    .cfg_out_start(wb_cfg_out_start),
+    .cfg_bit_out(wb_cfg_bit_out),
+    .cfg_bit_out_valid(wb_cfg_bit_out_valid)
+  );
 
   generate
     for (y = 0; y < MY; y = y + 1) begin

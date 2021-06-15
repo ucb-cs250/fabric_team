@@ -50,7 +50,7 @@ set ::env(FP_PIN_ORDER_CFG) $::env(OPENLANE_ROOT)/designs/250/asic_config/clb_ne
 
 set ::env(DESIGN_IS_CORE) 0
 
-#set ::env(GLB_RT_ALLOW_CONGESTION) 1
+set ::env(GLB_RT_ALLOW_CONGESTION) 1
 
 set ::env(ROUTING_CORES) 10
 

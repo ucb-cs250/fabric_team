@@ -19,7 +19,7 @@ set ::env(EXTRA_GDS_FILES) [ list \
 
 set ::env(MACRO_PLACEMENT_CFG) $::env(OPENLANE_ROOT)/designs/250/asic_config/fpga_new/macro_placement.cfg
 
-set ::env(CLOCK_PORT) "clk"
+set ::env(CLOCK_PORT) "wb_clk_i"
 # Design config
 set ::env(CLOCK_PERIOD) 100
 set ::env(SYNTH_STRATEGY) "DELAY 1"
@@ -110,6 +110,8 @@ set ::env(FP_PIN_ORDER_CFG) $::env(OPENLANE_ROOT)/designs/250/asic_config/fpga_n
 #set ::env(PDN_CFG) $::env(OPENLANE_ROOT)/designs/250/asic_config/fpga_new/pdn.tcl
 
 set ::env(GLB_RT_ALLOW_CONGESTION) 1
+
+set ::env(GLB_RT_ADJUSTMENT) 0.6
 
 set ::env(ROUTING_CORES) 10
 
